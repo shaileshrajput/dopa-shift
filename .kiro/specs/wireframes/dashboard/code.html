@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DopaShift Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-error": "#690005",
+                      "on-error-container": "#ffdad6",
+                      "productive-blue": "#0066FF",
+                      "on-secondary-fixed-variant": "#005047",
+                      "on-secondary-fixed": "#00201c",
+                      "surface-container-high": "#222a3d",
+                      "primary-fixed": "#dae1ff",
+                      "on-primary-fixed": "#001849",
+                      "on-background": "#dae2fd",
+                      "on-surface-variant": "#c2c6d8",
+                      "surface-container-highest": "#2d3449",
+                      "on-primary-fixed-variant": "#003fa4",
+                      "error-container": "#93000a",
+                      "intercept-overlay": "rgba(15, 23, 42, 0.95)",
+                      "surface": "#0b1326",
+                      "on-secondary": "#003731",
+                      "surface-bright": "#31394d",
+                      "inverse-on-surface": "#283044",
+                      "on-primary-container": "#f8f7ff",
+                      "on-secondary-container": "#004d44",
+                      "on-surface": "#dae2fd",
+                      "on-tertiary-fixed-variant": "#5516be",
+                      "surface-tint": "#b3c5ff",
+                      "primary": "#b3c5ff",
+                      "surface-container-low": "#131b2e",
+                      "error-rose": "#E11D48",
+                      "tertiary": "#d0bcff",
+                      "success-green": "#10B981",
+                      "tertiary-fixed": "#e9ddff",
+                      "background": "#0b1326",
+                      "surface-dim": "#0b1326",
+                      "secondary-container": "#03c6b2",
+                      "on-primary": "#002b75",
+                      "primary-fixed-dim": "#b3c5ff",
+                      "surface-container": "#171f33",
+                      "focus-indigo": "#6366F1",
+                      "secondary": "#44e2cd",
+                      "momentum-teal": "#2DD4BF",
+                      "surface-variant": "#2d3449",
+                      "inverse-surface": "#dae2fd",
+                      "surface-container-lowest": "#060e20",
+                      "inverse-primary": "#0054d6",
+                      "outline": "#8c90a1",
+                      "warning-amber": "#F59E0B",
+                      "error": "#ffb4ab",
+                      "on-tertiary-container": "#fdf6ff",
+                      "on-tertiary-fixed": "#23005c",
+                      "on-tertiary": "#3c0091",
+                      "tertiary-fixed-dim": "#d0bcff",
+                      "secondary-fixed": "#62fae3",
+                      "primary-container": "#0066ff",
+                      "outline-variant": "#424656",
+                      "tertiary-container": "#8252ec",
+                      "secondary-fixed-dim": "#3cddc7"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "stack-sm": "12px",
+                      "base": "8px",
+                      "compact": "4px",
+                      "grid-margin": "24px",
+                      "stack-lg": "48px",
+                      "stack-md": "24px",
+                      "gutter": "16px"
+              },
+              "fontFamily": {
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "label-strikethrough": [
+                              "Inter"
+                      ],
+                      "title-lg": [
+                              "Hanken Grotesk"
+                      ],
+                      "headline-md": [
+                              "Hanken Grotesk"
+                      ],
+                      "headline-lg-mobile": [
+                              "Hanken Grotesk"
+                      ],
+                      "headline-lg": [
+                              "Hanken Grotesk"
+                      ],
+                      "display-lg": [
+                              "Hanken Grotesk"
+                      ],
+                      "label-md": [
+                              "JetBrains Mono"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-strikethrough": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "title-lg": [
+                              "22px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-md": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "34px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg": [
+                              "57px",
+                              {
+                                      "lineHeight": "64px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-md": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.5px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background min-h-screen pb-24 md:pb-0 overflow-x-hidden">
+<!-- Desktop Sidebar (NavigationDrawer) -->
+<aside class="hidden md:flex bg-surface-container-low dark:bg-surface-container-low shadow-lg h-full w-80 rounded-r-xl fixed inset-y-0 left-0 z-50 flex-col py-6">
+<div class="px-6 mb-8 flex items-center space-x-4">
+<div class="w-12 h-12 rounded-full overflow-hidden bg-surface-container-highest border border-outline-variant flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="A highly detailed close-up portrait of a professional individual serving as a profile avatar. The person has a neutral, focused expression. The lighting is cinematic, utilizing deep shadows and cool blue-toned rim lights that match a modern, high-tech, dark mode aesthetic. The background is a smooth, abstract dark gradient." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIwQGlm42m2q4sWdUSpIUGdEvfqXmPcji3H-rXCYVbhFH4fvVs186NPBZMnNUGnJVrIzn5sYvcEse_c8Jd8lWs80RzDBaL51_uZP7xj1r7aTZNjPRfCproLh9XSv6PMEVZTDDhM27x5f0sa_7N4hxnFJeMm5ImO2aTWZq1pONXF92hqTJEJjDe0hoTtql3tXduPO6SK23_fwlzxWrSryulbJrpE7Z_diD-5m7kHIaX1PUQzrUhQwFwrg"/>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-productive-blue text-productive-blue dark:text-primary">Alex Morgan</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Level 12 Focused</p>
+</div>
+</div>
+<nav class="flex-1 space-y-2 px-4">
+<!-- Active Item (Dashboard) -->
+<a class="bg-secondary-container text-on-secondary-container rounded-full mx-2 px-4 py-3 flex items-center space-x-3 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-weight="fill" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-body-lg text-body-lg">Dashboard</span>
+</a>
+<a class="text-on-surface-variant mx-2 px-4 py-3 hover:bg-surface-variant dark:hover:bg-surface-variant rounded-full flex items-center space-x-3 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">center_focus_strong</span>
+<span class="font-body-lg text-body-lg">Focus Mode</span>
+</a>
+<a class="text-on-surface-variant mx-2 px-4 py-3 hover:bg-surface-variant dark:hover:bg-surface-variant rounded-full flex items-center space-x-3 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">military_tech</span>
+<span class="font-body-lg text-body-lg">Achievements</span>
+</a>
+<a class="text-on-surface-variant mx-2 px-4 py-3 hover:bg-surface-variant dark:hover:bg-surface-variant rounded-full flex items-center space-x-3 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-body-lg text-body-lg">Help</span>
+</a>
+</nav>
+</aside>
+<!-- Top App Bar (Mobile Only for visual clarity here, assuming desktop uses sidebar primary) -->
+<header class="md:hidden bg-surface dark:bg-surface flex justify-between items-center w-full px-grid-margin h-16 sticky top-0 z-40">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-productive-blue dark:text-primary active:scale-95 transition-transform duration-200">bubble_chart</span>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-productive-blue dark:text-primary">DopaShift</h1>
+</div>
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container-highest border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A detailed, small profile avatar portrait. The person looks professional and calm. The lighting is subtle, matching a high-end corporate application in dark mode. The background is purely abstract and dark, ensuring focus on the face." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-NQzO_cVQTRN4Lrd9QP7nAPyM7nlFIm7V6uvM5HZ0mcOgICSbxdR0NZ9FKWVUOhL44JKqcjPMRXCLrH0Aj2MK1urZEg5DH196DUiMP7drISRbIs8zeBD_jO5agVs6Gj-yVRr3ww7w53s1HROYy0r1PLeW6tf6Rq2r-hwfGulJAwl2oGGEFpyb7yPelYvLJbpnj3Ii_6Bf0DSRsbBXTWBEQiBB2pq52Jwvfd_v4i6kcll2bvrFfbLG4Q"/>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="md:ml-80 p-4 md:p-8 max-w-7xl mx-auto space-y-8">
+<!-- Header Section -->
+<section class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+<div>
+<h1 class="font-display-lg text-display-lg text-on-surface">Overview</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-2">Welcome back, Alex. Your momentum is building.</p>
+</div>
+<!-- Daily Efficiency Score Preview -->
+<div class="bg-surface-container-low border border-outline-variant rounded-xl p-4 flex items-center gap-4 w-full md:w-auto shadow-md">
+<div class="relative w-16 h-16 flex items-center justify-center">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 36 36">
+<!-- Background Track -->
+<path class="text-surface-container-highest" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3"></path>
+<!-- Progress -->
+<path class="text-productive-blue" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="85, 100" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+<span class="absolute font-headline-md text-headline-md text-on-surface">85<span class="text-sm">%</span></span>
+</div>
+<div>
+<h3 class="font-title-lg text-title-lg text-on-surface">Efficiency</h3>
+<p class="font-body-md text-body-md text-momentum-teal">+5% from yesterday</p>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Left Column: Active Goals (Bento Style) -->
+<div class="lg:col-span-2 space-y-6">
+<h2 class="font-headline-md text-headline-md text-on-surface">Active Goals</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Goal Card 1 -->
+<div class="bg-surface-container-low border border-outline-variant rounded-2xl p-6 relative overflow-hidden group shadow-md hover:border-productive-blue transition-colors">
+<div class="absolute inset-0 bg-gradient-to-br from-productive-blue/5 to-transparent pointer-events-none"></div>
+<div class="flex justify-between items-start mb-6 relative z-10">
+<div class="bg-primary-container text-on-primary-container p-2 rounded-lg">
+<span class="material-symbols-outlined">fitness_center</span>
+</div>
+<span class="font-label-md text-label-md px-2 py-1 bg-surface-variant text-on-surface-variant rounded-full">3 Days Streak</span>
+</div>
+<div class="relative z-10">
+<h3 class="font-title-lg text-title-lg text-on-surface mb-1">Fitness Core</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">Complete 4 strength workouts this week.</p>
+</div>
+<div class="flex items-center gap-4 relative z-10">
+<!-- Mini Progress Ring -->
+<div class="relative w-12 h-12 flex items-center justify-center">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 36 36">
+<path class="text-surface-container-highest" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="4"></path>
+<path class="text-momentum-teal" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="75, 100" stroke-linecap="round" stroke-width="4"></path>
+</svg>
+<span class="absolute font-label-md text-label-md text-on-surface">3/4</span>
+</div>
+<div class="flex-1">
+<p class="font-body-md text-body-md text-on-surface">75% Complete</p>
+<div class="h-1.5 w-full bg-surface-container-highest rounded-full mt-2 overflow-hidden">
+<div class="h-full bg-momentum-teal rounded-full w-3/4"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Goal Card 2 -->
+<div class="bg-surface-container-low border border-outline-variant rounded-2xl p-6 relative overflow-hidden group shadow-md hover:border-productive-blue transition-colors">
+<div class="absolute inset-0 bg-gradient-to-br from-momentum-teal/5 to-transparent pointer-events-none"></div>
+<div class="flex justify-between items-start mb-6 relative z-10">
+<div class="bg-secondary-container text-on-secondary-container p-2 rounded-lg">
+<span class="material-symbols-outlined">rocket_launch</span>
+</div>
+<span class="font-label-md text-label-md px-2 py-1 bg-surface-variant text-on-surface-variant rounded-full">In Progress</span>
+</div>
+<div class="relative z-10">
+<h3 class="font-title-lg text-title-lg text-on-surface mb-1">Build Business</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">Finalize MVP launch strategy document.</p>
+</div>
+<div class="flex items-center gap-4 relative z-10">
+<!-- Mini Progress Ring -->
+<div class="relative w-12 h-12 flex items-center justify-center">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 36 36">
+<path class="text-surface-container-highest" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="4"></path>
+<path class="text-productive-blue" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="40, 100" stroke-linecap="round" stroke-width="4"></path>
+</svg>
+<span class="absolute font-label-md text-label-md text-on-surface">40%</span>
+</div>
+<div class="flex-1">
+<p class="font-body-md text-body-md text-on-surface">Needs Focus</p>
+<div class="h-1.5 w-full bg-surface-container-highest rounded-full mt-2 overflow-hidden">
+<div class="h-full bg-productive-blue rounded-full w-2/5"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Today's To-Do List -->
+<div class="lg:col-span-1">
+<div class="bg-surface-container border border-outline-variant rounded-2xl p-6 h-full flex flex-col shadow-md">
+<div class="flex justify-between items-center mb-6">
+<h2 class="font-headline-md text-headline-md text-on-surface">Today's Focus</h2>
+<button class="w-8 h-8 rounded-full flex items-center justify-center border border-momentum-teal text-momentum-teal hover:bg-momentum-teal/10 transition-colors">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+<div class="space-y-3 flex-1 overflow-y-auto pr-2 custom-scrollbar">
+<!-- Task Item 1 (Incomplete) -->
+<div class="flex items-center gap-3 bg-surface-container-low border border-outline-variant p-3 rounded-xl min-h-[56px] group hover:border-productive-blue transition-colors cursor-pointer">
+<div class="w-6 h-6 rounded border-2 border-outline-variant flex-shrink-0 flex items-center justify-center group-hover:border-productive-blue">
+<!-- empty checkbox -->
+</div>
+<span class="font-body-md text-body-md text-on-surface flex-1">Morning Deep Work Session</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity">drag_indicator</span>
+</div>
+<!-- Task Item 2 (Completed) -->
+<div class="flex items-center gap-3 bg-surface-container-lowest border border-surface-container-highest p-3 rounded-xl min-h-[56px] opacity-50">
+<div class="w-6 h-6 rounded bg-momentum-teal flex-shrink-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-surface-container-lowest text-[18px]">check</span>
+</div>
+<span class="font-label-strikethrough text-label-strikethrough text-on-surface-variant flex-1 line-through">Review Weekly Metrics</span>
+</div>
+<!-- Task Item 3 (Incomplete) -->
+<div class="flex items-center gap-3 bg-surface-container-low border border-outline-variant p-3 rounded-xl min-h-[56px] group hover:border-productive-blue transition-colors cursor-pointer">
+<div class="w-6 h-6 rounded border-2 border-outline-variant flex-shrink-0 flex items-center justify-center group-hover:border-productive-blue">
+</div>
+<span class="font-body-md text-body-md text-on-surface flex-1">Draft Q3 Objectives</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity">drag_indicator</span>
+</div>
+</div>
+<!-- Quick Add Input -->
+<div class="mt-4 pt-4 border-t border-outline-variant">
+<div class="relative">
+<input class="w-full bg-surface-container-low border border-outline rounded-lg px-4 py-3 font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:border-productive-blue focus:ring-1 focus:ring-productive-blue transition-all" placeholder="Add new task..." type="text"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Mobile Bottom Navigation Bar -->
+<nav class="md:hidden bg-surface-container dark:bg-surface-container docked full-width bottom-0 rounded-t-xl shadow-md fixed bottom-0 w-full z-50 flex justify-around items-center px-4 py-3 h-20">
+<!-- Active: Home (Mapping Dashboard to Home) -->
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-2xl px-5 py-1 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-weight="fill" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-md text-label-md mt-1">Home</span>
+</a>
+<!-- Inactive -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-productive-blue dark:hover:text-primary active:scale-90 transition-transform duration-150 px-2 py-1" href="#">
+<span class="material-symbols-outlined">target</span>
+<span class="font-label-md text-label-md mt-1">Goals</span>
+</a>
+<!-- Inactive -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-productive-blue dark:hover:text-primary active:scale-90 transition-transform duration-150 px-2 py-1" href="#">
+<span class="material-symbols-outlined">leaderboard</span>
+<span class="font-label-md text-label-md mt-1">Analytics</span>
+</a>
+<!-- Inactive -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-productive-blue dark:hover:text-primary active:scale-90 transition-transform duration-150 px-2 py-1" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md mt-1">Settings</span>
+</a>
+</nav>
+<style>
+        /* Custom scrollbar for task list to keep it clean */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: theme('colors.outline-variant');
+            border-radius: 10px;
+        }
+    </style>
+</body></html>

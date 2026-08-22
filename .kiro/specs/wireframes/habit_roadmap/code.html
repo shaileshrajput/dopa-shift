@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Habit Roadmap Builder - DopaShift</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "inverse-surface": "#dae2fd",
+                        "error": "#ffb4ab",
+                        "inverse-primary": "#0054d6",
+                        "tertiary-fixed": "#e9ddff",
+                        "on-tertiary-container": "#fdf6ff",
+                        "on-tertiary-fixed-variant": "#5516be",
+                        "warning-amber": "#F59E0B",
+                        "focus-indigo": "#6366F1",
+                        "surface": "#0b1326",
+                        "surface-container-high": "#222a3d",
+                        "secondary-fixed-dim": "#3cddc7",
+                        "surface-variant": "#2d3449",
+                        "momentum-teal": "#2DD4BF",
+                        "primary": "#b3c5ff",
+                        "on-secondary-fixed-variant": "#005047",
+                        "surface-bright": "#31394d",
+                        "outline-variant": "#424656",
+                        "on-tertiary": "#3c0091",
+                        "on-secondary-fixed": "#00201c",
+                        "on-error-container": "#ffdad6",
+                        "inverse-on-surface": "#283044",
+                        "surface-container-highest": "#2d3449",
+                        "intercept-overlay": "rgba(15, 23, 42, 0.95)",
+                        "on-primary-fixed": "#001849",
+                        "on-secondary-container": "#004d44",
+                        "on-primary-fixed-variant": "#003fa4",
+                        "on-primary": "#002b75",
+                        "on-surface-variant": "#c2c6d8",
+                        "secondary-fixed": "#62fae3",
+                        "secondary": "#44e2cd",
+                        "background": "#0b1326",
+                        "on-background": "#dae2fd",
+                        "tertiary-fixed-dim": "#d0bcff",
+                        "error-rose": "#E11D48",
+                        "tertiary": "#d0bcff",
+                        "on-secondary": "#003731",
+                        "on-tertiary-fixed": "#23005c",
+                        "error-container": "#93000a",
+                        "productive-blue": "#0066FF",
+                        "secondary-container": "#03c6b2",
+                        "outline": "#8c90a1",
+                        "primary-container": "#0066ff",
+                        "tertiary-container": "#8252ec",
+                        "on-surface": "#dae2fd",
+                        "primary-fixed": "#dae1ff",
+                        "surface-container-low": "#131b2e",
+                        "success-green": "#10B981",
+                        "primary-fixed-dim": "#b3c5ff",
+                        "surface-container": "#171f33",
+                        "surface-container-lowest": "#060e20",
+                        "surface-tint": "#b3c5ff",
+                        "on-primary-container": "#f8f7ff",
+                        "surface-dim": "#0b1326",
+                        "on-error": "#690005"
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        full: "9999px"
+                    },
+                    spacing: {
+                        gutter: "16px",
+                        compact: "4px",
+                        "stack-sm": "12px",
+                        "stack-md": "24px",
+                        "stack-lg": "48px",
+                        "grid-margin": "24px",
+                        base: "8px"
+                    },
+                    fontFamily: {
+                        "title-lg": ["Hanken Grotesk"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "body-lg": ["Inter"],
+                        "label-strikethrough": ["Inter"],
+                        "label-md": ["JetBrains Mono"]
+                    },
+                    fontSize: {
+                        "title-lg": ["22px", { lineHeight: "28px", fontWeight: "500" }],
+                        "body-md": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+                        "headline-lg": ["32px", { lineHeight: "40px", fontWeight: "600" }],
+                        "headline-lg-mobile": ["28px", { lineHeight: "34px", fontWeight: "600" }],
+                        "display-lg": ["57px", { lineHeight: "64px", letterSpacing: "-0.02em", fontWeight: "700" }],
+                        "headline-md": ["28px", { lineHeight: "36px", fontWeight: "600" }],
+                        "body-lg": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+                        "label-strikethrough": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+                        "label-md": ["12px", { lineHeight: "16px", letterSpacing: "0.5px", fontWeight: "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+        }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 20px); }
+        .glass-panel {
+            background: rgba(45, 52, 73, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(140, 144, 161, 0.2);
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col pt-16 pb-24 md:pb-0">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full bg-surface dark:bg-surface border-b border-outline-variant flat no shadows z-50">
+<div class="flex items-center justify-between px-grid-margin h-16 w-full z-50">
+<div class="flex items-center gap-4">
+<img class="w-8 h-8 rounded-full object-cover" data-alt="A small, circular profile picture of a young professional in a modern office, minimalist dark mode aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8o9hiqwWodKjgn9jbT7520XmGA_Rqc9ROUrUgvTKEpYuRixIj8gYQzylXpTo0qsGv-aEZ8rVMRMm-vBf88hcIjkaJUA8s4YZInBBVkkpXqQkBhgOKyxgl4KjGDc-ftUZTHOhHf9eBf4Ln_afS6gvSjiU_RDaJr7RQ5-rLTqg1Cc0VaPuCM8RzPjBMvJ9a4hdUWYqsHeYScNlqwHsZpZJJ-KBC21xoVTeeRevbTHgzk4zuB2U0lXukhQ"/>
+<span class="font-headline-md text-headline-md font-bold text-productive-blue tracking-tight">DopaShift</span>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-variant/50 transition-colors duration-200">
+<span class="material-symbols-outlined" data-icon="bolt">bolt</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex flex-col px-4 md:px-grid-margin py-stack-md w-full max-w-7xl mx-auto gap-stack-md">
+<!-- Header Section -->
+<section class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-on-surface mb-2">Habit Roadmap Builder</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Design your cognitive exoskeleton for the next 30 days.</p>
+</div>
+<div class="flex gap-2">
+<button class="px-4 py-2 rounded-lg font-label-md text-label-md border border-outline-variant text-on-surface hover:bg-surface-variant transition-colors">Templates</button>
+<button class="px-4 py-2 rounded-lg font-label-md text-label-md bg-productive-blue text-white hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-md shadow-productive-blue/20">Activate Track</button>
+</div>
+</section>
+<!-- Active Track Preview (Bento Layout) -->
+<section class="grid grid-cols-1 md:grid-cols-12 gap-4">
+<!-- Goal Overview -->
+<div class="md:col-span-4 glass-panel rounded-xl p-6 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-4">
+<span class="px-2 py-1 rounded bg-secondary-container/20 text-secondary-container font-label-md text-label-md uppercase tracking-wider">Active Goal</span>
+<span class="material-symbols-outlined text-momentum-teal" data-icon="target">target</span>
+</div>
+<h2 class="font-title-lg text-title-lg text-on-surface mb-2">Deep Work Mastery</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Build sustainable focus cycles without digital interruptions.</p>
+</div>
+<div class="mt-6">
+<div class="flex justify-between font-label-md text-label-md text-on-surface-variant mb-1">
+<span>Progress</span>
+<span>Day 12 / 30</span>
+</div>
+<div class="w-full h-2 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-momentum-teal w-[40%] rounded-full shadow-[0_0_10px_rgba(45,212,191,0.5)]"></div>
+</div>
+</div>
+</div>
+<!-- Daily Micro-Habits (Current Day Focus) -->
+<div class="md:col-span-8 glass-panel rounded-xl p-6">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-title-lg text-title-lg text-on-surface">Today's Micro-Habits</h3>
+<span class="font-label-md text-label-md text-productive-blue bg-productive-blue/10 px-3 py-1 rounded-full">Day 12</span>
+</div>
+<div class="flex flex-col gap-3">
+<!-- Task Item 1 -->
+<div class="flex items-center justify-between p-4 rounded-lg bg-surface-container border border-outline-variant/50 hover:border-productive-blue/50 transition-colors cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="w-6 h-6 rounded border-2 border-outline flex items-center justify-center group-hover:border-productive-blue transition-colors">
+<!-- Checkbox empty -->
+</div>
+<span class="font-body-lg text-body-lg text-on-surface">90-minute uninterrupted work block</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant cursor-move opacity-0 group-hover:opacity-100 transition-opacity" data-icon="drag_indicator">drag_indicator</span>
+</div>
+<!-- Task Item 2 (Completed) -->
+<div class="flex items-center justify-between p-4 rounded-lg bg-surface-container/50 border border-outline-variant/30 opacity-70">
+<div class="flex items-center gap-4">
+<div class="w-6 h-6 rounded bg-momentum-teal border-2 border-momentum-teal flex items-center justify-center">
+<span class="material-symbols-outlined text-surface text-[16px]" data-icon="check">check</span>
+</div>
+<span class="font-label-strikethrough text-label-strikethrough text-on-surface-variant line-through">Morning focus meditation (10m)</span>
+</div>
+</div>
+<!-- Task Item 3 -->
+<div class="flex items-center justify-between p-4 rounded-lg bg-surface-container border border-outline-variant/50 hover:border-productive-blue/50 transition-colors cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="w-6 h-6 rounded border-2 border-outline flex items-center justify-center group-hover:border-productive-blue transition-colors">
+</div>
+<span class="font-body-lg text-body-lg text-on-surface">Review cognitive intercept logs</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant cursor-move opacity-0 group-hover:opacity-100 transition-opacity" data-icon="drag_indicator">drag_indicator</span>
+</div>
+</div>
+</div>
+</section>
+<!-- 30-Day Grid -->
+<section class="mt-stack-sm">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-title-lg text-title-lg text-on-surface">30-Day Roadmap</h3>
+<div class="flex gap-2">
+<span class="w-3 h-3 rounded-full bg-surface-container-highest"></span>
+<span class="font-label-md text-label-md text-on-surface-variant mr-3">Pending</span>
+<span class="w-3 h-3 rounded-full bg-productive-blue"></span>
+<span class="font-label-md text-label-md text-on-surface-variant mr-3">Current</span>
+<span class="w-3 h-3 rounded-full bg-momentum-teal"></span>
+<span class="font-label-md text-label-md text-on-surface-variant">Completed</span>
+</div>
+</div>
+<!-- CSS Grid for 30 days -->
+<div class="grid grid-cols-5 sm:grid-cols-7 md:grid-cols-10 gap-2 md:gap-3">
+<!-- Generating 30 boxes via inline script to keep HTML concise for the example, but hardcoding a few to show structure -->
+<!-- Completed Days (1-11) -->
+<script>
+                    for(let i=1; i<=11; i++) {
+                        document.write(`
+                            <div class="aspect-square rounded-lg bg-surface-container border border-momentum-teal/30 flex flex-col items-center justify-center relative overflow-hidden group cursor-pointer hover:border-momentum-teal transition-colors">
+                                <div class="absolute inset-0 bg-momentum-teal/10"></div>
+                                <span class="font-label-md text-label-md text-momentum-teal z-10">${i}</span>
+                                <span class="material-symbols-outlined text-momentum-teal opacity-50 text-[16px] mt-1 z-10" data-icon="check_circle">check_circle</span>
+                            </div>
+                        `);
+                    }
+                </script>
+<!-- Current Day (12) -->
+<div class="aspect-square rounded-lg bg-productive-blue/20 border-2 border-productive-blue flex flex-col items-center justify-center relative overflow-hidden shadow-[0_0_15px_rgba(0,102,255,0.3)] cursor-pointer scale-105 z-10">
+<span class="font-label-md text-label-md text-white font-bold">12</span>
+<div class="w-1.5 h-1.5 rounded-full bg-white mt-2 animate-pulse"></div>
+</div>
+<!-- Pending Days (13-30) -->
+<script>
+                    for(let i=13; i<=30; i++) {
+                        document.write(`
+                            <div class="aspect-square rounded-lg bg-surface-container-low border border-outline-variant/30 flex flex-col items-center justify-center cursor-pointer hover:bg-surface-container hover:border-outline-variant transition-colors">
+                                <span class="font-label-md text-label-md text-on-surface-variant/50">${i}</span>
+                            </div>
+                        `);
+                    }
+                </script>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-20 px-4 pb-safe bg-surface-container dark:bg-surface-container shadow-md rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface scale-95 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-md text-label-md mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-5 py-1 scale-95 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="target">target</span>
+<span class="font-label-md text-label-md mt-1">Goals</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface scale-95 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="insights">insights</span>
+<span class="font-label-md text-label-md mt-1">Analytics</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface scale-95 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md mt-1">Settings</span>
+</a>
+</nav>
+</body></html>

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DopaShift - Intercept Overlay</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Hanken+Grotesk:wght@500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error": "#690005",
+                        "on-error-container": "#ffdad6",
+                        "productive-blue": "#0066FF",
+                        "on-secondary-fixed-variant": "#005047",
+                        "on-secondary-fixed": "#00201c",
+                        "surface-container-high": "#222a3d",
+                        "primary-fixed": "#dae1ff",
+                        "on-primary-fixed": "#001849",
+                        "on-background": "#dae2fd",
+                        "on-surface-variant": "#c2c6d8",
+                        "surface-container-highest": "#2d3449",
+                        "on-primary-fixed-variant": "#003fa4",
+                        "error-container": "#93000a",
+                        "intercept-overlay": "rgba(15, 23, 42, 0.95)",
+                        "surface": "#0b1326",
+                        "on-secondary": "#003731",
+                        "surface-bright": "#31394d",
+                        "inverse-on-surface": "#283044",
+                        "on-primary-container": "#f8f7ff",
+                        "on-secondary-container": "#004d44",
+                        "on-surface": "#dae2fd",
+                        "on-tertiary-fixed-variant": "#5516be",
+                        "surface-tint": "#b3c5ff",
+                        "primary": "#b3c5ff",
+                        "surface-container-low": "#131b2e",
+                        "error-rose": "#E11D48",
+                        "tertiary": "#d0bcff",
+                        "success-green": "#10B981",
+                        "tertiary-fixed": "#e9ddff",
+                        "background": "#0b1326",
+                        "surface-dim": "#0b1326",
+                        "secondary-container": "#03c6b2",
+                        "on-primary": "#002b75",
+                        "primary-fixed-dim": "#b3c5ff",
+                        "surface-container": "#171f33",
+                        "focus-indigo": "#6366F1",
+                        "secondary": "#44e2cd",
+                        "momentum-teal": "#2DD4BF",
+                        "surface-variant": "#2d3449",
+                        "inverse-surface": "#dae2fd",
+                        "surface-container-lowest": "#060e20",
+                        "inverse-primary": "#0054d6",
+                        "outline": "#8c90a1",
+                        "warning-amber": "#F59E0B",
+                        "error": "#ffb4ab",
+                        "on-tertiary-container": "#fdf6ff",
+                        "on-tertiary-fixed": "#23005c",
+                        "on-tertiary": "#3c0091",
+                        "tertiary-fixed-dim": "#d0bcff",
+                        "secondary-fixed": "#62fae3",
+                        "primary-container": "#0066ff",
+                        "outline-variant": "#424656",
+                        "tertiary-container": "#8252ec",
+                        "secondary-fixed-dim": "#3cddc7"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-sm": "12px",
+                        "base": "8px",
+                        "compact": "4px",
+                        "grid-margin": "24px",
+                        "stack-lg": "48px",
+                        "stack-md": "24px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "label-strikethrough": ["Inter"],
+                        "title-lg": ["Hanken Grotesk"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"],
+                        "label-md": ["JetBrains Mono"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-strikethrough": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "title-lg": ["22px", { "lineHeight": "28px", "fontWeight": "500" }],
+                        "headline-md": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "34px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "display-lg": ["57px", { "lineHeight": "64px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(45, 52, 73, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(218, 226, 253, 0.1);
+        }
+        
+        .intercept-bg {
+            background: radial-gradient(circle at 50% -20%, rgba(0, 102, 255, 0.15) 0%, rgba(11, 19, 38, 1) 70%);
+        }
+
+        /* Custom Checkbox */
+        .task-checkbox:checked {
+            background-color: theme('colors.productive-blue');
+            border-color: theme('colors.productive-blue');
+        }
+        
+        .task-checkbox:checked + label {
+            text-decoration: line-through;
+            color: theme('colors.on-surface-variant');
+            opacity: 0.6;
+        }
+
+        .task-item {
+            transition: all 0.3s ease;
+        }
+
+        .task-item.completed {
+            opacity: 0.5;
+            background-color: rgba(45, 52, 73, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface h-screen w-screen overflow-hidden flex items-center justify-center font-body-md intercept-bg">
+<!-- Screen-Time Intercept Overlay Container -->
+<div class="fixed inset-0 z-50 flex flex-col bg-intercept-overlay backdrop-blur-[20px] overflow-y-auto w-full h-full p-4 md:p-8 items-center">
+<!-- Header Section -->
+<div class="w-full max-w-4xl text-center mt-8 mb-stack-lg flex flex-col items-center">
+<div class="inline-flex items-center justify-center p-3 bg-surface-container-highest rounded-full mb-4 shadow-lg">
+<span class="material-symbols-outlined text-productive-blue text-4xl" data-icon="block" style="font-variation-settings: 'FILL' 1;">block</span>
+</div>
+<h1 class="font-display-lg text-display-lg text-on-surface mb-2 tracking-tight">Focus Intercepted</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl mx-auto">
+                Your distraction allowance is depleted. Complete a task or micro-habit below to regain access, or watch a highly focused educational video to shift your momentum.
+            </p>
+</div>
+<!-- Main Content Area - Bento Grid -->
+<div class="w-full max-w-4xl grid grid-cols-1 lg:grid-cols-12 gap-6 pb-20">
+<!-- Video Player Alternative (Spans full width on mobile, 7 cols on lg) -->
+<div class="lg:col-span-7 glass-panel rounded-xl overflow-hidden flex flex-col shadow-2xl relative group">
+<div class="p-4 border-b border-surface-variant flex items-center justify-between bg-surface-container-low/50">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-productive-blue" data-icon="smart_display">smart_display</span>
+<h2 class="font-title-lg text-title-lg text-on-surface">Momentum Shift Video</h2>
+</div>
+<span class="font-label-md text-label-md bg-productive-blue/20 text-primary-fixed px-2 py-1 rounded-full uppercase">Educational</span>
+</div>
+<div class="relative w-full aspect-video bg-black flex items-center justify-center">
+<!-- Embedded YouTube placeholder - requires JS to load actual iframe for security/performance in some environments -->
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" class="w-full h-full absolute inset-0" frameborder="0" src="https://www.youtube.com/embed/dQw4w9WgXcQ?controls=1&amp;modestbranding=1&amp;rel=0" title="YouTube video player"></iframe>
+</div>
+</div>
+<!-- Tasks & Habits Container (Spans full width on mobile, 5 cols on lg) -->
+<div class="lg:col-span-5 flex flex-col gap-6">
+<!-- Today's To-Do List -->
+<div class="glass-panel rounded-xl p-6 shadow-xl flex-1 flex flex-col border border-productive-blue/30 relative">
+<!-- Glow effect for primary alternative -->
+<div class="absolute -inset-[1px] bg-gradient-to-b from-productive-blue/40 to-transparent rounded-xl z-[-1] blur-[2px]"></div>
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-momentum-teal" data-icon="check_circle">check_circle</span>
+<h3 class="font-title-lg text-title-lg text-on-surface">Action Items</h3>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">2 Pending</span>
+</div>
+<div class="flex flex-col gap-3 flex-1 overflow-y-auto pr-2" id="task-list">
+<!-- Task 1 -->
+<div class="task-item bg-surface-container rounded-lg p-3 min-h-[56px] flex items-center gap-3 border border-outline-variant hover:border-productive-blue/50 cursor-pointer">
+<input class="task-checkbox w-5 h-5 rounded border-outline bg-transparent text-productive-blue focus:ring-productive-blue focus:ring-offset-surface" id="task-1" type="checkbox"/>
+<label class="font-body-lg text-body-lg text-on-surface flex-1 cursor-pointer select-none" for="task-1">Review Project Proposal</label>
+<span class="material-symbols-outlined text-outline cursor-grab hover:text-on-surface" data-icon="drag_indicator">drag_indicator</span>
+</div>
+<!-- Task 2 -->
+<div class="task-item bg-surface-container rounded-lg p-3 min-h-[56px] flex items-center gap-3 border border-outline-variant hover:border-productive-blue/50 cursor-pointer">
+<input class="task-checkbox w-5 h-5 rounded border-outline bg-transparent text-productive-blue focus:ring-productive-blue focus:ring-offset-surface" id="task-2" type="checkbox"/>
+<label class="font-body-lg text-body-lg text-on-surface flex-1 cursor-pointer select-none" for="task-2">Reply to urgent emails</label>
+<span class="material-symbols-outlined text-outline cursor-grab hover:text-on-surface" data-icon="drag_indicator">drag_indicator</span>
+</div>
+</div>
+</div>
+<!-- Micro-habit Checkbox -->
+<div class="glass-panel rounded-xl p-5 shadow-xl flex items-center justify-between gap-4 border-l-4 border-momentum-teal bg-surface-container-low/80">
+<div class="flex flex-col">
+<h4 class="font-title-lg text-title-lg text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-momentum-teal text-xl" data-icon="water_drop">water_drop</span>
+                            Hydration Break
+                        </h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Drink 1 glass of water</p>
+</div>
+<div class="flex items-center justify-center">
+<button class="w-12 h-12 rounded-full border-2 border-momentum-teal text-momentum-teal flex items-center justify-center hover:bg-momentum-teal/10 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background focus:ring-momentum-teal group" id="habit-btn">
+<span class="material-symbols-outlined text-2xl group-active:scale-90 transition-transform" data-icon="add">add</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Hidden Exit Button (Revealed via JS upon completion) -->
+<div class="fixed bottom-8 left-0 right-0 w-full flex justify-center opacity-0 translate-y-4 pointer-events-none transition-all duration-500 ease-out z-50" id="unlock-container">
+<button class="bg-momentum-teal hover:bg-secondary-fixed text-on-secondary-fixed font-headline-md text-headline-md py-4 px-8 rounded-full shadow-lg flex items-center gap-3 active:scale-95 transition-transform" id="unlock-btn">
+<span class="material-symbols-outlined" data-icon="lock_open">lock_open</span>
+                Resume Session
+            </button>
+</div>
+</div>
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const checkboxes = document.querySelectorAll('.task-checkbox');
+            const habitBtn = document.getElementById('habit-btn');
+            const unlockContainer = document.getElementById('unlock-container');
+            const unlockBtn = document.getElementById('unlock-btn');
+            
+            let tasksCompleted = 0;
+            let habitCompleted = false;
+            const totalTasks = checkboxes.length;
+
+            function checkUnlockCondition() {
+                // Unlock if ANY task is done OR habit is done (as per "Complete a task or micro-habit" logic)
+                if (tasksCompleted > 0 || habitCompleted) {
+                    unlockContainer.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+                    unlockContainer.classList.add('opacity-100', 'translate-y-0');
+                } else {
+                    unlockContainer.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+                    unlockContainer.classList.remove('opacity-100', 'translate-y-0');
+                }
+            }
+
+            // Task Checkbox Logic
+            checkboxes.forEach(cb => {
+                cb.addEventListener('change', (e) => {
+                    const taskItem = e.target.closest('.task-item');
+                    if (e.target.checked) {
+                        taskItem.classList.add('completed');
+                        tasksCompleted++;
+                    } else {
+                        taskItem.classList.remove('completed');
+                        tasksCompleted--;
+                    }
+                    checkUnlockCondition();
+                });
+            });
+
+            // Habit Button Logic
+            habitBtn.addEventListener('click', () => {
+                if (!habitCompleted) {
+                    habitCompleted = true;
+                    habitBtn.innerHTML = '<span class="material-symbols-outlined text-2xl" data-icon="check" style="font-variation-settings: \'FILL\' 1;">check</span>';
+                    habitBtn.classList.remove('border-momentum-teal', 'text-momentum-teal', 'hover:bg-momentum-teal/10');
+                    habitBtn.classList.add('bg-momentum-teal', 'text-on-secondary-fixed');
+                    
+                    // Add a little celebration animation
+                    habitBtn.animate([
+                        { transform: 'scale(1)' },
+                        { transform: 'scale(1.2)' },
+                        { transform: 'scale(1)' }
+                    ], { duration: 300, easing: 'ease-out' });
+                    
+                    checkUnlockCondition();
+                } else {
+                    // Optional toggle back logic, keeping it simple for now
+                    habitCompleted = false;
+                    habitBtn.innerHTML = '<span class="material-symbols-outlined text-2xl group-active:scale-90 transition-transform" data-icon="add">add</span>';
+                    habitBtn.classList.add('border-momentum-teal', 'text-momentum-teal', 'hover:bg-momentum-teal/10');
+                    habitBtn.classList.remove('bg-momentum-teal', 'text-on-secondary-fixed');
+                    checkUnlockCondition();
+                }
+            });
+
+            // Unlock action (simulate closing overlay)
+            unlockBtn.addEventListener('click', () => {
+                const overlay = document.querySelector('.bg-intercept-overlay');
+                overlay.style.transition = 'opacity 0.5s ease';
+                overlay.style.opacity = '0';
+                setTimeout(() => {
+                    alert('Session Resumed. Returning to main app.');
+                    // In real app, this would route away or hide the overlay entirely.
+                    overlay.style.display = 'none';
+                }, 500);
+            });
+        });
+    </script>
+</body></html>

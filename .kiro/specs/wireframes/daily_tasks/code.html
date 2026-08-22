@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DopaShift - Daily To-Do List</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600;700&amp;family=Inter:wght@400&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-surface": "#dae2fd",
+                      "error": "#ffb4ab",
+                      "inverse-primary": "#0054d6",
+                      "tertiary-fixed": "#e9ddff",
+                      "on-tertiary-container": "#fdf6ff",
+                      "on-tertiary-fixed-variant": "#5516be",
+                      "warning-amber": "#F59E0B",
+                      "focus-indigo": "#6366F1",
+                      "surface": "#0b1326",
+                      "surface-container-high": "#222a3d",
+                      "secondary-fixed-dim": "#3cddc7",
+                      "surface-variant": "#2d3449",
+                      "momentum-teal": "#2DD4BF",
+                      "primary": "#b3c5ff",
+                      "on-secondary-fixed-variant": "#005047",
+                      "surface-bright": "#31394d",
+                      "outline-variant": "#424656",
+                      "on-tertiary": "#3c0091",
+                      "on-secondary-fixed": "#00201c",
+                      "on-error-container": "#ffdad6",
+                      "inverse-on-surface": "#283044",
+                      "surface-container-highest": "#2d3449",
+                      "intercept-overlay": "rgba(15, 23, 42, 0.95)",
+                      "on-primary-fixed": "#001849",
+                      "on-secondary-container": "#004d44",
+                      "on-primary-fixed-variant": "#003fa4",
+                      "on-primary": "#002b75",
+                      "on-surface-variant": "#c2c6d8",
+                      "secondary-fixed": "#62fae3",
+                      "secondary": "#44e2cd",
+                      "background": "#0b1326",
+                      "on-background": "#dae2fd",
+                      "tertiary-fixed-dim": "#d0bcff",
+                      "error-rose": "#E11D48",
+                      "tertiary": "#d0bcff",
+                      "on-secondary": "#003731",
+                      "on-tertiary-fixed": "#23005c",
+                      "error-container": "#93000a",
+                      "productive-blue": "#0066FF",
+                      "secondary-container": "#03c6b2",
+                      "outline": "#8c90a1",
+                      "primary-container": "#0066ff",
+                      "tertiary-container": "#8252ec",
+                      "on-surface": "#dae2fd",
+                      "primary-fixed": "#dae1ff",
+                      "surface-container-low": "#131b2e",
+                      "success-green": "#10B981",
+                      "primary-fixed-dim": "#b3c5ff",
+                      "surface-container": "#171f33",
+                      "surface-container-lowest": "#060e20",
+                      "surface-tint": "#b3c5ff",
+                      "on-primary-container": "#f8f7ff",
+                      "surface-dim": "#0b1326",
+                      "on-error": "#690005"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "16px",
+                      "compact": "4px",
+                      "stack-sm": "12px",
+                      "stack-md": "24px",
+                      "stack-lg": "48px",
+                      "grid-margin": "24px",
+                      "base": "8px"
+              },
+              "fontFamily": {
+                      "title-lg": [
+                              "Hanken Grotesk"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Hanken Grotesk"
+                      ],
+                      "headline-lg-mobile": [
+                              "Hanken Grotesk"
+                      ],
+                      "display-lg": [
+                              "Hanken Grotesk"
+                      ],
+                      "headline-md": [
+                              "Hanken Grotesk"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "label-strikethrough": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "JetBrains Mono"
+                      ]
+              },
+              "fontSize": {
+                      "title-lg": [
+                              "22px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "34px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg": [
+                              "57px",
+                              {
+                                      "lineHeight": "64px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-strikethrough": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-md": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.5px",
+                                      "fontWeight": "500"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        .task-checkbox:checked + div .task-text {
+            text-decoration: line-through;
+            opacity: 0.5;
+        }
+        .task-item {
+            transition: opacity 0.3s ease;
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-surface border-b border-outline-variant fixed top-0 w-full z-50 flex items-center justify-between px-grid-margin h-16 transition-colors duration-200">
+<div class="flex items-center gap-4">
+<img class="w-8 h-8 rounded-full object-cover" data-alt="A small, circular user profile avatar showing a professional looking person in a calm, focused setting with a modern corporate background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAkLK1u3jOngLxN-sIsGiE07qqsg3xDN6CEeuqUVniYYQzEWZUnSsBkWm1a55RWasRJYqhfY91JK5kSzGSw7YKN1LNR7JnGD23NFn7mTu5VHNP0X8zdWvRQN11aXcjGNXTTQ7zRK7eRKwqR0FLHNBsvABlqS31SLGcZNPitWFrhcnefrwNJPLPzdQ-B1VXoRa2nK2BTCUjnOR4G3ta8yy12i6jodHAspXbHFNgZO8t4JI1hZ0L7OXcxmQ"/>
+<h1 class="font-headline-md text-headline-md font-bold text-productive-blue">DopaShift</h1>
+</div>
+<div>
+<span class="material-symbols-outlined text-primary dark:text-primary hover:bg-surface-variant/50 p-2 rounded-full cursor-pointer transition-colors duration-200" data-icon="bolt">bolt</span>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow pt-[88px] pb-[104px] px-grid-margin max-w-4xl mx-auto w-full">
+<!-- Header Section -->
+<div class="mb-stack-md flex justify-between items-end">
+<div>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-on-surface">Daily Focus</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-compact">Oct 24, 2023</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-success-green text-sm" data-icon="cloud_done">cloud_done</span>
+<span class="font-label-md text-label-md text-on-surface-variant">All synced</span>
+</div>
+</div>
+<!-- Task List -->
+<div class="space-y-stack-sm">
+<!-- Task 1 (Active) -->
+<div class="task-item bg-surface-container-high rounded-lg border border-outline-variant p-4 flex items-center gap-4 min-h-[56px] hover:bg-surface-variant transition-colors duration-200">
+<input class="task-checkbox w-5 h-5 rounded border-outline text-productive-blue focus:ring-productive-blue focus:ring-offset-surface bg-transparent cursor-pointer" type="checkbox"/>
+<div class="flex-grow flex flex-col">
+<span class="task-text font-body-lg text-body-lg text-on-surface transition-all duration-200">Review Q3 Analytics Report</span>
+<span class="font-label-md text-label-md text-on-surface-variant mt-compact">Due Today, 2:00 PM</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant cursor-grab active:cursor-grabbing hover:text-on-surface transition-colors" data-icon="drag_indicator">drag_indicator</span>
+</div>
+<!-- Task 2 (Active) -->
+<div class="task-item bg-surface-container-high rounded-lg border border-outline-variant p-4 flex items-center gap-4 min-h-[56px] hover:bg-surface-variant transition-colors duration-200">
+<input class="task-checkbox w-5 h-5 rounded border-outline text-productive-blue focus:ring-productive-blue focus:ring-offset-surface bg-transparent cursor-pointer" type="checkbox"/>
+<div class="flex-grow flex flex-col">
+<span class="task-text font-body-lg text-body-lg text-on-surface transition-all duration-200">Draft Project Proposal for Client</span>
+<span class="font-label-md text-label-md text-warning-amber mt-compact">Due Tomorrow</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant cursor-grab active:cursor-grabbing hover:text-on-surface transition-colors" data-icon="drag_indicator">drag_indicator</span>
+</div>
+<!-- Task 3 (Completed) -->
+<div class="task-item bg-surface-container-high rounded-lg border border-outline-variant p-4 flex items-center gap-4 min-h-[56px] opacity-50">
+<input checked="" class="task-checkbox w-5 h-5 rounded border-outline text-productive-blue focus:ring-productive-blue focus:ring-offset-surface bg-transparent cursor-pointer" type="checkbox"/>
+<div class="flex-grow flex flex-col">
+<span class="task-text font-body-lg text-body-lg text-on-surface line-through">Morning Standup Meeting</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant cursor-grab active:cursor-grabbing hover:text-on-surface transition-colors" data-icon="drag_indicator">drag_indicator</span>
+</div>
+</div>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-[104px] right-grid-margin md:right-8 bg-productive-blue text-on-primary-container w-14 h-14 rounded-xl shadow-[0_4px_14px_0_rgba(0,102,255,0.39)] flex items-center justify-center hover:bg-primary-container transition-colors duration-200 z-40">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-20 px-4 pb-safe bg-surface-container dark:bg-surface-container rounded-t-xl shadow-md md:hidden">
+<!-- Home (Active) -->
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-5 py-1 scale-95 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="home" data-weight="fill" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-md text-label-md mt-1">Home</span>
+</a>
+<!-- Goals -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface scale-95 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="target">target</span>
+<span class="font-label-md text-label-md mt-1">Goals</span>
+</a>
+<!-- Analytics -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface scale-95 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="insights">insights</span>
+<span class="font-label-md text-label-md mt-1">Analytics</span>
+</a>
+<!-- Settings -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface scale-95 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md mt-1">Settings</span>
+</a>
+</nav>
+<!-- Desktop Nav Sidebar (Hidden on mobile, placeholder for web layout requirements) -->
+<aside class="hidden md:flex flex-col fixed left-0 top-16 bottom-0 w-64 bg-surface-container border-r border-outline-variant p-4 gap-2 z-40">
+<a class="flex items-center gap-3 bg-primary-container text-on-primary-container rounded-lg p-3" href="#">
+<span class="material-symbols-outlined" data-icon="home" data-weight="fill" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-body-md text-body-md font-medium">Home</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant rounded-lg p-3 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="target">target</span>
+<span class="font-body-md text-body-md font-medium">Goals</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant rounded-lg p-3 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="insights">insights</span>
+<span class="font-body-md text-body-md font-medium">Analytics</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant rounded-lg p-3 transition-colors mt-auto" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md text-body-md font-medium">Settings</span>
+</a>
+</aside>
+<script>
+        // Simple script to handle checkbox visual toggle on parent container if needed beyond pure CSS
+        document.querySelectorAll('.task-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const parentItem = this.closest('.task-item');
+                if (this.checked) {
+                    parentItem.style.opacity = '0.5';
+                } else {
+                    parentItem.style.opacity = '1';
+                }
+            });
+        });
+    </script>
+</body></html>

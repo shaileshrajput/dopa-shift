@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DopaShift - Settings &amp; LLM Config</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-surface": "#dae2fd",
+                      "error": "#ffb4ab",
+                      "inverse-primary": "#0054d6",
+                      "tertiary-fixed": "#e9ddff",
+                      "on-tertiary-container": "#fdf6ff",
+                      "on-tertiary-fixed-variant": "#5516be",
+                      "warning-amber": "#F59E0B",
+                      "focus-indigo": "#6366F1",
+                      "surface": "#0b1326",
+                      "surface-container-high": "#222a3d",
+                      "secondary-fixed-dim": "#3cddc7",
+                      "surface-variant": "#2d3449",
+                      "momentum-teal": "#2DD4BF",
+                      "primary": "#b3c5ff",
+                      "on-secondary-fixed-variant": "#005047",
+                      "surface-bright": "#31394d",
+                      "outline-variant": "#424656",
+                      "on-tertiary": "#3c0091",
+                      "on-secondary-fixed": "#00201c",
+                      "on-error-container": "#ffdad6",
+                      "inverse-on-surface": "#283044",
+                      "surface-container-highest": "#2d3449",
+                      "intercept-overlay": "rgba(15, 23, 42, 0.95)",
+                      "on-primary-fixed": "#001849",
+                      "on-secondary-container": "#004d44",
+                      "on-primary-fixed-variant": "#003fa4",
+                      "on-primary": "#002b75",
+                      "on-surface-variant": "#c2c6d8",
+                      "secondary-fixed": "#62fae3",
+                      "secondary": "#44e2cd",
+                      "background": "#0b1326",
+                      "on-background": "#dae2fd",
+                      "tertiary-fixed-dim": "#d0bcff",
+                      "error-rose": "#E11D48",
+                      "tertiary": "#d0bcff",
+                      "on-secondary": "#003731",
+                      "on-tertiary-fixed": "#23005c",
+                      "error-container": "#93000a",
+                      "productive-blue": "#0066FF",
+                      "secondary-container": "#03c6b2",
+                      "outline": "#8c90a1",
+                      "primary-container": "#0066ff",
+                      "tertiary-container": "#8252ec",
+                      "on-surface": "#dae2fd",
+                      "primary-fixed": "#dae1ff",
+                      "surface-container-low": "#131b2e",
+                      "success-green": "#10B981",
+                      "primary-fixed-dim": "#b3c5ff",
+                      "surface-container": "#171f33",
+                      "surface-container-lowest": "#060e20",
+                      "surface-tint": "#b3c5ff",
+                      "on-primary-container": "#f8f7ff",
+                      "surface-dim": "#0b1326",
+                      "on-error": "#690005"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "16px",
+                      "compact": "4px",
+                      "stack-sm": "12px",
+                      "stack-md": "24px",
+                      "stack-lg": "48px",
+                      "grid-margin": "24px",
+                      "base": "8px"
+              },
+              "fontFamily": {
+                      "title-lg": [
+                              "Hanken Grotesk"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Hanken Grotesk"
+                      ],
+                      "headline-lg-mobile": [
+                              "Hanken Grotesk"
+                      ],
+                      "display-lg": [
+                              "Hanken Grotesk"
+                      ],
+                      "headline-md": [
+                              "Hanken Grotesk"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "label-strikethrough": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "JetBrains Mono"
+                      ]
+              },
+              "fontSize": {
+                      "title-lg": [
+                              "22px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "34px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg": [
+                              "57px",
+                              {
+                                      "lineHeight": "64px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-strikethrough": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-md": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.5px",
+                                      "fontWeight": "500"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+          .material-symbols-outlined {
+              font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+          }
+          .material-symbols-outlined.fill {
+              font-variation-settings: 'FILL' 1;
+          }
+      </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-surface text-primary dark:text-primary font-title-lg text-title-lg fixed top-0 w-full border-b border-outline-variant flat no shadows transition-colors duration-200 flex items-center justify-between px-grid-margin h-16 w-full z-50">
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-variant flex items-center justify-center">
+<img class="w-full h-full object-cover" data-alt="A small, professional headshot avatar of a user in a modern digital environment, neutral expression, subtle cool blue lighting, minimalistic background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlQe4f1rQ8eHgdFbjEgi4gRw90cmcCd8O-Z2T6ZJsOyPC6vIMSyUmANBYsJpWM_ZfjBYFLPPm9jPL9_GY7k_7nuVyWYbOwCr8jvCayjLbRIROpNAOGf_5zxJpvWxNYcWTvWbB-RIuaHVKD11EGwwwwpTA6j6ZnIanAMP-oOFZosF-SZ93Ho-kt_IlL1cvIwa78gfd9EDZQtMr0uXgAPbsicl0lucwosIfN2h_FTQ2eBbQ4bOHrDdh4nQ"/>
+</div>
+<span class="font-headline-md text-headline-md font-bold text-productive-blue">DopaShift</span>
+</div>
+<button class="hover:bg-surface-variant/50 p-2 rounded-full transition-colors duration-200">
+<span class="material-symbols-outlined" data-icon="bolt">bolt</span>
+</button>
+</header>
+<main class="pt-24 px-grid-margin max-w-5xl mx-auto space-y-stack-md">
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg mb-stack-md">Settings</h1>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Account Section -->
+<section class="col-span-1 md:col-span-12 bg-surface-container-low border border-outline-variant rounded-xl p-stack-md">
+<h2 class="font-title-lg text-title-lg mb-stack-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-productive-blue">person</span>
+                    Account
+                </h2>
+<div class="space-y-4">
+<div class="flex justify-between items-center py-2 border-b border-surface-variant">
+<div>
+<p class="font-body-lg text-body-lg">Email</p>
+<p class="text-on-surface-variant font-body-md text-body-md">user@example.com</p>
+</div>
+<button class="text-productive-blue font-label-md text-label-md hover:underline">Edit</button>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-surface-variant">
+<div>
+<p class="font-body-lg text-body-lg">Subscription</p>
+<p class="text-on-surface-variant font-body-md text-body-md">Pro Plan</p>
+</div>
+<button class="text-productive-blue font-label-md text-label-md hover:underline">Manage</button>
+</div>
+<div class="flex justify-between items-center py-2">
+<div>
+<p class="font-body-lg text-body-lg">Theme</p>
+<p class="text-on-surface-variant font-body-md text-body-md">Dark Mode</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-productive-blue"></div>
+</label>
+</div>
+</div>
+</section>
+<!-- Interception Rules -->
+<section class="col-span-1 md:col-span-6 bg-surface-container-low border border-outline-variant rounded-xl p-stack-md">
+<h2 class="font-title-lg text-title-lg mb-stack-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-momentum-teal">rule</span>
+                    Interception Rules
+                </h2>
+<p class="text-on-surface-variant font-body-md text-body-md mb-stack-sm">Configure how and when DopaShift intervenes.</p>
+<div class="space-y-stack-sm">
+<div>
+<label class="font-body-md text-body-md block mb-1">Daily Distraction Allowance (minutes)</label>
+<input class="w-full bg-surface-container border border-outline rounded-lg px-3 py-2 text-on-surface focus:outline-none focus:border-productive-blue focus:ring-1 focus:ring-productive-blue" type="number" value="60"/>
+</div>
+<div>
+<label class="font-body-md text-body-md block mb-1">Strict Mode</label>
+<div class="flex items-center gap-2">
+<input class="rounded bg-surface-container border-outline text-productive-blue focus:ring-productive-blue" id="strict-mode" type="checkbox"/>
+<label class="text-on-surface-variant font-body-md text-body-md" for="strict-mode">Block all non-essential apps after allowance.</label>
+</div>
+</div>
+</div>
+</section>
+<!-- Reminder Escalation -->
+<section class="col-span-1 md:col-span-6 bg-surface-container-low border border-outline-variant rounded-xl p-stack-md">
+<h2 class="font-title-lg text-title-lg mb-stack-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-warning-amber">notifications_active</span>
+                    Reminder Escalation
+                </h2>
+<p class="text-on-surface-variant font-body-md text-body-md mb-stack-sm">Set how aggressive notifications become when ignoring tasks.</p>
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<span class="font-body-md text-body-md">Gentle Nudges</span>
+<input class="w-32 h-2 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-momentum-teal" max="3" min="1" type="range" value="1"/>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-body-md text-body-md">Screen Intercepts</span>
+<input class="w-32 h-2 bg-surface-variant rounded-lg appearance-none cursor-pointer accent-productive-blue" max="3" min="1" type="range" value="2"/>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-body-md text-body-md">Audio Alerts (Critical)</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-error-rose"></div>
+</label>
+</div>
+</div>
+</section>
+<!-- Bring Your Own LLM -->
+<section class="col-span-1 md:col-span-12 bg-surface-container-high border border-outline-variant rounded-xl p-stack-md relative overflow-hidden">
+<div class="absolute inset-0 opacity-10 pointer-events-none" data-alt="A highly abstract, digital representation of a neural network or AI processing core, glowing with subtle neon blue and teal lines against a dark background, technological and advanced mood." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAuolCDA-JXd3ZGBC1VLPzy_CX9m141ysicBN-njCtWhImqY7QKTwDFtohUjALRmcMBMteE6ax4x8nhJLxjTGkT0NM2aSnX3hxcGBXVjVUe2qhC4VZ1rlvnVQJfbqDBKz4V5Q-33tAXiUCsHFdz4C13AK7iLrVnVQ3EsfzlML6PkjISlsylQGWoZwCd8i2GrTSTZdO5jjoIWNFcvKrKP922v0DimZ_5pp_OQFiQbxtkgN5i2B2WvOKTgA')"></div>
+<h2 class="font-title-lg text-title-lg mb-stack-sm flex items-center gap-2 relative z-10">
+<span class="material-symbols-outlined text-tertiary-container">smart_toy</span>
+                    Bring-Your-Own-LLM
+                </h2>
+<p class="text-on-surface-variant font-body-md text-body-md mb-stack-md relative z-10">Power your dynamic interceptions and coaching with your preferred AI provider.</p>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter relative z-10 mb-stack-md">
+<!-- OpenAI Chip -->
+<label class="cursor-pointer">
+<input checked="" class="peer sr-only" name="llm_provider" type="radio"/>
+<div class="flex items-center gap-2 p-3 rounded-lg border border-outline-variant bg-surface peer-checked:border-productive-blue peer-checked:ring-1 peer-checked:ring-productive-blue transition-all">
+<span class="material-symbols-outlined text-on-surface">code</span>
+<span class="font-label-md text-label-md">OpenAI (GPT-4)</span>
+</div>
+</label>
+<!-- Gemini Chip -->
+<label class="cursor-pointer">
+<input class="peer sr-only" name="llm_provider" type="radio"/>
+<div class="flex items-center gap-2 p-3 rounded-lg border border-outline-variant bg-surface peer-checked:border-productive-blue peer-checked:ring-1 peer-checked:ring-productive-blue transition-all">
+<span class="material-symbols-outlined text-on-surface">auto_awesome</span>
+<span class="font-label-md text-label-md">Google Gemini</span>
+</div>
+</label>
+<!-- Claude Chip -->
+<label class="cursor-pointer">
+<input class="peer sr-only" name="llm_provider" type="radio"/>
+<div class="flex items-center gap-2 p-3 rounded-lg border border-outline-variant bg-surface peer-checked:border-productive-blue peer-checked:ring-1 peer-checked:ring-productive-blue transition-all">
+<span class="material-symbols-outlined text-on-surface">psychology</span>
+<span class="font-label-md text-label-md">Anthropic Claude</span>
+</div>
+</label>
+</div>
+<div class="relative z-10">
+<label class="font-body-md text-body-md block mb-1">API Key</label>
+<div class="relative">
+<input class="w-full bg-surface border border-outline rounded-lg px-3 py-2 text-on-surface focus:outline-none focus:border-productive-blue focus:ring-1 focus:ring-productive-blue pr-10" placeholder="sk-..." type="password"/>
+<button class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined text-sm">visibility</span>
+</button>
+</div>
+<p class="text-xs text-on-surface-variant mt-1">Your key is stored locally and never sent to our servers.</p>
+</div>
+<div class="mt-stack-md flex justify-end relative z-10">
+<button class="bg-productive-blue text-white px-6 py-2 rounded-lg font-label-md text-label-md hover:bg-primary-container hover:text-on-primary-container transition-colors">
+                        Save Configurations
+                    </button>
+</div>
+</section>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="md:hidden bg-surface-container dark:bg-surface-container text-primary dark:text-primary font-label-md text-label-md font-headline-md text-headline-md font-bold text-productive-blue fixed bottom-0 w-full rounded-t-xl bg-surface-container dark:bg-surface-container shadow-md scale-95 active:scale-90 transition-transform duration-150 fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-20 px-4 pb-safe">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span>Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface" href="#">
+<span class="material-symbols-outlined" data-icon="target">target</span>
+<span>Goals</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface" href="#">
+<span class="material-symbols-outlined" data-icon="insights">insights</span>
+<span>Analytics</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-5 py-1 hover:text-on-surface" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+</body></html>

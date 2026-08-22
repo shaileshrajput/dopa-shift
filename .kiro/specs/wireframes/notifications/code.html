@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DopaShift - Notifications</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&amp;family=Hanken+Grotesk:wght@500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-container": "#0066ff",
+                        "surface-variant": "#2d3449",
+                        "inverse-surface": "#dae2fd",
+                        "surface-container-highest": "#2d3449",
+                        "surface-bright": "#31394d",
+                        "surface-tint": "#b3c5ff",
+                        "intercept-overlay": "rgba(15, 23, 42, 0.95)",
+                        "tertiary-container": "#8252ec",
+                        "on-primary-container": "#f8f7ff",
+                        "primary": "#b3c5ff",
+                        "surface-container-high": "#222a3d",
+                        "on-background": "#dae2fd",
+                        "focus-indigo": "#6366F1",
+                        "surface-container": "#171f33",
+                        "on-primary-fixed-variant": "#003fa4",
+                        "surface": "#0b1326",
+                        "on-tertiary-fixed": "#23005c",
+                        "on-secondary-fixed": "#00201c",
+                        "momentum-teal": "#2DD4BF",
+                        "error": "#ffb4ab",
+                        "on-error": "#690005",
+                        "primary-fixed": "#dae1ff",
+                        "surface-container-lowest": "#060e20",
+                        "secondary-fixed-dim": "#3cddc7",
+                        "background": "#0b1326",
+                        "success-green": "#10B981",
+                        "inverse-primary": "#0054d6",
+                        "on-secondary-fixed-variant": "#005047",
+                        "warning-amber": "#F59E0B",
+                        "on-primary-fixed": "#001849",
+                        "error-container": "#93000a",
+                        "productive-blue": "#0066FF",
+                        "outline-variant": "#424656",
+                        "tertiary-fixed-dim": "#d0bcff",
+                        "primary-fixed-dim": "#b3c5ff",
+                        "error-rose": "#E11D48",
+                        "tertiary": "#d0bcff",
+                        "inverse-on-surface": "#283044",
+                        "on-surface-variant": "#c2c6d8",
+                        "on-error-container": "#ffdad6",
+                        "tertiary-fixed": "#e9ddff",
+                        "on-secondary-container": "#004d44",
+                        "on-primary": "#002b75",
+                        "surface-container-low": "#131b2e",
+                        "on-surface": "#dae2fd",
+                        "secondary": "#44e2cd",
+                        "on-tertiary-fixed-variant": "#5516be",
+                        "on-tertiary-container": "#fdf6ff",
+                        "on-tertiary": "#3c0091",
+                        "outline": "#8c90a1",
+                        "on-secondary": "#003731",
+                        "secondary-fixed": "#62fae3",
+                        "secondary-container": "#03c6b2",
+                        "surface-dim": "#0b1326"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "stack-lg": "48px",
+                        "stack-md": "24px",
+                        "grid-margin": "24px",
+                        "gutter": "16px",
+                        "compact": "4px",
+                        "stack-sm": "12px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter", "sans-serif"],
+                        "headline-md": ["Hanken Grotesk", "sans-serif"],
+                        "title-lg": ["Hanken Grotesk", "sans-serif"],
+                        "label-strikethrough": ["Inter", "sans-serif"],
+                        "label-md": ["JetBrains Mono", "monospace"],
+                        "display-lg": ["Hanken Grotesk", "sans-serif"],
+                        "headline-lg": ["Hanken Grotesk", "sans-serif"],
+                        "body-lg": ["Inter", "sans-serif"],
+                        "headline-lg-mobile": ["Hanken Grotesk", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-md": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "title-lg": ["22px", { "lineHeight": "28px", "fontWeight": "500" }],
+                        "label-strikethrough": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500" }],
+                        "display-lg": ["57px", { "lineHeight": "64px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "34px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+          font-family: 'Material Symbols Outlined';
+          font-weight: normal;
+          font-style: normal;
+          font-size: 24px;
+          line-height: 1;
+          letter-spacing: normal;
+          text-transform: none;
+          display: inline-block;
+          white-space: nowrap;
+          word-wrap: normal;
+          direction: ltr;
+          font-feature-settings: 'liga';
+          -webkit-font-feature-settings: 'liga';
+          -webkit-font-smoothing: antialiased;
+        }
+        body {
+            background-color: #0b1326;
+            color: #dae2fd;
+        }
+        
+        /* Glassmorphism utility for unread items */
+        .glass-unread {
+            background: rgba(0, 102, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-left: 2px solid #0066FF;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md text-body-md antialiased pb-24">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky bg-surface dark:bg-surface flex justify-between items-center px-grid-margin py-stack-sm w-full z-40">
+<button aria-label="Go back" class="text-primary dark:text-primary active:scale-95 transition-transform duration-150 p-2 -ml-2 rounded-full hover:bg-surface-container-high dark:hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary tracking-tight">Notifications</h1>
+<button class="text-primary dark:text-primary font-label-md text-label-md active:scale-95 transition-transform duration-150 p-2 -mr-2 rounded-md hover:bg-surface-container-high dark:hover:bg-surface-container-high transition-colors">
+            Mark all as read
+        </button>
+</header>
+<!-- Main Content -->
+<main class="px-grid-margin py-stack-md max-w-4xl mx-auto space-y-stack-lg">
+<!-- Today Group -->
+<section class="space-y-stack-sm">
+<h2 class="font-title-lg text-title-lg text-on-surface-variant">Today</h2>
+<div class="space-y-compact flex flex-col">
+<!-- Notification: Goal Escalation (Unread) -->
+<article class="glass-unread rounded-lg p-4 flex gap-4 items-start relative overflow-hidden group cursor-pointer transition-colors hover:bg-surface-container-high">
+<div class="absolute top-4 right-4 w-2 h-2 rounded-full bg-productive-blue"></div>
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-error-container flex items-center justify-center">
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">priority_high</span>
+</div>
+<div class="flex-grow flex flex-col gap-1 pr-6">
+<div class="flex justify-between items-baseline w-full">
+<span class="font-label-md text-label-md text-error font-semibold">Goal Escalation</span>
+<span class="font-label-md text-label-md text-on-surface-variant opacity-70">10m ago</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface">Deep Work Mastery is at risk! You haven't logged focus time in 4 hours.</p>
+</div>
+<div class="flex-shrink-0 text-on-surface-variant self-center opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined">chevron_right</span>
+</div>
+</article>
+<!-- Notification: Daily Task Reminder (Unread) -->
+<article class="glass-unread rounded-lg p-4 flex gap-4 items-start relative overflow-hidden group cursor-pointer transition-colors hover:bg-surface-container-high">
+<div class="absolute top-4 right-4 w-2 h-2 rounded-full bg-productive-blue"></div>
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-primary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">schedule</span>
+</div>
+<div class="flex-grow flex flex-col gap-1 pr-6">
+<div class="flex justify-between items-baseline w-full">
+<span class="font-label-md text-label-md text-primary font-semibold">Daily Task Reminder</span>
+<span class="font-label-md text-label-md text-on-surface-variant opacity-70">1h ago</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface">Review Q3 Analytics Report is due in 30 minutes.</p>
+</div>
+<div class="flex-shrink-0 text-on-surface-variant self-center opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined">chevron_right</span>
+</div>
+</article>
+</div>
+</section>
+<!-- Yesterday Group -->
+<section class="space-y-stack-sm">
+<h2 class="font-title-lg text-title-lg text-on-surface-variant">Yesterday</h2>
+<div class="space-y-compact flex flex-col">
+<!-- Notification: Habit Nudge (Read) -->
+<article class="bg-surface-container-low rounded-lg p-4 flex gap-4 items-start border border-outline-variant/30 group cursor-pointer transition-colors hover:bg-surface-container-high">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-secondary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">self_improvement</span>
+</div>
+<div class="flex-grow flex flex-col gap-1 pr-6 opacity-70 group-hover:opacity-100 transition-opacity">
+<div class="flex justify-between items-baseline w-full">
+<span class="font-label-md text-label-md text-secondary font-semibold">Habit Nudge</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Yesterday, 8:00 AM</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">Don't forget your 10m morning focus meditation.</p>
+</div>
+<div class="flex-shrink-0 text-on-surface-variant self-center opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined">chevron_right</span>
+</div>
+</article>
+<!-- Notification: System Alert (Read) -->
+<article class="bg-surface-container-low rounded-lg p-4 flex gap-4 items-start border border-outline-variant/30 group cursor-pointer transition-colors hover:bg-surface-container-high">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-tertiary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary">block</span>
+</div>
+<div class="flex-grow flex flex-col gap-1 pr-6 opacity-70 group-hover:opacity-100 transition-opacity">
+<div class="flex justify-between items-baseline w-full">
+<span class="font-label-md text-label-md text-tertiary font-semibold">System Alert</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Yesterday, 2:30 PM</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">Intercept allowance is 90% depleted.</p>
+</div>
+<div class="flex-shrink-0 text-on-surface-variant self-center opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined">chevron_right</span>
+</div>
+</article>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 rounded-t-xl bg-surface-container-low dark:bg-surface-container-low shadow-md fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 border-t border-outline-variant/20">
+<button aria-label="Focus" class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant p-2 hover:text-primary dark:hover:text-primary active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined mb-1">timer</span>
+<span class="font-label-md text-label-md">Focus</span>
+</button>
+<button aria-label="Goals" class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant p-2 hover:text-primary dark:hover:text-primary active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined mb-1">track_changes</span>
+<span class="font-label-md text-label-md">Goals</span>
+</button>
+<button aria-label="Tasks" class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant p-2 hover:text-primary dark:hover:text-primary active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined mb-1">checklist</span>
+<span class="font-label-md text-label-md">Tasks</span>
+</button>
+<!-- Settings is not active because this is Notifications, but we are in a sub-flow. Wait, Notifications is often a top level or accessed from settings. We'll leave all inactive as per rules if none match, but none match perfectly. -->
+<button aria-label="Settings" class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant p-2 hover:text-primary dark:hover:text-primary active:scale-90 transition-all duration-200">
+<span class="material-symbols-outlined mb-1">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</button>
+</nav>
+</body></html>

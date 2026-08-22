@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DopaShift - Analytics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-error": "#690005",
+                      "on-error-container": "#ffdad6",
+                      "productive-blue": "#0066FF",
+                      "on-secondary-fixed-variant": "#005047",
+                      "on-secondary-fixed": "#00201c",
+                      "surface-container-high": "#222a3d",
+                      "primary-fixed": "#dae1ff",
+                      "on-primary-fixed": "#001849",
+                      "on-background": "#dae2fd",
+                      "on-surface-variant": "#c2c6d8",
+                      "surface-container-highest": "#2d3449",
+                      "on-primary-fixed-variant": "#003fa4",
+                      "error-container": "#93000a",
+                      "intercept-overlay": "rgba(15, 23, 42, 0.95)",
+                      "surface": "#0b1326",
+                      "on-secondary": "#003731",
+                      "surface-bright": "#31394d",
+                      "inverse-on-surface": "#283044",
+                      "on-primary-container": "#f8f7ff",
+                      "on-secondary-container": "#004d44",
+                      "on-surface": "#dae2fd",
+                      "on-tertiary-fixed-variant": "#5516be",
+                      "surface-tint": "#b3c5ff",
+                      "primary": "#b3c5ff",
+                      "surface-container-low": "#131b2e",
+                      "error-rose": "#E11D48",
+                      "tertiary": "#d0bcff",
+                      "success-green": "#10B981",
+                      "tertiary-fixed": "#e9ddff",
+                      "background": "#0b1326",
+                      "surface-dim": "#0b1326",
+                      "secondary-container": "#03c6b2",
+                      "on-primary": "#002b75",
+                      "primary-fixed-dim": "#b3c5ff",
+                      "surface-container": "#171f33",
+                      "focus-indigo": "#6366F1",
+                      "secondary": "#44e2cd",
+                      "momentum-teal": "#2DD4BF",
+                      "surface-variant": "#2d3449",
+                      "inverse-surface": "#dae2fd",
+                      "surface-container-lowest": "#060e20",
+                      "inverse-primary": "#0054d6",
+                      "outline": "#8c90a1",
+                      "warning-amber": "#F59E0B",
+                      "error": "#ffb4ab",
+                      "on-tertiary-container": "#fdf6ff",
+                      "on-tertiary-fixed": "#23005c",
+                      "on-tertiary": "#3c0091",
+                      "tertiary-fixed-dim": "#d0bcff",
+                      "secondary-fixed": "#62fae3",
+                      "primary-container": "#0066ff",
+                      "outline-variant": "#424656",
+                      "tertiary-container": "#8252ec",
+                      "secondary-fixed-dim": "#3cddc7"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "stack-sm": "12px",
+                      "base": "8px",
+                      "compact": "4px",
+                      "grid-margin": "24px",
+                      "stack-lg": "48px",
+                      "stack-md": "24px",
+                      "gutter": "16px"
+              },
+              "fontFamily": {
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "label-strikethrough": [
+                              "Inter"
+                      ],
+                      "title-lg": [
+                              "Hanken Grotesk"
+                      ],
+                      "headline-md": [
+                              "Hanken Grotesk"
+                      ],
+                      "headline-lg-mobile": [
+                              "Hanken Grotesk"
+                      ],
+                      "headline-lg": [
+                              "Hanken Grotesk"
+                      ],
+                      "display-lg": [
+                              "Hanken Grotesk"
+                      ],
+                      "label-md": [
+                              "JetBrains Mono"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-strikethrough": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "title-lg": [
+                              "22px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-md": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "34px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg": [
+                              "57px",
+                              {
+                                      "lineHeight": "64px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-md": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.5px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .chart-bar-hover:hover {
+            opacity: 0.8;
+            transform: scaleY(1.05);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen font-body-md selection:bg-productive-blue selection:text-white">
+<!-- TopAppBar (Web) -->
+<header class="hidden md:flex justify-between items-center w-full px-grid-margin h-16 bg-surface text-productive-blue font-title-lg docked full-width top-0 z-40 sticky">
+<div class="flex items-center gap-base">
+<span class="material-symbols-outlined" data-icon="bubble_chart">bubble_chart</span>
+<span class="font-headline-lg text-headline-lg font-bold text-productive-blue">DopaShift</span>
+</div>
+<nav class="flex gap-grid-margin">
+<a class="text-on-surface-variant hover:bg-surface-container-high transition-colors px-4 py-2 rounded-lg font-body-lg text-body-lg" href="#">Home</a>
+<a class="text-on-surface-variant hover:bg-surface-container-high transition-colors px-4 py-2 rounded-lg font-body-lg text-body-lg" href="#">Goals</a>
+<a class="text-productive-blue hover:bg-surface-container-high transition-colors px-4 py-2 rounded-lg font-body-lg text-body-lg bg-surface-container-low font-bold" href="#">Analytics</a>
+<a class="text-on-surface-variant hover:bg-surface-container-high transition-colors px-4 py-2 rounded-lg font-body-lg text-body-lg" href="#">Settings</a>
+</nav>
+<div class="flex items-center">
+<div class="w-8 h-8 rounded-full bg-surface-variant overflow-hidden border border-outline">
+<img alt="User profile avatar" class="w-full h-full object-cover" data-alt="A small, circular profile picture placeholder for a user avatar in a modern, dark mode UI. The aesthetic is clean, professional, and slightly futuristic, utilizing subtle gradients of deep indigo and soft teal. The overall vibe is calm and focused." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeuGm5YDLM-ED-O6aSglHBdJiGpchiycpcP44H_0K2I2fRLscQB_r7JjZS0GR8qRk1n6ibaDJNFC984YBesjJvCUvDcxsykCuR0oEOSk_Lvea-ChBQXUi8KeJWLfk_emGUlL7LRFkXXqSbcmMh516CC5FbgYKlFMzur1p98hiFcIN2gqCz7rCsZZz-Kl5SJgIg9svtyWpVit4vcmo9BkiyNKMGkMrcJgWAIG5gWxHLfTQwSBGoFOSkVQ"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="container mx-auto px-4 md:px-grid-margin py-stack-md md:py-stack-lg pb-32 md:pb-stack-lg flex flex-col gap-stack-lg">
+<!-- Header Section -->
+<section class="flex flex-col gap-compact">
+<h1 class="font-display-lg text-display-lg md:font-display-lg text-productive-blue">Analytics &amp; Auditing</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Review your historical efficiency and focus momentum.</p>
+</section>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Streak Stats (Spans 4 cols on web) -->
+<div class="md:col-span-4 bg-surface-container rounded-xl p-grid-margin flex flex-col justify-between border border-outline-variant/30">
+<div class="flex items-center gap-base mb-stack-sm text-momentum-teal">
+<span class="material-symbols-outlined" data-icon="local_fire_department" data-weight="fill" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+<h2 class="font-title-lg text-title-lg text-on-surface">Focus Streak</h2>
+</div>
+<div class="flex flex-col items-center justify-center py-stack-md">
+<span class="font-display-lg text-display-lg text-momentum-teal">14</span>
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest mt-compact">Days Active</span>
+</div>
+<div class="flex justify-between items-center mt-auto pt-stack-sm border-t border-outline-variant/30">
+<div class="text-center">
+<span class="block font-body-md text-body-md text-on-surface-variant">Current</span>
+<span class="block font-title-lg text-title-lg text-on-surface">14</span>
+</div>
+<div class="text-center">
+<span class="block font-body-md text-body-md text-on-surface-variant">Best</span>
+<span class="block font-title-lg text-title-lg text-on-surface">28</span>
+</div>
+</div>
+</div>
+<!-- Productive vs Distracting Time (Line Graph) (Spans 8 cols on web) -->
+<div class="md:col-span-8 bg-surface-container rounded-xl p-grid-margin border border-outline-variant/30 relative overflow-hidden group">
+<div class="flex justify-between items-center mb-stack-md">
+<h2 class="font-title-lg text-title-lg text-on-surface">Efficiency Trend</h2>
+<div class="flex gap-base font-label-md text-label-md">
+<span class="flex items-center gap-compact text-productive-blue"><span class="w-3 h-3 rounded-full bg-productive-blue inline-block"></span> Productive</span>
+<span class="flex items-center gap-compact text-error-rose"><span class="w-3 h-3 rounded-full bg-error-rose inline-block"></span> Distracting</span>
+</div>
+</div>
+<!-- Simulated Line Graph Area -->
+<div class="h-48 w-full relative border-l border-b border-outline-variant flex items-end">
+<!-- Y Axis Labels -->
+<div class="absolute -left-8 top-0 bottom-0 flex flex-col justify-between font-label-md text-label-md text-on-surface-variant py-2">
+<span>8h</span>
+<span>4h</span>
+<span>0h</span>
+</div>
+<!-- X Axis Labels -->
+<div class="absolute -bottom-8 left-0 right-0 flex justify-between font-label-md text-label-md text-on-surface-variant px-2">
+<span>Mon</span>
+<span>Tue</span>
+<span>Wed</span>
+<span>Thu</span>
+<span>Fri</span>
+<span>Sat</span>
+<span>Sun</span>
+</div>
+<!-- Chart Lines (Simulated with SVG for reliable rendering without external libs) -->
+<svg class="w-full h-full absolute inset-0 overflow-visible" preserveaspectratio="none" viewbox="0 0 100 100">
+<!-- Distracting Line (Red) -->
+<path class="opacity-60" d="M0 80 Q 15 70, 30 60 T 60 75 T 100 50" fill="none" stroke="#E11D48" stroke-width="2"></path>
+<!-- Productive Line (Blue) -->
+<path d="M0 40 Q 15 50, 30 30 T 60 20 T 100 10" fill="none" stroke="#0066FF" stroke-width="2"></path>
+<!-- Fill gradient for productive -->
+<path class="opacity-20" d="M0 40 Q 15 50, 30 30 T 60 20 T 100 10 L 100 100 L 0 100 Z" fill="url(#blue-grad)"></path>
+<defs>
+<lineargradient id="blue-grad" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#0066FF" stop-opacity="1"></stop>
+<stop offset="100%" stop-color="#0066FF" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+</svg>
+</div>
+</div>
+<!-- Historical Bar Chart (Spans 12 cols) -->
+<div class="md:col-span-12 bg-surface-container rounded-xl p-grid-margin border border-outline-variant/30">
+<div class="flex justify-between items-center mb-stack-lg">
+<h2 class="font-title-lg text-title-lg text-on-surface">Weekly Breakdown</h2>
+<button class="text-productive-blue hover:bg-surface-variant px-3 py-1 rounded-md transition-colors font-label-md text-label-md border border-outline-variant/50">This Week</button>
+</div>
+<div class="h-64 w-full flex items-end justify-between gap-2 px-2 border-b border-outline-variant pb-2 relative">
+<!-- Y Axis (Simulated) -->
+<div class="absolute -left-6 top-0 bottom-0 flex flex-col justify-between font-label-md text-label-md text-on-surface-variant py-2">
+<span>100%</span>
+<span>50%</span>
+</div>
+<!-- Bars -->
+<div class="w-full flex flex-col justify-end items-center h-full group relative">
+<div class="w-8 md:w-12 bg-productive-blue h-[60%] rounded-t-sm transition-all duration-300 chart-bar-hover relative">
+<div class="absolute bottom-full mb-2 bg-surface-container-highest px-2 py-1 rounded text-label-md opacity-0 group-hover:opacity-100 transition-opacity">60%</div>
+</div>
+<span class="absolute -bottom-8 font-label-md text-label-md text-on-surface-variant">Mon</span>
+</div>
+<div class="w-full flex flex-col justify-end items-center h-full group relative">
+<div class="w-8 md:w-12 bg-productive-blue h-[75%] rounded-t-sm transition-all duration-300 chart-bar-hover relative">
+<div class="absolute bottom-full mb-2 bg-surface-container-highest px-2 py-1 rounded text-label-md opacity-0 group-hover:opacity-100 transition-opacity">75%</div>
+</div>
+<span class="absolute -bottom-8 font-label-md text-label-md text-on-surface-variant">Tue</span>
+</div>
+<div class="w-full flex flex-col justify-end items-center h-full group relative">
+<div class="w-8 md:w-12 bg-error-rose h-[40%] rounded-t-sm transition-all duration-300 chart-bar-hover relative opacity-80">
+<div class="absolute bottom-full mb-2 bg-surface-container-highest px-2 py-1 rounded text-label-md opacity-0 group-hover:opacity-100 transition-opacity">40%</div>
+</div>
+<span class="absolute -bottom-8 font-label-md text-label-md text-on-surface-variant">Wed</span>
+</div>
+<div class="w-full flex flex-col justify-end items-center h-full group relative">
+<div class="w-8 md:w-12 bg-productive-blue h-[85%] rounded-t-sm transition-all duration-300 chart-bar-hover relative">
+<div class="absolute bottom-full mb-2 bg-surface-container-highest px-2 py-1 rounded text-label-md opacity-0 group-hover:opacity-100 transition-opacity">85%</div>
+</div>
+<span class="absolute -bottom-8 font-label-md text-label-md text-on-surface-variant">Thu</span>
+</div>
+<div class="w-full flex flex-col justify-end items-center h-full group relative">
+<div class="w-8 md:w-12 bg-productive-blue h-[90%] rounded-t-sm transition-all duration-300 chart-bar-hover relative">
+<div class="absolute bottom-full mb-2 bg-surface-container-highest px-2 py-1 rounded text-label-md opacity-0 group-hover:opacity-100 transition-opacity">90%</div>
+</div>
+<span class="absolute -bottom-8 font-label-md text-label-md text-on-surface-variant">Fri</span>
+</div>
+<div class="w-full flex flex-col justify-end items-center h-full group relative">
+<div class="w-8 md:w-12 bg-momentum-teal h-[100%] rounded-t-sm transition-all duration-300 chart-bar-hover relative shadow-[0_0_15px_rgba(45,212,191,0.5)]">
+<div class="absolute bottom-full mb-2 bg-surface-container-highest px-2 py-1 rounded text-label-md opacity-0 group-hover:opacity-100 transition-opacity">100%</div>
+</div>
+<span class="absolute -bottom-8 font-label-md text-label-md text-on-surface-variant font-bold text-momentum-teal">Sat</span>
+</div>
+<div class="w-full flex flex-col justify-end items-center h-full group relative">
+<div class="w-8 md:w-12 bg-surface-variant h-[20%] rounded-t-sm transition-all duration-300 chart-bar-hover relative border border-dashed border-outline">
+<div class="absolute bottom-full mb-2 bg-surface-container-highest px-2 py-1 rounded text-label-md opacity-0 group-hover:opacity-100 transition-opacity">--</div>
+</div>
+<span class="absolute -bottom-8 font-label-md text-label-md text-on-surface-variant">Sun</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 flex justify-around items-center px-4 py-3 h-20 bg-surface-container shadow-md rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-productive-blue active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-md text-label-md mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-productive-blue active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="target">target</span>
+<span class="font-label-md text-label-md mt-1">Goals</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-2xl px-5 py-1 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="leaderboard" data-weight="fill" style="font-variation-settings: 'FILL' 1;">leaderboard</span>
+<span class="font-label-md text-label-md mt-1">Analytics</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-productive-blue active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md mt-1">Settings</span>
+</a>
+</nav>
+</body></html>
