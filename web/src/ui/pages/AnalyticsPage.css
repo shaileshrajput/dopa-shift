@@ -1,0 +1,420 @@
+/* =============================================================
+   AnalyticsPage — efficiency charts, date range, score display
+   Uses DopaShift Kinetic design tokens exclusively.
+   ============================================================= */
+
+/* ─── Page Layout ───────────────────────────────────────────── */
+.analytics {
+  max-width: var(--grid-max-width);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.analytics__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+  flex-wrap: wrap;
+}
+
+.analytics__title {
+  font-family: var(--font-headline);
+  font-size: var(--text-headline-lg-size);
+  font-weight: var(--text-headline-lg-weight);
+  line-height: var(--text-headline-lg-line-height);
+  color: var(--color-on-surface);
+}
+
+/* ─── Date Range Selector ───────────────────────────────────── */
+.analytics__date-range {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  flex-wrap: wrap;
+}
+
+.analytics__range-btn {
+  background: var(--color-surface-container);
+  color: var(--color-on-surface-variant);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-default);
+  padding: var(--spacing-1) var(--spacing-2);
+  font-family: var(--font-body);
+  font-size: var(--text-body-md-size);
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+  min-height: var(--touch-target-min);
+}
+
+.analytics__range-btn:hover {
+  background: var(--color-surface-container-high);
+}
+
+.analytics__range-btn--active {
+  background: var(--color-accent);
+  color: var(--color-on-primary);
+  border-color: var(--color-accent);
+}
+
+.analytics__range-btn--active:hover {
+  opacity: 0.9;
+}
+
+/* ─── Custom Date Inputs ────────────────────────────────────── */
+.analytics__custom-range {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  margin-top: var(--spacing-1);
+}
+
+.analytics__date-input {
+  background: var(--color-surface-container);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-default);
+  padding: var(--spacing-1) var(--spacing-1-half);
+  font-family: var(--font-mono);
+  font-size: var(--text-body-md-size);
+  color: var(--color-on-surface);
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.analytics__date-input:focus {
+  border-color: var(--color-accent);
+}
+
+.analytics__date-separator {
+  font-family: var(--font-body);
+  font-size: var(--text-body-md-size);
+  color: var(--color-on-surface-variant);
+}
+
+/* ─── Today's Score Card ────────────────────────────────────── */
+.analytics__today-card {
+  background: var(--glass-bg-card);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-3);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.analytics__today-ring {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+}
+
+.analytics__today-ring-svg {
+  transform: rotate(-90deg);
+  width: 80px;
+  height: 80px;
+}
+
+.analytics__today-ring-track {
+  fill: none;
+  stroke: var(--color-surface-container-high);
+  stroke-width: 6;
+}
+
+.analytics__today-ring-fill {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 6;
+  stroke-linecap: round;
+  transition: stroke-dashoffset var(--transition-normal);
+}
+
+.analytics__today-ring-value {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: var(--text-title-lg-size);
+  font-weight: var(--text-title-lg-weight);
+  color: var(--color-on-surface);
+}
+
+.analytics__today-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-half);
+}
+
+.analytics__today-label {
+  font-family: var(--font-body);
+  font-size: var(--text-label-md-size);
+  font-weight: var(--text-label-md-weight);
+  letter-spacing: var(--text-label-md-letter-spacing);
+  color: var(--color-on-surface-variant);
+  text-transform: uppercase;
+}
+
+.analytics__today-score-text {
+  font-family: var(--font-headline);
+  font-size: var(--text-headline-md-size);
+  font-weight: var(--text-headline-md-weight);
+  color: var(--color-on-surface);
+}
+
+.analytics__today-subtitle {
+  font-family: var(--font-body);
+  font-size: var(--text-body-md-size);
+  color: var(--color-on-surface-variant);
+}
+
+/* ─── Chart Section ─────────────────────────────────────────── */
+.analytics__chart-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.analytics__section-title {
+  font-family: var(--font-headline);
+  font-size: var(--text-title-lg-size);
+  font-weight: var(--text-title-lg-weight);
+  line-height: var(--text-title-lg-line-height);
+  color: var(--color-on-surface);
+}
+
+/* ─── Bar Chart ─────────────────────────────────────────────── */
+.analytics__bar-chart {
+  background: var(--glass-bg-card);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-3);
+  overflow-x: auto;
+}
+
+.analytics__bar-chart-inner {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--spacing-half);
+  min-height: 200px;
+  padding-bottom: var(--spacing-3);
+  position: relative;
+}
+
+.analytics__bar-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-half);
+  flex: 1;
+  min-width: 24px;
+  max-width: 48px;
+}
+
+.analytics__bar {
+  width: 100%;
+  min-height: 4px;
+  background: var(--color-accent);
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  transition: height var(--transition-normal);
+  position: relative;
+}
+
+.analytics__bar--no-data {
+  background: var(--color-surface-container-high);
+  min-height: 4px;
+  height: 4px !important;
+}
+
+.analytics__bar-value {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-on-surface-variant);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.analytics__bar-date {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-on-surface-variant);
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* ─── Y-axis reference lines ───────────────────────────────── */
+.analytics__chart-y-axis {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: var(--spacing-3);
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.analytics__chart-y-line {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-half);
+}
+
+.analytics__chart-y-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-on-surface-variant);
+  width: 32px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.analytics__chart-y-rule {
+  flex: 1;
+  height: 1px;
+  background: var(--color-outline-variant);
+  opacity: 0.3;
+}
+
+/* ─── Summary Stats ─────────────────────────────────────────── */
+.analytics__summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-2);
+}
+
+.analytics__stat-card {
+  background: var(--glass-bg-card);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.analytics__stat-label {
+  font-family: var(--font-body);
+  font-size: var(--text-label-md-size);
+  font-weight: var(--text-label-md-weight);
+  letter-spacing: var(--text-label-md-letter-spacing);
+  color: var(--color-on-surface-variant);
+  text-transform: uppercase;
+}
+
+.analytics__stat-value {
+  font-family: var(--font-headline);
+  font-size: var(--text-headline-md-size);
+  font-weight: var(--text-headline-md-weight);
+  line-height: var(--text-headline-md-line-height);
+  color: var(--color-on-surface);
+}
+
+/* ─── Loading & States ──────────────────────────────────────── */
+.analytics__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-8);
+  font-family: var(--font-body);
+  font-size: var(--text-body-lg-size);
+  color: var(--color-on-surface-variant);
+}
+
+.analytics__error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-4);
+  text-align: center;
+}
+
+.analytics__error-text {
+  font-family: var(--font-body);
+  font-size: var(--text-body-md-size);
+  color: var(--color-on-surface-variant);
+}
+
+.analytics__offline-notice {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  padding: var(--spacing-1) var(--spacing-2);
+  background: var(--color-surface-container);
+  border-radius: var(--radius-default);
+  font-family: var(--font-body);
+  font-size: var(--text-body-md-size);
+  color: var(--color-warning);
+}
+
+/* ─── Pagination ────────────────────────────────────────────── */
+.analytics__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+}
+
+.analytics__page-btn {
+  background: var(--color-surface-container);
+  color: var(--color-on-surface-variant);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-default);
+  padding: var(--spacing-1) var(--spacing-2);
+  font-family: var(--font-body);
+  font-size: var(--text-body-md-size);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  min-height: var(--touch-target-min);
+}
+
+.analytics__page-btn:hover:not(:disabled) {
+  background: var(--color-surface-container-high);
+}
+
+.analytics__page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.analytics__page-info {
+  font-family: var(--font-mono);
+  font-size: var(--text-body-md-size);
+  color: var(--color-on-surface-variant);
+}
+
+/* ─── No Data Indicator ─────────────────────────────────────── */
+.analytics__no-data {
+  font-family: var(--font-body);
+  font-size: var(--text-body-md-size);
+  color: var(--color-on-surface-variant);
+  padding: var(--spacing-2);
+  text-align: center;
+}
+
+/* ─── Responsive ────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .analytics__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .analytics__summary {
+    grid-template-columns: 1fr;
+  }
+
+  .analytics__bar-wrapper {
+    min-width: 16px;
+  }
+}

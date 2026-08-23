@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <springProperty scope="context" name="SERVICE_NAME" source="spring.application.name" defaultValue="dopashift-api"/>
+
+    <!-- Sensitive data masking converter -->
+    <conversionRule conversionWord="maskedMsg"
+                    converterClass="com.dopashift.api.logging.SensitiveDataMaskingConverter"/>
+
+    <!-- Console appender for development (human-readable) -->
+    <springProfile name="dev,local,default">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} [%X{correlationId:-}] - %maskedMsg%n</pattern>
+            </encoder>
+        </appender>
+
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <!-- JSON appender for production -->
+    <springProfile name="prod,staging">
+        <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                <includeCallerData>false</includeCallerData>
+                <timestampPattern>yyyy-MM-dd'T'HH:mm:ss.SSS'Z'</timestampPattern>
+                <timeZone>UTC</timeZone>
+
+                <!-- Custom field names -->
+                <fieldNames>
+                    <timestamp>timestamp</timestamp>
+                    <level>level</level>
+                    <logger>logger</logger>
+                    <thread>thread</thread>
+                    <message>message</message>
+                    <stackTrace>stackTrace</stackTrace>
+                </fieldNames>
+
+                <!-- Static fields -->
+                <customFields>{"service":"${SERVICE_NAME}"}</customFields>
+
+                <!-- Include MDC fields (correlationId, userId, eventType) -->
+                <includeMdcKeyName>correlationId</includeMdcKeyName>
+                <includeMdcKeyName>userId</includeMdcKeyName>
+                <includeMdcKeyName>eventType</includeMdcKeyName>
+                <includeMdcKeyName>traceId</includeMdcKeyName>
+                <includeMdcKeyName>spanId</includeMdcKeyName>
+
+                <!-- Apply sensitive data masking -->
+                <jsonGeneratorDecorator class="com.dopashift.api.logging.SensitiveDataMaskingJsonDecorator"/>
+            </encoder>
+        </appender>
+
+        <root level="INFO">
+            <appender-ref ref="JSON_CONSOLE"/>
+        </root>
+    </springProfile>
+
+</configuration>

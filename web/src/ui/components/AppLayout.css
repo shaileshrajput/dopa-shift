@@ -1,0 +1,15 @@
+/* =============================================================
+   AppLayout — main application shell with persistent drawer
+   ============================================================= */
+
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.app-layout__content {
+  margin-left: 256px; /* matches nav-drawer width */
+  flex: 1;
+  padding: var(--spacing-4);
+  width: calc(100% - 256px);
+}

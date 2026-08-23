@@ -1,0 +1,356 @@
+/* =============================================================
+   DopaShift Kinetic — Design Tokens
+   =============================================================
+   Color palette, typography scale, spacing rhythm, elevation,
+   glassmorphism effects, and accent color custom properties.
+   
+   Usage:
+     - Dark theme (default): applied on :root
+     - Light theme: applied via [data-theme="light"] on <html>
+     - Accent color: set --color-accent dynamically via JS
+   ============================================================= */
+
+/* ----- Google Fonts ----- */
+@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* =============================================================
+   DARK THEME (default)
+   ============================================================= */
+:root {
+  /* --- Brand Colors --- */
+  --color-productive-blue: #0066FF;
+  --color-momentum-teal: #2DD4BF;
+  --color-focus-indigo: #6366F1;
+
+  /* --- Semantic Colors --- */
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-error: #E11D48;
+
+  /* --- Accent Color (overridable per-user) --- */
+  --color-accent: #0066FF;
+
+  /* --- M3 Surface System (Dark) --- */
+  --color-background: #0b1326;
+  --color-surface: #0b1326;
+  --color-surface-dim: #0b1326;
+  --color-surface-bright: #31394d;
+  --color-surface-container-lowest: #060e20;
+  --color-surface-container-low: #131b2e;
+  --color-surface-container: #171f33;
+  --color-surface-container-high: #222a3d;
+  --color-surface-container-highest: #2d3449;
+  --color-surface-variant: #2d3449;
+
+  /* --- On-Surface (Text) --- */
+  --color-on-surface: #dae2fd;
+  --color-on-surface-variant: #c2c6d8;
+  --color-inverse-surface: #dae2fd;
+  --color-inverse-on-surface: #283044;
+
+  /* --- Outline --- */
+  --color-outline: #8c90a1;
+  --color-outline-variant: #424656;
+
+  /* --- Primary --- */
+  --color-primary: #b3c5ff;
+  --color-on-primary: #002b75;
+  --color-primary-container: #0066ff;
+  --color-on-primary-container: #f8f7ff;
+  --color-inverse-primary: #0054d6;
+  --color-surface-tint: #b3c5ff;
+
+  /* --- Secondary --- */
+  --color-secondary: #44e2cd;
+  --color-on-secondary: #003731;
+  --color-secondary-container: #03c6b2;
+  --color-on-secondary-container: #004d44;
+
+  /* --- Tertiary --- */
+  --color-tertiary: #d0bcff;
+  --color-on-tertiary: #3c0091;
+  --color-tertiary-container: #8252ec;
+  --color-on-tertiary-container: #fdf6ff;
+
+  /* --- Error --- */
+  --color-error-surface: #ffb4ab;
+  --color-on-error: #690005;
+  --color-error-container: #93000a;
+  --color-on-error-container: #ffdad6;
+
+  /* --- Fixed Colors (tone-invariant) --- */
+  --color-primary-fixed: #dae1ff;
+  --color-primary-fixed-dim: #b3c5ff;
+  --color-on-primary-fixed: #001849;
+  --color-on-primary-fixed-variant: #003fa4;
+  --color-secondary-fixed: #62fae3;
+  --color-secondary-fixed-dim: #3cddc7;
+  --color-on-secondary-fixed: #00201c;
+  --color-on-secondary-fixed-variant: #005047;
+  --color-tertiary-fixed: #e9ddff;
+  --color-tertiary-fixed-dim: #d0bcff;
+  --color-on-tertiary-fixed: #23005c;
+  --color-on-tertiary-fixed-variant: #5516be;
+
+  /* --- Intercept Overlay --- */
+  --color-intercept-overlay: rgba(15, 23, 42, 0.95);
+
+  /* =============================================================
+     TYPOGRAPHY
+     ============================================================= */
+  --font-headline: 'Hanken Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Display Large */
+  --text-display-lg-size: 57px;
+  --text-display-lg-weight: 700;
+  --text-display-lg-line-height: 64px;
+  --text-display-lg-letter-spacing: -0.02em;
+
+  /* Headline Large */
+  --text-headline-lg-size: 32px;
+  --text-headline-lg-weight: 600;
+  --text-headline-lg-line-height: 40px;
+
+  /* Headline Medium */
+  --text-headline-md-size: 28px;
+  --text-headline-md-weight: 600;
+  --text-headline-md-line-height: 36px;
+
+  /* Title Large */
+  --text-title-lg-size: 22px;
+  --text-title-lg-weight: 500;
+  --text-title-lg-line-height: 28px;
+
+  /* Body Large */
+  --text-body-lg-size: 16px;
+  --text-body-lg-weight: 400;
+  --text-body-lg-line-height: 24px;
+
+  /* Body Medium */
+  --text-body-md-size: 14px;
+  --text-body-md-weight: 400;
+  --text-body-md-line-height: 20px;
+
+  /* Label Medium (monospace) */
+  --text-label-md-size: 12px;
+  --text-label-md-weight: 500;
+  --text-label-md-line-height: 16px;
+  --text-label-md-letter-spacing: 0.5px;
+
+  /* Headline Large (Mobile) */
+  --text-headline-lg-mobile-size: 28px;
+  --text-headline-lg-mobile-weight: 600;
+  --text-headline-lg-mobile-line-height: 34px;
+
+  /* =============================================================
+     SPACING (8px rhythm)
+     ============================================================= */
+  --spacing-0: 0px;
+  --spacing-half: 4px;
+  --spacing-1: 8px;
+  --spacing-1-half: 12px;
+  --spacing-2: 16px;
+  --spacing-3: 24px;
+  --spacing-4: 32px;
+  --spacing-5: 40px;
+  --spacing-6: 48px;
+  --spacing-7: 56px;
+  --spacing-8: 64px;
+  --spacing-9: 72px;
+  --spacing-10: 80px;
+  --spacing-12: 96px;
+  --spacing-16: 128px;
+
+  /* Named spacing from design system */
+  --spacing-compact: 4px;
+  --spacing-stack-sm: 12px;
+  --spacing-stack-md: 24px;
+  --spacing-stack-lg: 48px;
+  --spacing-grid-margin: 24px;
+  --spacing-gutter: 16px;
+
+  /* =============================================================
+     BORDER RADIUS (Shapes)
+     ============================================================= */
+  --radius-sm: 0.25rem;   /* 4px */
+  --radius-default: 0.5rem; /* 8px — buttons, checkboxes */
+  --radius-md: 0.75rem;   /* 12px */
+  --radius-lg: 1rem;      /* 16px — cards, containers */
+  --radius-xl: 1.5rem;    /* 24px — chips */
+  --radius-full: 9999px;  /* pill */
+
+  /* =============================================================
+     ELEVATION & SHADOWS
+     ============================================================= */
+  --shadow-level-1: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px -1px rgba(0, 0, 0, 0.3);
+  --shadow-level-2: 0 4px 6px -1px rgba(0, 102, 255, 0.15), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --shadow-level-3: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+
+  /* =============================================================
+     GLASSMORPHISM
+     ============================================================= */
+  --glass-blur: 20px;
+  --glass-bg-overlay: rgba(15, 23, 42, 0.95);
+  --glass-bg-card: rgba(23, 31, 51, 0.75);
+  --glass-bg-elevated: rgba(34, 42, 61, 0.6);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+
+  /* =============================================================
+     TRANSITIONS
+     ============================================================= */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow: 350ms ease;
+
+  /* =============================================================
+     Z-INDEX LAYERS
+     ============================================================= */
+  --z-base: 0;
+  --z-card: 10;
+  --z-sticky: 100;
+  --z-drawer: 200;
+  --z-modal: 300;
+  --z-overlay: 400;
+  --z-toast: 500;
+
+  /* =============================================================
+     LAYOUT
+     ============================================================= */
+  --grid-columns: 12;
+  --grid-max-width: 1280px;
+  --touch-target-min: 56px;
+}
+
+/* =============================================================
+   LIGHT THEME
+   ============================================================= */
+[data-theme="light"] {
+  /* --- Surface System (Light) --- */
+  --color-background: #f8fafc;
+  --color-surface: #ffffff;
+  --color-surface-dim: #dde0e6;
+  --color-surface-bright: #f8fafc;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f1f4f9;
+  --color-surface-container: #ebeef4;
+  --color-surface-container-high: #e5e8ef;
+  --color-surface-container-highest: #dfe2ea;
+  --color-surface-variant: #e1e4ec;
+
+  /* --- On-Surface (Text) --- */
+  --color-on-surface: #1a1c25;
+  --color-on-surface-variant: #44474f;
+  --color-inverse-surface: #2f3140;
+  --color-inverse-on-surface: #f0f0f7;
+
+  /* --- Outline --- */
+  --color-outline: #74777f;
+  --color-outline-variant: #c4c6d0;
+
+  /* --- Primary --- */
+  --color-primary: #0054d6;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #dae1ff;
+  --color-on-primary-container: #001849;
+  --color-inverse-primary: #b3c5ff;
+  --color-surface-tint: #0054d6;
+
+  /* --- Secondary --- */
+  --color-secondary: #006b5f;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #62fae3;
+  --color-on-secondary-container: #00201c;
+
+  /* --- Tertiary --- */
+  --color-tertiary: #6b35d8;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #e9ddff;
+  --color-on-tertiary-container: #23005c;
+
+  /* --- Error --- */
+  --color-error-surface: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #410002;
+
+  /* --- Intercept Overlay (Light) --- */
+  --color-intercept-overlay: rgba(248, 250, 252, 0.95);
+
+  /* --- Shadows (lighter for light mode) --- */
+  --shadow-level-1: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --shadow-level-2: 0 4px 6px -1px rgba(0, 102, 255, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-level-3: 0 10px 15px -3px rgba(0, 0, 0, 0.15), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+
+  /* --- Glassmorphism (Light) --- */
+  --glass-bg-overlay: rgba(248, 250, 252, 0.95);
+  --glass-bg-card: rgba(255, 255, 255, 0.75);
+  --glass-bg-elevated: rgba(241, 244, 249, 0.6);
+  --glass-border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* =============================================================
+   UTILITY CLASSES
+   ============================================================= */
+
+/* --- Glassmorphism Effect: Overlay --- */
+.glass-overlay {
+  background: var(--glass-bg-overlay);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+}
+
+/* --- Glassmorphism Effect: Card --- */
+.glass-card {
+  background: var(--glass-bg-card);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: var(--glass-border);
+  border-radius: var(--radius-lg);
+}
+
+/* --- Glassmorphism Effect: Elevated Panel --- */
+.glass-elevated {
+  background: var(--glass-bg-elevated);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-level-2);
+}
+
+/* =============================================================
+   BASE RESETS
+   ============================================================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: var(--font-body);
+  font-size: var(--text-body-lg-size);
+  line-height: var(--text-body-lg-line-height);
+  color: var(--color-on-surface);
+  background-color: var(--color-background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-height: 100vh;
+}
+
+/* --- Strikethrough for completed tasks --- */
+.text-strikethrough {
+  font-family: var(--font-body);
+  font-size: var(--text-body-md-size);
+  font-weight: var(--text-body-md-weight);
+  line-height: var(--text-body-md-line-height);
+  text-decoration: line-through;
+  opacity: 0.5;
+}

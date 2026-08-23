@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.dopashift.domain.property.KeywordValidationPropertyTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-08-23T06:26:27" hostname="SHAILESH" time="0.067">
+  <properties/>
+  <testcase name="Property 18: Keywords list with more than 20 entries is rejected" classname="com.dopashift.domain.property.KeywordValidationPropertyTest" time="0.012"/>
+  <testcase name="Property 18: Keywords list with any keyword exceeding 50 characters is rejected" classname="com.dopashift.domain.property.KeywordValidationPropertyTest" time="0.016"/>
+  <testcase name="Property 18: Keywords list with empty or blank keywords is rejected" classname="com.dopashift.domain.property.KeywordValidationPropertyTest" time="0.016"/>
+  <testcase name="Property 18: Valid keywords list (1-20 keywords, each 1-50 chars) is accepted" classname="com.dopashift.domain.property.KeywordValidationPropertyTest" time="0.018"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

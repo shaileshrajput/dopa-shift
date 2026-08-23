@@ -1,0 +1,1988 @@
+{
+  "pbtResults": {
+    "3.4 Write property test for goal name uniqueness enforcement": {
+      "status": "passed",
+      "lastRunTimestamp": 1787433752444
+    },
+    "3.7 Write property test for delete wins over edit": {
+      "status": "passed",
+      "lastRunTimestamp": 1787434124382
+    },
+    "3.5 Write property test for field-level merge preserving non-conflicting edits": {
+      "status": "passed",
+      "lastRunTimestamp": 1787434234748
+    },
+    "3.10 Write property test for goal deletion leaves no orphans": {
+      "status": "passed",
+      "lastRunTimestamp": 1787434424511
+    },
+    "3.6 Write property test for same-field conflict resolution determinism": {
+      "status": "passed",
+      "lastRunTimestamp": 1787434609760
+    },
+    "3.18 Write property test for efficiency score computation consistency": {
+      "status": "passed",
+      "lastRunTimestamp": 1787434775913
+    },
+    "3.12 Write property test for daily todo item count limit": {
+      "status": "passed",
+      "lastRunTimestamp": 1787434823116
+    },
+    "3.15 Write property test for habit track day advancement correctness": {
+      "status": "passed",
+      "lastRunTimestamp": 1787434890877
+    },
+    "3.13 Write property test for keyword count and length validation": {
+      "status": "passed",
+      "lastRunTimestamp": 1787434965816
+    },
+    "3.16 Write property test for missed habit day recording": {
+      "status": "passed",
+      "lastRunTimestamp": 1787434999496
+    },
+    "3.21 Write property test for conditional reminder fires only when condition holds": {
+      "status": "passed",
+      "lastRunTimestamp": 1787435201639
+    },
+    "3.20 Write property test for reminder quiet-hours suppression and delivery": {
+      "status": "passed",
+      "lastRunTimestamp": 1787435303432
+    },
+    "5.5 Write property test for change log serialization round-trip": {
+      "status": "passed",
+      "lastRunTimestamp": 1787459584571
+    },
+    "5.6 Write property test for sync push retry with exponential backoff": {
+      "status": "passed",
+      "lastRunTimestamp": 1787459603877
+    },
+    "7.11 Write property test for video recommendation fallback chain": {
+      "status": "passed",
+      "lastRunTimestamp": 1787464792316
+    },
+    "7.12 Write property test for LLM context privacy boundary": {
+      "status": "passed",
+      "lastRunTimestamp": 1787464864821
+    },
+    "9.2 Write property test for audit log hash chain integrity": {
+      "status": "passed",
+      "lastRunTimestamp": 1787466233647
+    }
+  },
+  "executionHistory": {
+    "1.1 Initialize Spring Boot backend project with Kotlin, Gradle, and multi-module structure (domain, application, infrastructure layers per Clean Architecture)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429470365
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429740158
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787431904502
+      }
+    ],
+    "1.2 Create Docker Compose configuration for local development environment": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429470736
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429741190
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787431905004
+      }
+    ],
+    "1.3 Create PostgreSQL database schema migration files (Flyway or Liquibase)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429471059
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787431912439
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787432133872
+      }
+    ],
+    "1.4 Configure Keycloak realm, client, and roles for DopaShift": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429471973
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787431913146
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787432134576
+      }
+    ],
+    "1.5 Initialize Android project with Kotlin, Jetpack Compose, Hilt, Room, and multi-module structure": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429472224
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429742625
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787431905949
+      }
+    ],
+    "1.6 Initialize React + TypeScript web portal project with Vite, Dexie.js, and react-i18next": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429472355
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429743301
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787431906868
+      }
+    ],
+    "2. Checkpoint - Ensure project scaffolding compiles and Docker Compose starts": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429472468
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787432163119
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787432415524
+      }
+    ],
+    "3.1 Implement domain entities (GoalProfile, DailyTodoItem, GoalChecklistItem, HabitTrack, HabitCheckpoint, EfficiencyScore, Reminder, ChangeLogEntry, AuditLogEntry)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429472570
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787432154934
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787432413120
+      }
+    ],
+    "3.2 Implement repository port interfaces (GoalRepository, DailyTodoRepository, HabitTrackRepository, ChangeLogRepository, AuditLogRepository, ReminderRepository, EfficiencyScoreRepository)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429472650
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787432155866
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787432414022
+      }
+    ],
+    "3.3 Implement ConflictResolutionStrategy interface and strategies (LastWriteWins, DeleteWins)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429472737
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787432421353
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787433007345
+      }
+    ],
+    "3.4 Write property test for goal name uniqueness enforcement": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429472852
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787433405760
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787434638780
+      }
+    ],
+    "3.5 Write property test for field-level merge preserving non-conflicting edits": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429472985
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787433406522
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787434639232
+      }
+    ],
+    "3.6 Write property test for same-field conflict resolution determinism": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429473105
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787433406986
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787434639948
+      }
+    ],
+    "3.7 Write property test for delete wins over edit": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429473180
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787433407713
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787434640616
+      }
+    ],
+    "3.8 Implement LlmProviderService and LlmAdapter interfaces with adapter factory": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429473280
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787432156550
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787432414818
+      }
+    ],
+    "3.9 Implement domain use cases for goal management (CreateGoal, UpdateGoal, DeleteGoal with dependency resolution)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429473359
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787432422102
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787433008148
+      }
+    ],
+    "3.10 Write property test for goal deletion leaves no orphans": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429473440
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787433408470
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787434641359
+      }
+    ],
+    "3.11 Implement domain use cases for daily todo management (CreateTodo, UpdateTodo, DeleteTodo, MarkComplete)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429473522
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787432422909
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787433008904
+      }
+    ],
+    "3.12 Write property test for daily todo item count limit": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429473663
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787434646940
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787435017730
+      }
+    ],
+    "3.13 Write property test for keyword count and length validation": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429473756
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787434647789
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787435018473
+      }
+    ],
+    "3.14 Implement domain use cases for habit track management (ActivateHabitTrack, MarkCheckpoint, AdvanceDay, RecordMissedDay)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429473840
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787432423789
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787433009752
+      }
+    ],
+    "3.15 Write property test for habit track day advancement correctness": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429473933
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787434648307
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787435017228
+      }
+    ],
+    "3.16 Write property test for missed habit day recording": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429474019
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787434649034
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787435019963
+      }
+    ],
+    "3.17 Implement efficiency score computation logic": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429474100
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787432424401
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787433010504
+      }
+    ],
+    "3.18 Write property test for efficiency score computation consistency": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429474180
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787434649774
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787435019479
+      }
+    ],
+    "3.19 Implement reminder domain logic (scheduling, recurrence evaluation, condition evaluation, escalation, quiet-hours suppression)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429474252
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787432425187
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787433397528
+      }
+    ],
+    "3.20 Write property test for reminder quiet-hours suppression and delivery": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429474450
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787435025485
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787435319908
+      }
+    ],
+    "3.21 Write property test for conditional reminder fires only when condition holds": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429474720
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787435026272
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787435320880
+      }
+    ],
+    "4. Checkpoint - Ensure domain layer compiles in isolation with all property tests passing": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429475088
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787435333662
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787435338965
+      }
+    ],
+    "5.1 Implement Change_Log server-side processor (append entries, assign server logical timestamps, detect conflicts)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429475342
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787435346574
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787459377791
+      }
+    ],
+    "5.2 Implement sync push endpoint (POST /v1/sync/push) — accept client change_log events, process conflicts, return resolution results": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429475605
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787459391910
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787459890029
+      }
+    ],
+    "5.3 Implement sync pull endpoint (GET /v1/sync/pull) — return change_log events since client's last sync timestamp": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429475777
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787459392324
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787459891328
+      }
+    ],
+    "5.4 Implement conflict history endpoint (GET /v1/sync/conflicts) — return superseded entries retained for 90+ days": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429475927
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787459393031
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787459892459
+      }
+    ],
+    "5.5 Write property test for change log serialization round-trip": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429476060
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787459393800
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787459893322
+      }
+    ],
+    "5.6 Write property test for sync push retry with exponential backoff": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429476198
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787459394454
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787459894124
+      }
+    ],
+    "5.7 Implement Android sync engine client (local Change_Log queue, push/pull with exponential backoff, field-level merge application)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429476342
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787435347330
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787459376692
+      }
+    ],
+    "5.8 Implement Web portal sync engine client (Dexie Change_Log queue, push/pull, field-level merge)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429476460
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787435347502
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787459379502
+      }
+    ],
+    "6. Checkpoint - Ensure sync engine integration tests pass with multi-client conflict scenarios": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429476611
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787459905296
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787461408285
+      }
+    ],
+    "7.1 Implement authentication/authorization filter (OAuth2 bearer token validation via Keycloak, user_id scoping)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429476763
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787461426189
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787461714905
+      }
+    ],
+    "7.2 Implement Goals REST controller (CRUD endpoints with dependency resolution on delete)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429476950
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787461737575
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787462403244
+      }
+    ],
+    "7.3 Implement Goal Checklist REST controller (CRUD for goal-scoped checklist items)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429477153
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787462415321
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787463152091
+      }
+    ],
+    "7.4 Implement Daily Todo REST controller (CRUD with 100-item limit enforcement)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429477294
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787461738235
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787462400391
+      }
+    ],
+    "7.5 Implement Habit Track REST controller (activate, list, checkpoint management)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429477435
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787461739156
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787462404378
+      }
+    ],
+    "7.6 Implement Reminders REST controller (CRUD with recurrence and condition support)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429477586
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787461740734
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787462405387
+      }
+    ],
+    "7.7 Implement Interception Rules REST controller (CRUD for app/site tracking rules)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429477839
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787462416373
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787463155645
+      }
+    ],
+    "7.8 Implement User Profile REST controller (profile CRUD, photo upload/delete, password change via Keycloak)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429477963
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787462416887
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787463154792
+      }
+    ],
+    "7.9 Implement LLM Configuration REST controller (configure, validate, rotate API keys)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429478097
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787462417605
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787463154986
+      }
+    ],
+    "7.10 Implement Content/Video Recommendation endpoint with LLM + YouTube fallback pipeline": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429478217
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787462418176
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787463154273
+      }
+    ],
+    "7.11 Write property test for video recommendation fallback chain": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429478349
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787464482172
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787465003602
+      }
+    ],
+    "7.12 Write property test for LLM context privacy boundary": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429478469
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787464482836
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787465004271
+      }
+    ],
+    "7.13 Implement Analytics/Dashboard REST controller (efficiency scores, dashboard summary, activity feed)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429478596
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787463177277
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787464353160
+      }
+    ],
+    "7.14 Implement Auth endpoints (token exchange, refresh, logout via Keycloak proxy)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429478744
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787461739829
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787462404160
+      }
+    ],
+    "7.15 Implement rate limiting middleware for all API endpoints": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429478886
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787463177956
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787464353712
+      }
+    ],
+    "7.16 Implement input validation and sanitization layer (server-side validation regardless of client)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429479078
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787463178690
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787464352551
+      }
+    ],
+    "7.17 Implement standardized error response format with correlation IDs": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429479201
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787461426691
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787461716960
+      }
+    ],
+    "8. Checkpoint - Ensure all backend API integration tests pass": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429479313
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787465015848
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787466486580
+      }
+    ],
+    "9.1 Implement audit log service (append-only, hash-chained entries for tamper evidence)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429479477
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787464483638
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787465005979
+      }
+    ],
+    "9.2 Write property test for audit log hash chain integrity": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429479640
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787465016341
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787466487363
+      }
+    ],
+    "9.3 Implement structured logging (JSON format) with correlation ID, trace ID, redaction of sensitive data": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429479776
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787464484391
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787465007002
+      }
+    ],
+    "9.4 Implement audit log retention policy background job (30-day app logs, 1-year audit logs)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429479897
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787465016877
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787466489741
+      }
+    ],
+    "10.1 Implement PostgreSQL-backed job queue processor (SKIP LOCKED pattern)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429480034
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787464485138
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787465005125
+      }
+    ],
+    "10.2 Implement change_log archival job (archive entries older than 90 days when exceeding 1M rows)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429480208
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787465017102
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787466490663
+      }
+    ],
+    "10.3 Implement missed habit day detection job (run at midnight per user timezone, mark unchecked days as MISSED)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429480349
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787465017986
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787466488644
+      }
+    ],
+    "11.1 Implement Room database with all entity tables and DAOs": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429480504
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787435347931
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787459378447
+      }
+    ],
+    "11.2 Implement repository implementations (Room-backed) conforming to domain port interfaces": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429480659
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787459905867
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787461403330
+      }
+    ],
+    "11.3 Implement Retrofit API client for all backend REST endpoints": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429480811
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787459906562
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787461404188
+      }
+    ],
+    "11.4 Implement local telemetry storage (foreground-app events stored locally only, never transmitted)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429480948
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787459907321
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787461405545
+      }
+    ],
+    "12.1 Implement DopaShift Kinetic design system in Compose (theme, colors, typography, spacing)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429481114
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787466515771
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787467473220
+      }
+    ],
+    "12.2 Implement Dashboard screen (Today's Status, efficiency score, goal cards grid, todo quick-actions, activity feed)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429481278
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787468031613
+      },
+      {
+        "executionId": "140939ca-ff7a-4abd-8ec7-f126d1469412",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787471018356
+      }
+    ],
+    "12.3 Implement Goals & Habits screen (goal list, goal detail with checklist, habit tracks)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429481437
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787468034562
+      },
+      {
+        "executionId": "140939ca-ff7a-4abd-8ec7-f126d1469412",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787471019333
+      }
+    ],
+    "12.4 Implement Daily Tasks screen (todo list with CRUD, strikethrough on complete, inline editing)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429481569
+      },
+      {
+        "executionId": "b66e9423-7059-4b09-bb26-c194c3443904",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787471700426
+      }
+    ],
+    "12.5 Implement Habit Roadmap screen (30-day track visualization, checkpoint completion)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429481711
+      },
+      {
+        "executionId": "b66e9423-7059-4b09-bb26-c194c3443904",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787471702045
+      }
+    ],
+    "12.6 Implement Analytics & Audit screen (efficiency score charts, bar/line graphs, date range selection)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429481870
+      },
+      {
+        "executionId": "b66e9423-7059-4b09-bb26-c194c3443904",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787473012387
+      }
+    ],
+    "12.7 Implement Notifications/Reminders screen (create, edit, delete reminders with recurrence UI)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429481989
+      },
+      {
+        "executionId": "b66e9423-7059-4b09-bb26-c194c3443904",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787473011378
+      }
+    ],
+    "12.8 Implement Settings screen (profile, LLM config, locale, accent color, permissions info)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429482151
+      },
+      {
+        "executionId": "b66e9423-7059-4b09-bb26-c194c3443904",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787471701362
+      }
+    ],
+    "12.9 Implement bottom navigation (Home, Goals, Analytics, Settings)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429482272
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787468032342
+      },
+      {
+        "executionId": "140939ca-ff7a-4abd-8ec7-f126d1469412",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787471019991
+      }
+    ],
+    "12.10 Implement onboarding flow (max 5 screens, goal selection, first habit setup)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429482443
+      },
+      {
+        "executionId": "b66e9423-7059-4b09-bb26-c194c3443904",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787473010517
+      }
+    ],
+    "12.11 Implement reactive data propagation with Kotlin Flow (UI subscribes to Room changes, updates within 2 seconds)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429482622
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787466519679
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787468011212
+      }
+    ],
+    "13.1 Implement foreground service for UsageStatsManager polling (configurable 3-30s interval, default 5s)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429482779
+      },
+      {
+        "executionId": "bd21a580-4180-41fd-8493-4c529ccdfda2",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787473824851
+      },
+      {
+        "executionId": "bd21a580-4180-41fd-8493-4c529ccdfda2",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787474473433
+      }
+    ],
+    "13.2 Implement daily allowance tracking and depletion detection": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429483033
+      },
+      {
+        "executionId": "bd21a580-4180-41fd-8493-4c529ccdfda2",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787473825445
+      },
+      {
+        "executionId": "bd21a580-4180-41fd-8493-4c529ccdfda2",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787474474329
+      }
+    ],
+    "13.3 Write property test for daily allowance depletion triggers overlay": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429483171
+      }
+    ],
+    "13.4 Write property test for midnight allowance reset": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429483313
+      }
+    ],
+    "13.5 Implement Intercept_Overlay (TYPE_APPLICATION_OVERLAY) with pending todos, habit checkbox, video suggestion": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429483465
+      }
+    ],
+    "13.6 Write property test for overlay minimum engagement before dismissal": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429483630
+      }
+    ],
+    "13.7 Implement permission revocation detection (detect within 5 seconds, notify user)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429483823
+      }
+    ],
+    "13.8 Implement todo completion from overlay (same Change_Log pipeline as normal todo updates)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429484269
+      }
+    ],
+    "13.9 Implement battery and memory efficiency constraints for background service": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429484410
+      }
+    ],
+    "14.1 Implement client-side reminder evaluation engine with injectable clock (offline-capable)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429484599
+      },
+      {
+        "executionId": "bd21a580-4180-41fd-8493-4c529ccdfda2",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787473826191
+      },
+      {
+        "executionId": "bd21a580-4180-41fd-8493-4c529ccdfda2",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787474475283
+      }
+    ],
+    "14.2 Implement AlarmManager exact alarms for reminder and escalation timing": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429484729
+      }
+    ],
+    "14.3 Implement interception-triggered todo reminder notification (top 5 pending tasks)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429484866
+      }
+    ],
+    "14.4 Implement habit track escalation reminder (unchecked micro-habit before cutoff time)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429484996
+      }
+    ],
+    "15. Checkpoint - Ensure Android app builds and core flows work on emulator": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429485138
+      }
+    ],
+    "16.1 Implement Dexie.js database schema and repository implementations": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429485295
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787459908045
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787461406423
+      }
+    ],
+    "16.2 Implement reactive state management (signals/RxJS) for local data propagation": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429485433
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787459908728
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787461713486
+      }
+    ],
+    "16.3 Implement Service Worker for push notifications and background sync": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429485603
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787459909544
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787461716807
+      }
+    ],
+    "16.4 Implement fetch-based API client with OAuth2 bearer token management": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429485753
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787459910274
+      },
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787461407413
+      }
+    ],
+    "17.1 Implement DopaShift Kinetic design system as CSS custom properties / design tokens": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429485957
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787466516521
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787467470544
+      }
+    ],
+    "17.2 Implement Dashboard page (summary cards, efficiency score, goal grid, todo quick-actions, activity feed)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429486115
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787468033059
+      },
+      {
+        "executionId": "140939ca-ff7a-4abd-8ec7-f126d1469412",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787471017591
+      }
+    ],
+    "17.3 Implement Goals & Habits page (goal management, checklist, habit tracks)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429486268
+      },
+      {
+        "executionId": "b66e9423-7059-4b09-bb26-c194c3443904",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787471699319
+      }
+    ],
+    "17.4 Implement Daily Tasks page (todo list CRUD, completion, date selection)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429486448
+      },
+      {
+        "executionId": "b66e9423-7059-4b09-bb26-c194c3443904",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787471702968
+      }
+    ],
+    "17.5 Implement Analytics page (charts, efficiency scores, date range)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429486589
+      },
+      {
+        "executionId": "b66e9423-7059-4b09-bb26-c194c3443904",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787473009588
+      }
+    ],
+    "17.6 Implement Notifications page (reminder management)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429486742
+      },
+      {
+        "executionId": "b66e9423-7059-4b09-bb26-c194c3443904",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787473008671
+      }
+    ],
+    "17.7 Implement Settings page (profile, LLM config, locale, accent color)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429486887
+      },
+      {
+        "executionId": "bd21a580-4180-41fd-8493-4c529ccdfda2",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787473365652
+      },
+      {
+        "executionId": "bd21a580-4180-41fd-8493-4c529ccdfda2",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787473808603
+      }
+    ],
+    "17.8 Implement navigation drawer (persistent on desktop/web)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429487032
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787468035274
+      },
+      {
+        "executionId": "140939ca-ff7a-4abd-8ec7-f126d1469412",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787470364585
+      }
+    ],
+    "17.9 Implement onboarding flow for web portal": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429487213
+      },
+      {
+        "executionId": "bd21a580-4180-41fd-8493-4c529ccdfda2",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787473366247
+      },
+      {
+        "executionId": "bd21a580-4180-41fd-8493-4c529ccdfda2",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787473807691
+      }
+    ],
+    "18.1 Implement react-i18next with locale files for en, hi, mr": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429487385
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787466517270
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787467471417
+      }
+    ],
+    "19.1 Implement Spring MessageSource for server-generated text (notifications, error messages) in en, hi, mr": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429487537
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787466518060
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787467472144
+      }
+    ],
+    "20.1 Implement Android string resources for en, hi, mr locales": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429487703
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787466518912
+      },
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787467474021
+      }
+    ],
+    "21. Checkpoint - Ensure web portal builds and Android/web UI renders correctly": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429487838
+      }
+    ],
+    "22.1 Implement Prometheus metric endpoints (request rate, error rate, latency p50/p95/p99, JVM utilization)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429488004
+      }
+    ],
+    "22.2 Implement OpenTelemetry distributed tracing (trace IDs propagated across API requests and background jobs)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429488136
+      }
+    ],
+    "22.3 Create Grafana dashboards (API metrics, sync-queue depth, job rates, active users, overlay triggers)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429488278
+      }
+    ],
+    "22.4 Implement alerting rules (API error rate >5%, sync-queue >1000, job failure >10%, audit write failures)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429488420
+      }
+    ],
+    "22.5 Configure centralized logging (Loki/ELK) with indexing by correlation ID, user ID, service name, event type": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429488556
+      }
+    ],
+    "23.1 Implement secrets management integration (Vault or sealed secrets for credentials, LLM API keys)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429488732
+      }
+    ],
+    "23.2 Implement CI secret scanning and SAST (Semgrep or equivalent)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429488889
+      }
+    ],
+    "23.3 Implement dependency vulnerability scanning (OWASP Dependency-Check) in CI": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429489041
+      }
+    ],
+    "23.4 Implement log redaction/masking at logging-framework level (API keys, tokens, PII)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429489287
+      }
+    ],
+    "23.5 Configure TLS 1.2+ for all connections (client-to-backend, backend-to-backend)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429489467
+      }
+    ],
+    "24.1 Configure CI pipeline (lint, SAST, secret scan, unit tests, integration tests, coverage gates, dependency scan, contract tests)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429489619
+      }
+    ],
+    "24.2 Configure release pipeline (E2E Playwright tests, Android instrumented tests, build artifacts)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429489812
+      }
+    ],
+    "25.1 Create OpenAPI 3 specification document for all /v1/ endpoints": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429489968
+      }
+    ],
+    "25.2 Implement automated contract tests validating API responses against OpenAPI spec": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429490128
+      }
+    ],
+    "26. Checkpoint - Ensure full CI pipeline passes green": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429490284
+      }
+    ],
+    "27.1 Implement sync engine deterministic test suite (multi-client offline edit, reconnect in varying orders, assert merge outcomes)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429490433
+      }
+    ],
+    "27.2 Implement reminder engine test suite with injectable/fake clock (multi-day recurrence, escalation, quiet-hours)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429490585
+      }
+    ],
+    "27.3 Implement BYO-LLM integration test suite (mocked responses: valid, invalid key, rate-limit, no video link, fallback path)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429490747
+      }
+    ],
+    "27.4 Implement screen-time interception test suite (permission revocation, Android Go detection, overlay trigger consistency)": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429490898
+      }
+    ],
+    "28. Final checkpoint - Ensure all tests pass and full system integration works": [
+      {
+        "executionId": "49225bce-9103-4904-94e6-eb7be586731b",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787429491069
+      }
+    ],
+    "1. Project scaffolding and infrastructure setup": [
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787432134682
+      }
+    ],
+    "3. Domain layer — core entities, repository interfaces, and use cases": [
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787435320978
+      }
+    ],
+    "5. Sync engine implementation": [
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787459894328
+      }
+    ],
+    "11. Android app — data layer and repository implementations": [
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787461405715
+      }
+    ],
+    "16. Web portal — data layer and state management": [
+      {
+        "executionId": "ed62bde0-b6c7-4953-bc81-51939128709e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787461717163
+      }
+    ],
+    "7. Backend API — REST controllers and application services": [
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787465004370
+      }
+    ],
+    "9. Audit logging and traceability": [
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787466489855
+      }
+    ],
+    "10. Background job processor": [
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787466490802
+      }
+    ],
+    "18. Web portal — internationalization": [
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787467471620
+      }
+    ],
+    "19. Backend — internationalization and localization": [
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787467472269
+      }
+    ],
+    "20. Android — internationalization": [
+      {
+        "executionId": "cb50aff5-220c-4e71-bab5-b79807d68b6e",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787467474114
+      }
+    ],
+    "12. Android app — UI layer": [
+      {
+        "executionId": "b66e9423-7059-4b09-bb26-c194c3443904",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787473012507
+      }
+    ],
+    "17. Web portal — UI layer": [
+      {
+        "executionId": "bd21a580-4180-41fd-8493-4c529ccdfda2",
+        "chatSessionId": "sess_108de8bd-6c6c-47cf-9be1-0fd32fe97d47",
+        "timestamp": 1787473808746
+      }
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.dopashift.application.audit.AuditLogServiceTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-08-23T06:27:16" hostname="SHAILESH" time="0.117">
+  <properties/>
+  <testcase name="rejects blank operation type()" classname="com.dopashift.application.audit.AuditLogServiceTest" time="0.062"/>
+  <testcase name="findByCorrelationId delegates to repository()" classname="com.dopashift.application.audit.AuditLogServiceTest" time="0.01"/>
+  <testcase name="hash includes all fields - different entity produces different hash()" classname="com.dopashift.application.audit.AuditLogServiceTest" time="0.006"/>
+  <testcase name="records before and after state()" classname="com.dopashift.application.audit.AuditLogServiceTest" time="0.002"/>
+  <testcase name="propagates correlation ID from request origin()" classname="com.dopashift.application.audit.AuditLogServiceTest" time="0.004"/>
+  <testcase name="hash is 64 character hex string (SHA-256)()" classname="com.dopashift.application.audit.AuditLogServiceTest" time="0.004"/>
+  <testcase name="first entry uses GENESIS as previousHash()" classname="com.dopashift.application.audit.AuditLogServiceTest" time="0.003"/>
+  <testcase name="second entry chains to first entry hash()" classname="com.dopashift.application.audit.AuditLogServiceTest" time="0.002"/>
+  <testcase name="hash chain is deterministic for same inputs()" classname="com.dopashift.application.audit.AuditLogServiceTest" time="0.002"/>
+  <testcase name="rejects blank correlation ID()" classname="com.dopashift.application.audit.AuditLogServiceTest" time="0.003"/>
+  <testcase name="multiple entries form a valid chain()" classname="com.dopashift.application.audit.AuditLogServiceTest" time="0.007"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

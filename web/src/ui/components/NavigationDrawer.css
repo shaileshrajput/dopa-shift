@@ -1,0 +1,80 @@
+/* =============================================================
+   NavigationDrawer — persistent side navigation (desktop/web)
+   Uses design-token CSS custom properties for theming.
+   ============================================================= */
+
+.nav-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 256px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface-container-low);
+  border-right: var(--glass-border);
+  z-index: var(--z-drawer);
+  padding: var(--spacing-2) 0;
+  overflow-y: auto;
+}
+
+.nav-drawer__header {
+  padding: var(--spacing-3) var(--spacing-3) var(--spacing-4);
+}
+
+.nav-drawer__brand {
+  font-family: var(--font-headline);
+  font-size: var(--text-title-lg-size);
+  font-weight: var(--text-title-lg-weight);
+  line-height: var(--text-title-lg-line-height);
+  color: var(--color-primary);
+}
+
+.nav-drawer__list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-half);
+  padding: 0 var(--spacing-1-half);
+}
+
+.nav-drawer__item {
+  display: flex;
+}
+
+.nav-drawer__link {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: var(--spacing-1-half) var(--spacing-2);
+  border-radius: var(--radius-default);
+  font-family: var(--font-body);
+  font-size: var(--text-body-lg-size);
+  font-weight: var(--text-body-lg-weight);
+  line-height: var(--text-body-lg-line-height);
+  color: var(--color-on-surface-variant);
+  text-decoration: none;
+  transition: background var(--transition-fast), color var(--transition-fast);
+  min-height: var(--touch-target-min);
+}
+
+.nav-drawer__link:hover {
+  background: var(--color-surface-container-high);
+  color: var(--color-on-surface);
+}
+
+.nav-drawer__link:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.nav-drawer__link--active {
+  background: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+  font-weight: 500;
+}
+
+.nav-drawer__link--active:hover {
+  background: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+}

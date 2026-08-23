@@ -1,0 +1,344 @@
+services:
+  # ===========================================================================
+  # PostgreSQL 14+ — Primary Datastore
+  # ===========================================================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: dopashift-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-dopashift}
+      POSTGRES_USER: ${POSTGRES_USER:-dopashift}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dopashift_dev_pass}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-dopashift} -d ${POSTGRES_DB:-dopashift}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - dopashift-net
+    restart: unless-stopped
+
+  # ===========================================================================
+  # Redis — Cache and Pub/Sub (Redis-protocol compatible)
+  # ===========================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: dopashift-redis
+    command: redis-server --requirepass ${REDIS_PASSWORD:-redis_dev_pass}
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-redis_dev_pass}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    networks:
+      - dopashift-net
+    restart: unless-stopped
+
+  # ===========================================================================
+  # Keycloak 22+ — Authentication and Authorization (OIDC/OAuth2)
+  # ===========================================================================
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0
+    container_name: dopashift-keycloak
+    command: start-dev --import-realm
+    environment:
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN:-admin}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin_dev_pass}
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-dopashift}
+      KC_DB_USERNAME: ${POSTGRES_USER:-dopashift}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD:-dopashift_dev_pass}
+      KC_HTTP_PORT: 8443
+      KC_HEALTH_ENABLED: "true"
+    ports:
+      - "${KEYCLOAK_PORT:-8443}:8443"
+    volumes:
+      - ./infra/keycloak/dopashift-realm.json:/opt/keycloak/data/import/dopashift-realm.json:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/localhost/8443 && echo -e 'GET /health/ready HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3 && cat <&3 | grep -q '200'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    networks:
+      - dopashift-net
+    restart: unless-stopped
+
+  # ===========================================================================
+  # MinIO — S3-Compatible Object Storage
+  # ===========================================================================
+  minio:
+    image: minio/minio:latest
+    container_name: dopashift-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minio_dev_pass}
+    ports:
+      - "${MINIO_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - dopashift-net
+    restart: unless-stopped
+
+  # ===========================================================================
+  # Loki — Log Aggregation
+  # ===========================================================================
+  loki:
+    image: grafana/loki:2.9.4
+    container_name: dopashift-loki
+    command: -config.file=/etc/loki/loki-config.yml
+    ports:
+      - "${LOKI_PORT:-3100}:3100"
+    volumes:
+      - ./infra/loki/loki-config.yml:/etc/loki/loki-config.yml:ro
+      - loki_data:/loki
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3100/ready || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    networks:
+      - dopashift-net
+    restart: unless-stopped
+
+  # ===========================================================================
+  # OpenTelemetry Collector — Telemetry Pipeline
+  # ===========================================================================
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.96.0
+    container_name: dopashift-otel-collector
+    command: ["--config=/etc/otelcol/otel-collector-config.yml"]
+    ports:
+      - "${OTEL_COLLECTOR_GRPC_PORT:-4317}:4317"
+      - "${OTEL_COLLECTOR_HTTP_PORT:-4318}:4318"
+    volumes:
+      - ./infra/otel/otel-collector-config.yml:/etc/otelcol/otel-collector-config.yml:ro
+    depends_on:
+      loki:
+        condition: service_healthy
+    networks:
+      - dopashift-net
+    restart: unless-stopped
+
+  # ===========================================================================
+  # Tempo — Distributed Tracing Backend
+  # ===========================================================================
+  tempo:
+    image: grafana/tempo:2.4.1
+    container_name: dopashift-tempo
+    command: ["-config.file=/etc/tempo/tempo-config.yml"]
+    ports:
+      - "3200:3200"
+    volumes:
+      - ./infra/tempo/tempo-config.yml:/etc/tempo/tempo-config.yml:ro
+      - tempo_data:/var/tempo
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3200/ready || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - dopashift-net
+    restart: unless-stopped
+
+  # ===========================================================================
+  # Prometheus — Metrics Collection
+  # ===========================================================================
+  prometheus:
+    image: prom/prometheus:v2.50.1
+    container_name: dopashift-prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+      - "--web.console.templates=/usr/share/prometheus/consoles"
+      - "--web.enable-remote-write-receiver"
+    ports:
+      - "${PROMETHEUS_PORT:-9090}:9090"
+    volumes:
+      - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./infra/prometheus/alert-rules.yml:/etc/prometheus/alert-rules.yml:ro
+      - prometheus_data:/prometheus
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:9090/-/healthy || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - dopashift-net
+    restart: unless-stopped
+
+  # ===========================================================================
+  # Grafana — Dashboards and Visualization
+  # ===========================================================================
+  grafana:
+    image: grafana/grafana:10.3.3
+    container_name: dopashift-grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-grafana_dev_pass}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    ports:
+      - "${GRAFANA_PORT:-3000}:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./infra/grafana/provisioning:/etc/grafana/provisioning:ro
+    depends_on:
+      prometheus:
+        condition: service_healthy
+      loki:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/api/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    networks:
+      - dopashift-net
+    restart: unless-stopped
+
+  # ===========================================================================
+  # Nginx — Load Balancer for API Instances
+  # ===========================================================================
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: dopashift-nginx
+    ports:
+      - "${NGINX_PORT:-80}:80"
+    volumes:
+      - ./infra/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - api-1
+      - api-2
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:80/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    networks:
+      - dopashift-net
+    restart: unless-stopped
+
+  # ===========================================================================
+  # API Instances (Spring Boot — placeholder for development)
+  # ===========================================================================
+  api-1:
+    image: eclipse-temurin:21-jre-alpine
+    container_name: dopashift-api-1
+    command: ["sh", "-c", "echo 'API instance 1 placeholder — replace with built JAR'; sleep infinity"]
+    environment:
+      SERVER_PORT: "8080"
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${POSTGRES_HOST:-postgres}:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-dopashift}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-dopashift}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-dopashift_dev_pass}
+      SPRING_DATA_REDIS_HOST: ${REDIS_HOST:-redis}
+      SPRING_DATA_REDIS_PORT: ${REDIS_PORT:-6379}
+      SPRING_DATA_REDIS_PASSWORD: ${REDIS_PASSWORD:-redis_dev_pass}
+      KEYCLOAK_AUTH_SERVER_URL: http://${KEYCLOAK_HOST:-keycloak}:${KEYCLOAK_PORT:-8443}
+      KEYCLOAK_REALM: ${KEYCLOAK_REALM:-dopashift}
+      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_ID:-dopashift-api}
+      KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_CLIENT_SECRET:-dopashift-client-secret}
+      MINIO_ENDPOINT: http://${MINIO_HOST:-minio}:${MINIO_PORT:-9000}
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-minio_dev_pass}
+      MINIO_BUCKET: ${MINIO_BUCKET:-dopashift}
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://${OTEL_COLLECTOR_HOST:-otel-collector}:${OTEL_COLLECTOR_GRPC_PORT:-4317}
+      OTEL_SERVICE_NAME: dopashift-api
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,prometheus,info
+    ports:
+      - "${API_PORT_1:-8080}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - dopashift-net
+    restart: unless-stopped
+
+  api-2:
+    image: eclipse-temurin:21-jre-alpine
+    container_name: dopashift-api-2
+    command: ["sh", "-c", "echo 'API instance 2 placeholder — replace with built JAR'; sleep infinity"]
+    environment:
+      SERVER_PORT: "8081"
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${POSTGRES_HOST:-postgres}:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-dopashift}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-dopashift}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-dopashift_dev_pass}
+      SPRING_DATA_REDIS_HOST: ${REDIS_HOST:-redis}
+      SPRING_DATA_REDIS_PORT: ${REDIS_PORT:-6379}
+      SPRING_DATA_REDIS_PASSWORD: ${REDIS_PASSWORD:-redis_dev_pass}
+      KEYCLOAK_AUTH_SERVER_URL: http://${KEYCLOAK_HOST:-keycloak}:${KEYCLOAK_PORT:-8443}
+      KEYCLOAK_REALM: ${KEYCLOAK_REALM:-dopashift}
+      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_ID:-dopashift-api}
+      KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_CLIENT_SECRET:-dopashift-client-secret}
+      MINIO_ENDPOINT: http://${MINIO_HOST:-minio}:${MINIO_PORT:-9000}
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-minio_dev_pass}
+      MINIO_BUCKET: ${MINIO_BUCKET:-dopashift}
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://${OTEL_COLLECTOR_HOST:-otel-collector}:${OTEL_COLLECTOR_GRPC_PORT:-4317}
+      OTEL_SERVICE_NAME: dopashift-api
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,prometheus,info
+    ports:
+      - "${API_PORT_2:-8081}:8081"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - dopashift-net
+    restart: unless-stopped
+
+# =============================================================================
+# Volumes
+# =============================================================================
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  minio_data:
+    driver: local
+  loki_data:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+  tempo_data:
+    driver: local
+
+# =============================================================================
+# Networks
+# =============================================================================
+networks:
+  dopashift-net:
+    driver: bridge

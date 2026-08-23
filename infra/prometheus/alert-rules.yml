@@ -1,0 +1,98 @@
+groups:
+  - name: dopashift_api_alerts
+    rules:
+      # Requirement 18.8: API error rate > 5%
+      - alert: HighApiErrorRate
+        expr: |
+          (
+            sum(rate(http_server_requests_seconds_count{application="dopashift-api",status=~"5.."}[5m]))
+            /
+            sum(rate(http_server_requests_seconds_count{application="dopashift-api"}[5m]))
+          ) > 0.05
+        for: 2m
+        labels:
+          severity: critical
+          service: dopashift-api
+        annotations:
+          summary: "API error rate exceeds 5%"
+          description: "The DopaShift API 5xx error rate is {{ $value | humanizePercentage }} over the last 5 minutes."
+          runbook: "Check logs for correlationId patterns; review recent deployments."
+
+      # Requirement 18.8: Sync queue > 1000
+      - alert: SyncQueueDepthHigh
+        expr: dopashift_sync_queue_depth{application="dopashift-api"} > 1000
+        for: 5m
+        labels:
+          severity: warning
+          service: dopashift-api
+        annotations:
+          summary: "Sync queue depth exceeds 1000"
+          description: "Current sync queue depth: {{ $value }}. Events are backing up and may affect client sync freshness."
+          runbook: "Check sync processor health; verify database connectivity; inspect for client push storms."
+
+      # Requirement 18.8: Job failure > 10%
+      - alert: HighJobFailureRate
+        expr: |
+          (
+            sum(rate(dopashift_jobs_total{application="dopashift-api",result="failure"}[15m]))
+            /
+            sum(rate(dopashift_jobs_total{application="dopashift-api"}[15m]))
+          ) > 0.10
+        for: 5m
+        labels:
+          severity: warning
+          service: dopashift-api
+        annotations:
+          summary: "Background job failure rate exceeds 10%"
+          description: "Job failure rate is {{ $value | humanizePercentage }} over the last 15 minutes."
+          runbook: "Check job_queue table for failed jobs; review logs for specific job type errors."
+
+      # Requirement 18.12: Audit write failures
+      - alert: AuditLogWriteFailures
+        expr: rate(dopashift_jobs_total{application="dopashift-api",type="audit_archival",result="failure"}[15m]) > 0
+        for: 5m
+        labels:
+          severity: critical
+          service: dopashift-api
+        annotations:
+          summary: "Audit log write failures detected"
+          description: "Audit log archival/write operations are failing. Tamper-evidence integrity may be compromised."
+          runbook: "CRITICAL: Check database connectivity; verify audit_log table is not full; check disk space."
+
+      # High latency (p99 > 5s)
+      - alert: HighApiLatency
+        expr: histogram_quantile(0.99, rate(http_server_requests_seconds_bucket{application="dopashift-api"}[5m])) > 5
+        for: 5m
+        labels:
+          severity: warning
+          service: dopashift-api
+        annotations:
+          summary: "API p99 latency exceeds 5 seconds"
+          description: "p99 latency is {{ $value }}s. Users may experience degraded performance."
+          runbook: "Check slow query log; review JVM GC pauses; check database connection pool."
+
+      # JVM heap usage > 85%
+      - alert: HighJvmHeapUsage
+        expr: |
+          (jvm_memory_used_bytes{application="dopashift-api",area="heap"} 
+           / jvm_memory_max_bytes{application="dopashift-api",area="heap"}) > 0.85
+        for: 5m
+        labels:
+          severity: warning
+          service: dopashift-api
+        annotations:
+          summary: "JVM heap usage exceeds 85%"
+          description: "Heap usage at {{ $value | humanizePercentage }}. Risk of OOM."
+          runbook: "Check for memory leaks; consider scaling or increasing heap size."
+
+      # Authentication failure spike
+      - alert: AuthFailureSpike
+        expr: rate(dopashift_auth_total{application="dopashift-api",result="failure"}[5m]) > 10
+        for: 2m
+        labels:
+          severity: warning
+          service: dopashift-api
+        annotations:
+          summary: "Authentication failure rate spike"
+          description: "Auth failures at {{ $value }} per second. Possible brute-force attempt."
+          runbook: "Check source IPs in logs; verify Keycloak is healthy; consider rate-limit tightening."

@@ -1,0 +1,1616 @@
+openapi: 3.0.3
+info:
+  title: DopaShift API
+  description: |
+    REST API for the DopaShift multi-goal life-tracking platform.
+    
+    ## Versioning Policy
+    - All endpoints are prefixed with `/v1/`
+    - Previous API versions are supported for 6 months after a new version is released.
+    - Breaking changes will only be introduced in new major versions.
+    
+    ## Authentication
+    All endpoints (except /v1/auth/*) require a valid Bearer token in the Authorization header.
+    Tokens are obtained via the Keycloak-proxied authentication endpoints.
+  version: 1.0.0
+  contact:
+    name: DopaShift Team
+
+servers:
+  - url: http://localhost:8080
+    description: Local development
+  - url: https://api.dopashift.app
+    description: Production
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: Auth
+    description: Authentication and token management
+  - name: Goals
+    description: Goal profile CRUD
+  - name: Checklist
+    description: Goal checklist items
+  - name: Todos
+    description: Daily todo item management
+  - name: Habits
+    description: Habit track and checkpoint management
+  - name: Reminders
+    description: Reminder scheduling and management
+  - name: Interception
+    description: Screen-time interception rules
+  - name: Profile
+    description: User profile management
+  - name: LLM
+    description: LLM provider configuration
+  - name: Content
+    description: Video/content recommendations
+  - name: Analytics
+    description: Efficiency scores and dashboards
+  - name: Sync
+    description: Change log synchronization
+
+paths:
+  # === Auth ===
+  /v1/auth/token:
+    post:
+      tags: [Auth]
+      operationId: getToken
+      summary: Exchange credentials for access token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRequest'
+      responses:
+        '200':
+          description: Token issued successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /v1/auth/refresh:
+    post:
+      tags: [Auth]
+      operationId: refreshToken
+      summary: Refresh an access token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshTokenRequest'
+      responses:
+        '200':
+          description: Token refreshed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /v1/auth/logout:
+    post:
+      tags: [Auth]
+      operationId: logout
+      summary: Revoke the current session
+      responses:
+        '204':
+          description: Logged out successfully
+
+  # === Goals ===
+  /v1/goals:
+    post:
+      tags: [Goals]
+      operationId: createGoal
+      summary: Create a new goal profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGoalRequest'
+      responses:
+        '201':
+          description: Goal created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoalResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          description: Goal name already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    get:
+      tags: [Goals]
+      operationId: listGoals
+      summary: List all goals for the authenticated user
+      responses:
+        '200':
+          description: List of goals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GoalResponse'
+
+  /v1/goals/{id}:
+    get:
+      tags: [Goals]
+      operationId: getGoal
+      summary: Get goal detail with keywords and stats
+      parameters:
+        - $ref: '#/components/parameters/GoalId'
+      responses:
+        '200':
+          description: Goal detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoalDetailResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [Goals]
+      operationId: updateGoal
+      summary: Update an existing goal
+      parameters:
+        - $ref: '#/components/parameters/GoalId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateGoalRequest'
+      responses:
+        '200':
+          description: Goal updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoalResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags: [Goals]
+      operationId: deleteGoal
+      summary: Delete a goal with dependency resolution
+      parameters:
+        - $ref: '#/components/parameters/GoalId'
+        - name: action
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [DELETE_ALL, REASSIGN]
+      responses:
+        '204':
+          description: Goal deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # === Checklist ===
+  /v1/goals/{id}/checklist:
+    post:
+      tags: [Checklist]
+      operationId: createChecklistItem
+      summary: Add a checklist item to a goal
+      parameters:
+        - $ref: '#/components/parameters/GoalId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateChecklistItemRequest'
+      responses:
+        '201':
+          description: Checklist item created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChecklistItemResponse'
+    get:
+      tags: [Checklist]
+      operationId: listChecklistItems
+      summary: List checklist items for a goal
+      parameters:
+        - $ref: '#/components/parameters/GoalId'
+      responses:
+        '200':
+          description: Checklist items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChecklistItemResponse'
+
+  /v1/goals/{goalId}/checklist/{itemId}:
+    put:
+      tags: [Checklist]
+      operationId: updateChecklistItem
+      parameters:
+        - name: goalId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateChecklistItemRequest'
+      responses:
+        '200':
+          description: Item updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChecklistItemResponse'
+    delete:
+      tags: [Checklist]
+      operationId: deleteChecklistItem
+      parameters:
+        - name: goalId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Item deleted
+
+  # === Todos ===
+  /v1/todos:
+    post:
+      tags: [Todos]
+      operationId: createTodo
+      summary: Create a daily todo item (max 100/day)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTodoRequest'
+      responses:
+        '201':
+          description: Todo created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TodoResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          description: Daily limit reached (100 items)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    get:
+      tags: [Todos]
+      operationId: listTodos
+      summary: List todos for a specific date
+      parameters:
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+          example: "2024-06-15"
+      responses:
+        '200':
+          description: Todos for the date
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TodoResponse'
+
+  /v1/todos/{id}:
+    put:
+      tags: [Todos]
+      operationId: updateTodo
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTodoRequest'
+      responses:
+        '200':
+          description: Todo updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TodoResponse'
+    delete:
+      tags: [Todos]
+      operationId: deleteTodo
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Todo deleted
+
+  /v1/todos/pending:
+    get:
+      tags: [Todos]
+      operationId: getPendingTodos
+      summary: Get incomplete todos for today
+      responses:
+        '200':
+          description: Pending todos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TodoResponse'
+
+  # === Habits ===
+  /v1/habits:
+    post:
+      tags: [Habits]
+      operationId: activateHabitTrack
+      summary: Activate a 30-day habit track for a goal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActivateHabitRequest'
+      responses:
+        '201':
+          description: Habit track activated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HabitTrackResponse'
+    get:
+      tags: [Habits]
+      operationId: listHabitTracks
+      parameters:
+        - name: goalId
+          in: query
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Habit tracks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HabitTrackResponse'
+
+  /v1/habits/{id}:
+    get:
+      tags: [Habits]
+      operationId: getHabitTrack
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Habit track with all checkpoints
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HabitTrackDetailResponse'
+
+  /v1/habits/{id}/checkpoints/{day}:
+    put:
+      tags: [Habits]
+      operationId: markCheckpoint
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: day
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 30
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MarkCheckpointRequest'
+      responses:
+        '200':
+          description: Checkpoint updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckpointResponse'
+
+  /v1/habits/current:
+    get:
+      tags: [Habits]
+      operationId: getCurrentHabitForOverlay
+      summary: Get earliest active habit track (for overlay display)
+      responses:
+        '200':
+          description: Current habit track
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HabitTrackDetailResponse'
+        '204':
+          description: No active habit tracks
+
+  # === Reminders ===
+  /v1/reminders:
+    post:
+      tags: [Reminders]
+      operationId: createReminder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReminderRequest'
+      responses:
+        '201':
+          description: Reminder created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReminderResponse'
+    get:
+      tags: [Reminders]
+      operationId: listReminders
+      responses:
+        '200':
+          description: All reminders for the user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReminderResponse'
+
+  /v1/reminders/{id}:
+    put:
+      tags: [Reminders]
+      operationId: updateReminder
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateReminderRequest'
+      responses:
+        '200':
+          description: Reminder updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReminderResponse'
+    delete:
+      tags: [Reminders]
+      operationId: deleteReminder
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Reminder deleted
+
+  # === Interception Rules ===
+  /v1/interception/rules:
+    post:
+      tags: [Interception]
+      operationId: createInterceptionRule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateInterceptionRuleRequest'
+      responses:
+        '201':
+          description: Rule created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InterceptionRuleResponse'
+    get:
+      tags: [Interception]
+      operationId: listInterceptionRules
+      responses:
+        '200':
+          description: Active interception rules
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InterceptionRuleResponse'
+
+  /v1/interception/rules/{id}:
+    put:
+      tags: [Interception]
+      operationId: updateInterceptionRule
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateInterceptionRuleRequest'
+      responses:
+        '200':
+          description: Rule updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InterceptionRuleResponse'
+    delete:
+      tags: [Interception]
+      operationId: deleteInterceptionRule
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Rule deleted
+
+  # === Profile ===
+  /v1/profile:
+    get:
+      tags: [Profile]
+      operationId: getProfile
+      responses:
+        '200':
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileResponse'
+    put:
+      tags: [Profile]
+      operationId: updateProfile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProfileRequest'
+      responses:
+        '200':
+          description: Profile updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileResponse'
+
+  /v1/profile/photo:
+    post:
+      tags: [Profile]
+      operationId: uploadPhoto
+      summary: Upload profile photo (JPEG/PNG, max 5MB)
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Photo uploaded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhotoUploadResponse'
+        '400':
+          description: Invalid file type or size
+    delete:
+      tags: [Profile]
+      operationId: deletePhoto
+      responses:
+        '204':
+          description: Photo deleted
+
+  /v1/profile/password:
+    post:
+      tags: [Profile]
+      operationId: changePassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePasswordRequest'
+      responses:
+        '204':
+          description: Password changed
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  # === LLM Settings ===
+  /v1/settings/llm:
+    post:
+      tags: [LLM]
+      operationId: configureLlm
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfigureLlmRequest'
+      responses:
+        '201':
+          description: LLM configured
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LlmConfigResponse'
+    get:
+      tags: [LLM]
+      operationId: getLlmConfig
+      responses:
+        '200':
+          description: Current LLM config (key masked)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LlmConfigResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [LLM]
+      operationId: updateLlmConfig
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfigureLlmRequest'
+      responses:
+        '200':
+          description: LLM config updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LlmConfigResponse'
+    delete:
+      tags: [LLM]
+      operationId: deleteLlmConfig
+      responses:
+        '204':
+          description: LLM config removed
+
+  /v1/settings/llm/validate:
+    post:
+      tags: [LLM]
+      operationId: validateLlmConfig
+      summary: Test LLM connection (10s timeout)
+      responses:
+        '200':
+          description: Validation result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LlmValidationResponse'
+
+  # === Content ===
+  /v1/content/video:
+    get:
+      tags: [Content]
+      operationId: getVideoRecommendation
+      parameters:
+        - name: goalId
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Video recommendation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VideoRecommendationResponse'
+
+  # === Analytics ===
+  /v1/analytics/efficiency:
+    get:
+      tags: [Analytics]
+      operationId: getEfficiencyScores
+      parameters:
+        - name: from
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Efficiency scores for the date range
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EfficiencyScoreResponse'
+    post:
+      tags: [Analytics]
+      operationId: submitEfficiencyScore
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitEfficiencyScoreRequest'
+      responses:
+        '201':
+          description: Score recorded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EfficiencyScoreResponse'
+
+  /v1/dashboard/summary:
+    get:
+      tags: [Analytics]
+      operationId: getDashboardSummary
+      responses:
+        '200':
+          description: Dashboard aggregated data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardSummaryResponse'
+
+  /v1/dashboard/activity:
+    get:
+      tags: [Analytics]
+      operationId: getActivityFeed
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 20
+            maximum: 50
+      responses:
+        '200':
+          description: Paginated activity feed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivityFeedResponse'
+
+  # === Sync ===
+  /v1/sync/push:
+    post:
+      tags: [Sync]
+      operationId: syncPush
+      summary: Push local change_log entries to server
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SyncPushRequest'
+      responses:
+        '200':
+          description: Sync results with conflict resolutions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncPushResponse'
+
+  /v1/sync/pull:
+    get:
+      tags: [Sync]
+      operationId: syncPull
+      summary: Pull change_log events since last sync
+      parameters:
+        - name: since
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Events since the given timestamp
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncPullResponse'
+
+  /v1/sync/conflicts:
+    get:
+      tags: [Sync]
+      operationId: getConflictHistory
+      parameters:
+        - name: since
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Superseded conflict entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ConflictHistoryEntry'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    GoalId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+  responses:
+    BadRequest:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Authentication failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+  schemas:
+    # === Error ===
+    ErrorResponse:
+      type: object
+      required: [code, message, correlationId, timestamp]
+      properties:
+        code:
+          type: string
+          example: VALIDATION_ERROR
+        message:
+          type: string
+          example: "Goal name must be 1-100 characters"
+        details:
+          type: object
+          additionalProperties: true
+        correlationId:
+          type: string
+          format: uuid
+        timestamp:
+          type: string
+          format: date-time
+
+    # === Auth ===
+    TokenRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    RefreshTokenRequest:
+      type: object
+      required: [refreshToken]
+      properties:
+        refreshToken:
+          type: string
+    TokenResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+        expiresIn:
+          type: integer
+        tokenType:
+          type: string
+          example: Bearer
+
+    # === Goals ===
+    CreateGoalRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        keywords:
+          type: array
+          items:
+            type: string
+            minLength: 1
+            maxLength: 50
+          maxItems: 20
+    UpdateGoalRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        keywords:
+          type: array
+          items:
+            type: string
+            minLength: 1
+            maxLength: 50
+          maxItems: 20
+    GoalResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        keywords:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    GoalDetailResponse:
+      allOf:
+        - $ref: '#/components/schemas/GoalResponse'
+        - type: object
+          properties:
+            checklistItems:
+              type: array
+              items:
+                $ref: '#/components/schemas/ChecklistItemResponse'
+            activeHabitTracks:
+              type: integer
+            completionPercentage:
+              type: number
+              format: float
+
+    # === Checklist ===
+    CreateChecklistItemRequest:
+      type: object
+      required: [text]
+      properties:
+        text:
+          type: string
+          maxLength: 500
+    UpdateChecklistItemRequest:
+      type: object
+      properties:
+        text:
+          type: string
+          maxLength: 500
+        isCompleted:
+          type: boolean
+    ChecklistItemResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        goalId:
+          type: string
+          format: uuid
+        text:
+          type: string
+        isCompleted:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+
+    # === Todos ===
+    CreateTodoRequest:
+      type: object
+      required: [text]
+      properties:
+        text:
+          type: string
+          minLength: 1
+          maxLength: 500
+        dayDate:
+          type: string
+          format: date
+        dueDateTime:
+          type: string
+          format: date-time
+    UpdateTodoRequest:
+      type: object
+      properties:
+        text:
+          type: string
+          minLength: 1
+          maxLength: 500
+        isCompleted:
+          type: boolean
+    TodoResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        text:
+          type: string
+        isCompleted:
+          type: boolean
+        dayDate:
+          type: string
+          format: date
+        dueDateTime:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    # === Habits ===
+    ActivateHabitRequest:
+      type: object
+      required: [goalId, checkpoints]
+      properties:
+        goalId:
+          type: string
+          format: uuid
+        checkpoints:
+          type: array
+          items:
+            type: object
+            properties:
+              dayNumber:
+                type: integer
+                minimum: 1
+                maximum: 30
+              description:
+                type: string
+                minLength: 1
+                maxLength: 200
+          minItems: 30
+          maxItems: 30
+    HabitTrackResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        goalId:
+          type: string
+          format: uuid
+        startDate:
+          type: string
+          format: date
+        currentDay:
+          type: integer
+        isFinished:
+          type: boolean
+    HabitTrackDetailResponse:
+      allOf:
+        - $ref: '#/components/schemas/HabitTrackResponse'
+        - type: object
+          properties:
+            checkpoints:
+              type: array
+              items:
+                $ref: '#/components/schemas/CheckpointResponse'
+    MarkCheckpointRequest:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [COMPLETED, MISSED]
+    CheckpointResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        dayNumber:
+          type: integer
+        description:
+          type: string
+        status:
+          type: string
+          enum: [PENDING, COMPLETED, MISSED]
+        completedAt:
+          type: string
+          format: date-time
+
+    # === Reminders ===
+    CreateReminderRequest:
+      type: object
+      required: [entityType, entityId, scheduledTime]
+      properties:
+        entityType:
+          type: string
+          enum: [DAILY_TODO, GOAL_CHECKLIST, HABIT_CHECKPOINT]
+        entityId:
+          type: string
+          format: uuid
+        scheduledTime:
+          type: string
+          example: "09:00"
+        scheduledDate:
+          type: string
+          format: date
+        recurrence:
+          $ref: '#/components/schemas/RecurrenceRule'
+        conditionType:
+          type: string
+          enum: [ENTITY_INCOMPLETE]
+        escalationIntervalMinutes:
+          type: integer
+          minimum: 1
+        maxEscalations:
+          type: integer
+          minimum: 0
+    UpdateReminderRequest:
+      type: object
+      properties:
+        scheduledTime:
+          type: string
+        recurrence:
+          $ref: '#/components/schemas/RecurrenceRule'
+        isActive:
+          type: boolean
+    RecurrenceRule:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [DAILY, SPECIFIC_WEEKDAYS, WEEKLY, MONTHLY, CUSTOM_INTERVAL]
+        weekdays:
+          type: array
+          items:
+            type: string
+            enum: [MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY]
+        intervalDays:
+          type: integer
+    ReminderResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        entityType:
+          type: string
+        entityId:
+          type: string
+          format: uuid
+        scheduledTime:
+          type: string
+        recurrence:
+          $ref: '#/components/schemas/RecurrenceRule'
+        isActive:
+          type: boolean
+        escalationIntervalMinutes:
+          type: integer
+        maxEscalations:
+          type: integer
+
+    # === Interception ===
+    CreateInterceptionRuleRequest:
+      type: object
+      required: [dailyAllowanceMinutes]
+      properties:
+        goalId:
+          type: string
+          format: uuid
+        appPackageName:
+          type: string
+        siteDomain:
+          type: string
+        dailyAllowanceMinutes:
+          type: integer
+          minimum: 1
+          maximum: 480
+    UpdateInterceptionRuleRequest:
+      type: object
+      properties:
+        dailyAllowanceMinutes:
+          type: integer
+          minimum: 1
+          maximum: 480
+        isActive:
+          type: boolean
+    InterceptionRuleResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        goalId:
+          type: string
+          format: uuid
+        appPackageName:
+          type: string
+        siteDomain:
+          type: string
+        dailyAllowanceMinutes:
+          type: integer
+        isActive:
+          type: boolean
+
+    # === Profile ===
+    UpdateProfileRequest:
+      type: object
+      properties:
+        locale:
+          type: string
+          enum: [en, hi, mr]
+        accentColor:
+          type: string
+          pattern: '^#[0-9A-Fa-f]{6}$'
+        timezone:
+          type: string
+        quietHoursStart:
+          type: string
+        quietHoursEnd:
+          type: string
+    ProfileResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+        locale:
+          type: string
+        accentColor:
+          type: string
+        timezone:
+          type: string
+        quietHoursStart:
+          type: string
+        quietHoursEnd:
+          type: string
+        photoUrl:
+          type: string
+    PhotoUploadResponse:
+      type: object
+      properties:
+        photoUrl:
+          type: string
+    ChangePasswordRequest:
+      type: object
+      required: [currentPassword, newPassword]
+      properties:
+        currentPassword:
+          type: string
+        newPassword:
+          type: string
+          minLength: 8
+
+    # === LLM ===
+    ConfigureLlmRequest:
+      type: object
+      required: [providerType, apiKey]
+      properties:
+        providerType:
+          type: string
+          enum: [OPENAI, ANTHROPIC, GOOGLE]
+        apiKey:
+          type: string
+        modelName:
+          type: string
+    LlmConfigResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        providerType:
+          type: string
+        modelName:
+          type: string
+        apiKeyMasked:
+          type: string
+          example: "sk-****abcd"
+    LlmValidationResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        responseTimeMs:
+          type: integer
+
+    # === Content ===
+    VideoRecommendationResponse:
+      type: object
+      properties:
+        videoUrl:
+          type: string
+          format: uri
+        title:
+          type: string
+        thumbnailUrl:
+          type: string
+          format: uri
+        source:
+          type: string
+          enum: [LLM, YOUTUBE_SEARCH, CACHE]
+
+    # === Analytics ===
+    SubmitEfficiencyScoreRequest:
+      type: object
+      required: [scoreDate, productiveSeconds, totalTrackedSeconds]
+      properties:
+        scoreDate:
+          type: string
+          format: date
+        productiveSeconds:
+          type: integer
+          minimum: 0
+        totalTrackedSeconds:
+          type: integer
+          minimum: 0
+    EfficiencyScoreResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        scoreDate:
+          type: string
+          format: date
+        productiveSeconds:
+          type: integer
+        totalTrackedSeconds:
+          type: integer
+        scorePercent:
+          type: integer
+          minimum: 0
+          maximum: 100
+          nullable: true
+    DashboardSummaryResponse:
+      type: object
+      properties:
+        pendingTodosCount:
+          type: integer
+        activeHabitsCount:
+          type: integer
+        todayEfficiencyScore:
+          type: integer
+          nullable: true
+        efficiencyTrend:
+          type: string
+          enum: [IMPROVING, DECLINING, STABLE]
+        goalProgressPercentage:
+          type: number
+          format: float
+    ActivityFeedResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActivityFeedItem'
+        page:
+          type: integer
+        totalPages:
+          type: integer
+    ActivityFeedItem:
+      type: object
+      properties:
+        id:
+          type: string
+        entityType:
+          type: string
+        field:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        description:
+          type: string
+
+    # === Sync ===
+    SyncPushRequest:
+      type: object
+      required: [entries]
+      properties:
+        entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChangeLogEntryDto'
+    ChangeLogEntryDto:
+      type: object
+      required: [id, entityId, entityType, field, timestamp, deviceId]
+      properties:
+        id:
+          type: string
+          format: uuid
+        entityId:
+          type: string
+          format: uuid
+        entityType:
+          type: string
+        field:
+          type: string
+        value:
+          type: string
+          nullable: true
+        timestamp:
+          type: string
+          format: date-time
+        deviceId:
+          type: string
+    SyncPushResponse:
+      type: object
+      properties:
+        accepted:
+          type: array
+          items:
+            type: object
+            properties:
+              entryId:
+                type: string
+                format: uuid
+              serverTimestamp:
+                type: string
+                format: date-time
+        conflicts:
+          type: array
+          items:
+            type: object
+            properties:
+              entryId:
+                type: string
+                format: uuid
+              resolution:
+                type: string
+                enum: [LOCAL_WINS, REMOTE_WINS]
+              winningEntryId:
+                type: string
+                format: uuid
+    SyncPullResponse:
+      type: object
+      properties:
+        entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChangeLogEntryDto'
+        serverTimestamp:
+          type: string
+          format: date-time
+    ConflictHistoryEntry:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        supersededEntryId:
+          type: string
+          format: uuid
+        winningEntryId:
+          type: string
+          format: uuid
+        resolution:
+          type: string
+        resolvedAt:
+          type: string
+          format: date-time

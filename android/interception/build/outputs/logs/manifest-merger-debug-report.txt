@@ -1,0 +1,56 @@
+-- Merging decision tree log ---
+manifest
+ADDED from D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:2:1-24:12
+INJECTED from D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:2:1-24:12
+	package
+		INJECTED from D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml
+	xmlns:tools
+		ADDED from D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:3:5-51
+	xmlns:android
+		ADDED from D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:2:11-69
+uses-permission#android.permission.FOREGROUND_SERVICE
+ADDED from D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:5:5-77
+	android:name
+		ADDED from D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:5:22-74
+uses-permission#android.permission.FOREGROUND_SERVICE_SPECIAL_USE
+ADDED from D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:6:5-89
+	android:name
+		ADDED from D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:6:22-86
+uses-permission#android.permission.SYSTEM_ALERT_WINDOW
+ADDED from D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:7:5-78
+	android:name
+		ADDED from D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:7:22-75
+uses-permission#android.permission.PACKAGE_USAGE_STATS
+ADDED from D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:8:5-10:47
+	tools:ignore
+		ADDED from D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:10:9-44
+	android:name
+		ADDED from D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:9:9-62
+uses-permission#android.permission.POST_NOTIFICATIONS
+ADDED from D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:11:5-77
+	android:name
+		ADDED from D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:11:22-74
+application
+ADDED from D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:13:5-22:19
+service#com.dopashift.interception.InterceptionService
+ADDED from D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:14:9-21:19
+	android:exported
+		ADDED from D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:16:13-37
+	android:foregroundServiceType
+		ADDED from D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:17:13-55
+	android:name
+		ADDED from D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:15:13-48
+property
+ADDED from D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:18:13-20:83
+	android:value
+		ADDED from D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:20:17-80
+	android:name
+		ADDED from D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:19:17-76
+uses-sdk
+INJECTED from D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml
+INJECTED from D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml

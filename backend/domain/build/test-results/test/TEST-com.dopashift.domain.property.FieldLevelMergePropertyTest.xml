@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.dopashift.domain.property.FieldLevelMergePropertyTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-08-23T06:26:26" hostname="SHAILESH" time="0.81">
+  <properties/>
+  <testcase name="Property 3: Field-level merge preserves both edits when fields differ" classname="com.dopashift.domain.property.FieldLevelMergePropertyTest" time="0.81"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

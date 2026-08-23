@@ -1,0 +1,46 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    xmlns:tools="http://schemas.android.com/tools"
+4    package="com.dopashift.interception" >
+5
+6    <uses-sdk android:minSdkVersion="26" />
+7
+8    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+8-->D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:5:5-77
+8-->D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:5:22-74
+9    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+9-->D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:6:5-89
+9-->D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:6:22-86
+10    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+10-->D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:7:5-78
+10-->D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:7:22-75
+11    <uses-permission
+11-->D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:8:5-10:47
+12        android:name="android.permission.PACKAGE_USAGE_STATS"
+12-->D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:9:9-62
+13        tools:ignore="ProtectedPermissions" />
+13-->D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:10:9-44
+14    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+14-->D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:11:5-77
+14-->D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:11:22-74
+15
+16    <application>
+16-->D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:13:5-22:19
+17        <service
+17-->D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:14:9-21:19
+18            android:name="com.dopashift.interception.InterceptionService"
+18-->D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:15:13-48
+19            android:exported="false"
+19-->D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:16:13-37
+20            android:foregroundServiceType="specialUse" >
+20-->D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:17:13-55
+21            <property
+21-->D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:18:13-20:83
+22                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+22-->D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:19:17-76
+23                android:value="Screen-time monitoring and interception overlay" />
+23-->D:\code\dopa-shift\android\interception\src\main\AndroidManifest.xml:20:17-80
+24        </service>
+25    </application>
+26
+27</manifest>

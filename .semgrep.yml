@@ -1,0 +1,93 @@
+rules:
+  # === Secret Detection Rules ===
+  
+  - id: hardcoded-password
+    patterns:
+      - pattern-either:
+          - pattern: $VAR = "..."
+          - pattern: password = "..."
+          - pattern: secret = "..."
+    message: Hardcoded credential detected. Use environment variables or a secrets manager.
+    languages: [kotlin, java, typescript, javascript]
+    severity: ERROR
+    metadata:
+      category: security
+      confidence: HIGH
+      cwe: CWE-798
+
+  - id: hardcoded-api-key-pattern
+    pattern-regex: '(?i)(api[_-]?key|apikey|api[_-]?secret)\s*[=:]\s*["\x27][a-zA-Z0-9_\-]{20,}["\x27]'
+    message: Possible hardcoded API key detected. Store secrets in environment variables or Vault.
+    languages: [generic]
+    severity: ERROR
+    metadata:
+      category: security
+      confidence: MEDIUM
+      cwe: CWE-798
+
+  - id: aws-access-key
+    pattern-regex: 'AKIA[0-9A-Z]{16}'
+    message: AWS Access Key ID detected in source code.
+    languages: [generic]
+    severity: ERROR
+    metadata:
+      category: security
+      confidence: HIGH
+
+  - id: generic-secret-assignment
+    pattern-regex: '(?i)(secret|token|bearer|credential|private[_-]?key)\s*[=:]\s*["\x27][^\s"]{8,}["\x27]'
+    message: Possible secret or credential in source code. Use a secrets manager.
+    languages: [generic]
+    severity: WARNING
+    metadata:
+      category: security
+      confidence: MEDIUM
+      cwe: CWE-798
+
+  # === Kotlin/Spring Security Rules ===
+
+  - id: sql-injection-string-concat
+    patterns:
+      - pattern-either:
+          - pattern: |
+              "..." + $USER_INPUT + "..."
+    message: Possible SQL injection via string concatenation. Use parameterized queries.
+    languages: [kotlin, java]
+    severity: ERROR
+    metadata:
+      category: security
+      confidence: MEDIUM
+      cwe: CWE-89
+
+  - id: missing-csrf-protection
+    pattern: http.csrf { it.disable() }
+    message: CSRF protection is disabled. Ensure this is intentional for API-only services.
+    languages: [kotlin]
+    severity: WARNING
+    metadata:
+      category: security
+      confidence: LOW
+
+  # === TypeScript/React Security Rules ===
+
+  - id: dangerouslySetInnerHTML
+    pattern: dangerouslySetInnerHTML
+    message: Usage of dangerouslySetInnerHTML may lead to XSS. Sanitize content first.
+    languages: [typescript, javascript]
+    severity: WARNING
+    metadata:
+      category: security
+      confidence: HIGH
+      cwe: CWE-79
+
+  - id: eval-usage
+    pattern-either:
+      - pattern: eval(...)
+      - pattern: new Function(...)
+    message: Dynamic code execution detected. This can lead to injection vulnerabilities.
+    languages: [typescript, javascript]
+    severity: ERROR
+    metadata:
+      category: security
+      confidence: HIGH
+      cwe: CWE-94

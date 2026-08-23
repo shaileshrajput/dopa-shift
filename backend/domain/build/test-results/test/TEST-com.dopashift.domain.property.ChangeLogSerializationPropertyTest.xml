@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.dopashift.domain.property.ChangeLogSerializationPropertyTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-08-23T06:26:24" hostname="SHAILESH" time="0.739">
+  <properties/>
+  <testcase name="Property 15: GoalProfile serialization round-trip produces equivalent entity" classname="com.dopashift.domain.property.ChangeLogSerializationPropertyTest" time="0.456"/>
+  <testcase name="Property 15: DailyTodoItem serialization round-trip produces equivalent entity" classname="com.dopashift.domain.property.ChangeLogSerializationPropertyTest" time="0.146"/>
+  <testcase name="Property 15: GoalChecklistItem serialization round-trip produces equivalent entity" classname="com.dopashift.domain.property.ChangeLogSerializationPropertyTest" time="0.079"/>
+  <testcase name="Property 15: HabitTrack serialization round-trip produces equivalent entity" classname="com.dopashift.domain.property.ChangeLogSerializationPropertyTest" time="0.043"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

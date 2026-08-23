@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.dopashift.domain.property.VideoRecommendationFallbackPropertyTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-08-23T06:26:27" hostname="SHAILESH" time="0.082">
+  <properties/>
+  <testcase name="Fallback to YouTube search when LLM response contains no parseable YouTube URLs" classname="com.dopashift.domain.property.VideoRecommendationFallbackPropertyTest" time="0.028"/>
+  <testcase name="Fallback to YouTube search when all LLM-suggested URLs fail validation" classname="com.dopashift.domain.property.VideoRecommendationFallbackPropertyTest" time="0.032"/>
+  <testcase name="Fallback to YouTube search when LLM returns empty response" classname="com.dopashift.domain.property.VideoRecommendationFallbackPropertyTest" time="0.019"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

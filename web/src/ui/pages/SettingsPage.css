@@ -1,0 +1,478 @@
+/* =============================================================
+   SettingsPage — Profile, LLM config, locale, accent color
+   Uses DopaShift Kinetic design tokens exclusively.
+   ============================================================= */
+
+/* ─── Page Layout ───────────────────────────────────────────── */
+.settings-page {
+  max-width: var(--grid-max-width);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.settings-page__title {
+  font-family: var(--font-headline);
+  font-size: var(--text-headline-lg-size);
+  font-weight: var(--text-headline-lg-weight);
+  line-height: var(--text-headline-lg-line-height);
+  color: var(--color-on-surface);
+}
+
+/* ─── Section Cards ─────────────────────────────────────────── */
+.settings-section {
+  background: var(--glass-bg-card);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.settings-section__title {
+  font-family: var(--font-headline);
+  font-size: var(--text-title-lg-size);
+  font-weight: var(--text-title-lg-weight);
+  line-height: var(--text-title-lg-line-height);
+  color: var(--color-on-surface);
+  margin: 0;
+}
+
+/* ─── Profile Section ───────────────────────────────────────── */
+.settings-profile {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.settings-profile__avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-container-high);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-headline);
+  font-size: var(--text-headline-md-size);
+  font-weight: 600;
+  color: var(--color-accent);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.settings-profile__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.settings-profile__info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  flex: 1;
+}
+
+.settings-profile__name-input {
+  background: var(--color-surface-container-low);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-default);
+  padding: var(--spacing-1) var(--spacing-2);
+  font-family: var(--font-body);
+  font-size: var(--text-body-lg-size);
+  color: var(--color-on-surface);
+  transition: border-color var(--transition-fast);
+}
+
+.settings-profile__name-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.settings-profile__name-input::placeholder {
+  color: var(--color-on-surface-variant);
+}
+
+/* ─── Form Fields ───────────────────────────────────────────── */
+.settings-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.settings-field__label {
+  font-family: var(--font-body);
+  font-size: var(--text-body-md-size);
+  font-weight: 500;
+  color: var(--color-on-surface-variant);
+}
+
+.settings-field__input {
+  background: var(--color-surface-container-low);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-default);
+  padding: var(--spacing-1) var(--spacing-2);
+  font-family: var(--font-body);
+  font-size: var(--text-body-lg-size);
+  color: var(--color-on-surface);
+  transition: border-color var(--transition-fast);
+}
+
+.settings-field__input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.settings-field__input::placeholder {
+  color: var(--color-on-surface-variant);
+}
+
+.settings-field__select {
+  background: var(--color-surface-container-low);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-default);
+  padding: var(--spacing-1) var(--spacing-2);
+  font-family: var(--font-body);
+  font-size: var(--text-body-lg-size);
+  color: var(--color-on-surface);
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+}
+
+.settings-field__select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.settings-field__error {
+  font-family: var(--font-body);
+  font-size: var(--text-label-md-size);
+  color: var(--color-error);
+}
+
+.settings-field__hint {
+  font-family: var(--font-body);
+  font-size: var(--text-label-md-size);
+  color: var(--color-on-surface-variant);
+}
+
+/* ─── Password Change Form ──────────────────────────────────── */
+.settings-password {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.settings-password__success {
+  font-family: var(--font-body);
+  font-size: var(--text-body-md-size);
+  color: var(--color-success);
+}
+
+.settings-password__error {
+  font-family: var(--font-body);
+  font-size: var(--text-body-md-size);
+  color: var(--color-error);
+}
+
+/* ─── Accent Color Picker ───────────────────────────────────── */
+.settings-colors {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.settings-colors__swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-1);
+}
+
+.settings-colors__swatch {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: border-color var(--transition-fast), transform var(--transition-fast);
+  padding: 0;
+}
+
+.settings-colors__swatch:hover {
+  transform: scale(1.15);
+}
+
+.settings-colors__swatch--selected {
+  border-color: var(--color-on-surface);
+  transform: scale(1.15);
+}
+
+.settings-colors__custom {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  margin-top: var(--spacing-1);
+}
+
+.settings-colors__custom-input {
+  background: var(--color-surface-container-low);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-default);
+  padding: var(--spacing-half) var(--spacing-1);
+  font-family: var(--font-mono);
+  font-size: var(--text-body-md-size);
+  color: var(--color-on-surface);
+  width: 110px;
+  transition: border-color var(--transition-fast);
+}
+
+.settings-colors__custom-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.settings-colors__custom-input--invalid {
+  border-color: var(--color-error);
+}
+
+.settings-colors__custom-preview {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-outline-variant);
+}
+
+/* ─── Locale Selector ───────────────────────────────────────── */
+.settings-locale {
+  display: flex;
+  gap: var(--spacing-1);
+  flex-wrap: wrap;
+}
+
+.settings-locale__option {
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-default);
+  background: var(--color-surface-container-low);
+  color: var(--color-on-surface-variant);
+  padding: var(--spacing-1) var(--spacing-2);
+  font-family: var(--font-body);
+  font-size: var(--text-body-md-size);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+  min-height: var(--touch-target-min);
+  display: flex;
+  align-items: center;
+}
+
+.settings-locale__option:hover {
+  border-color: var(--color-accent);
+}
+
+.settings-locale__option--selected {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-on-primary);
+}
+
+/* ─── LLM Config ────────────────────────────────────────────── */
+.settings-llm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.settings-llm__row {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--spacing-2);
+}
+
+.settings-llm__row .settings-field {
+  flex: 1;
+}
+
+.settings-llm__validate-btn {
+  background: var(--color-surface-container-high);
+  color: var(--color-on-surface);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-default);
+  padding: var(--spacing-1) var(--spacing-2);
+  font-family: var(--font-body);
+  font-size: var(--text-body-md-size);
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+  min-height: 40px;
+  white-space: nowrap;
+}
+
+.settings-llm__validate-btn:hover {
+  opacity: 0.85;
+}
+
+.settings-llm__validate-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.settings-llm__status {
+  font-family: var(--font-body);
+  font-size: var(--text-body-md-size);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+}
+
+.settings-llm__status--success {
+  color: var(--color-success);
+}
+
+.settings-llm__status--error {
+  color: var(--color-error);
+}
+
+.settings-llm__web-search-note {
+  font-family: var(--font-body);
+  font-size: var(--text-label-md-size);
+  color: var(--color-on-surface-variant);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-half);
+}
+
+.settings-llm__web-search-badge {
+  background: var(--color-secondary-container);
+  color: var(--color-on-secondary-container);
+  border-radius: var(--radius-xl);
+  padding: 2px var(--spacing-1);
+  font-family: var(--font-mono);
+  font-size: var(--text-label-md-size);
+}
+
+/* ─── Quiet Hours ───────────────────────────────────────────── */
+.settings-quiet-hours {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.settings-quiet-hours__toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: var(--text-body-md-size);
+  color: var(--color-on-surface);
+}
+
+.settings-quiet-hours__toggle input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-accent);
+  cursor: pointer;
+}
+
+.settings-quiet-hours__times {
+  display: flex;
+  gap: var(--spacing-2);
+  align-items: flex-end;
+}
+
+.settings-quiet-hours__times .settings-field {
+  flex: 1;
+}
+
+/* ─── Action Buttons ────────────────────────────────────────── */
+.settings-btn {
+  border: none;
+  border-radius: var(--radius-default);
+  padding: var(--spacing-1) var(--spacing-3);
+  font-family: var(--font-body);
+  font-size: var(--text-body-md-size);
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+  min-height: var(--touch-target-min);
+}
+
+.settings-btn:hover {
+  opacity: 0.85;
+}
+
+.settings-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.settings-btn--primary {
+  background: var(--color-accent);
+  color: var(--color-on-primary);
+}
+
+.settings-btn--secondary {
+  background: var(--color-surface-container-high);
+  color: var(--color-on-surface);
+}
+
+/* ─── Toast/Saved notification ──────────────────────────────── */
+.settings-toast {
+  position: fixed;
+  bottom: var(--spacing-4);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-success);
+  color: #fff;
+  padding: var(--spacing-1) var(--spacing-3);
+  border-radius: var(--radius-default);
+  font-family: var(--font-body);
+  font-size: var(--text-body-md-size);
+  font-weight: 500;
+  z-index: var(--z-toast);
+  box-shadow: var(--shadow-level-2);
+  animation: settings-toast-in 200ms ease;
+}
+
+@keyframes settings-toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* ─── Mobile responsive ─────────────────────────────────────── */
+@media (max-width: 767px) {
+  .settings-page__title {
+    font-size: var(--text-headline-lg-mobile-size);
+    line-height: var(--text-headline-lg-mobile-line-height);
+  }
+
+  .settings-profile {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .settings-llm__row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .settings-quiet-hours__times {
+    flex-direction: column;
+  }
+
+  .settings-colors__swatch {
+    width: 40px;
+    height: 40px;
+  }
+}

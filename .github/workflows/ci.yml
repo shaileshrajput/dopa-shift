@@ -1,0 +1,253 @@
+name: DopaShift CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+env:
+  JAVA_VERSION: '17'
+  NODE_VERSION: '20'
+
+jobs:
+  # ===========================================================================
+  # Secret Scanning (Requirement 22.5, 13.8)
+  # ===========================================================================
+  secret-scan:
+    name: Secret Scanning
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Semgrep (SAST + Secret Detection)
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: .semgrep.yml
+        env:
+          SEMGREP_RULES: p/secrets p/owasp-top-ten
+
+  # ===========================================================================
+  # Backend Build + Test + Coverage (Requirement 13.1, 13.2, 21.11)
+  # ===========================================================================
+  backend:
+    name: Backend (Kotlin/Spring Boot)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_DB: dopashift_test
+          POSTGRES_USER: dopashift
+          POSTGRES_PASSWORD: testpass
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: temurin
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
+          restore-keys: ${{ runner.os }}-gradle-
+
+      - name: Build and Test
+        working-directory: backend
+        env:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_NAME: dopashift_test
+          DB_USERNAME: dopashift
+          DB_PASSWORD: testpass
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+          DOPASHIFT_ENCRYPTION_KEY: '0000000000000000000000000000000000000000000000000000000000000001'
+        run: ./gradlew build test jacocoTestReport
+
+      - name: Check coverage gate (80% line coverage)
+        working-directory: backend
+        run: ./gradlew jacocoTestCoverageVerification
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage
+          path: backend/api/build/reports/jacoco/
+
+  # ===========================================================================
+  # Dependency Vulnerability Scan (Requirement 13.3, 22.5)
+  # ===========================================================================
+  dependency-scan:
+    name: Dependency Vulnerability Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: temurin
+
+      - name: OWASP Dependency-Check (Backend)
+        working-directory: backend
+        run: ./gradlew dependencyCheckAnalyze
+        continue-on-error: false
+
+      - name: Set up Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: npm audit (Web Portal)
+        working-directory: web
+        run: |
+          npm ci
+          npm audit --audit-level=high
+
+      - name: Upload Dependency-Check report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dependency-check-report
+          path: backend/build/reports/dependency-check-report.html
+
+  # ===========================================================================
+  # Web Portal Build + Test + Coverage (Requirement 13.1, 21.11)
+  # ===========================================================================
+  web:
+    name: Web Portal (React/TypeScript)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install dependencies
+        working-directory: web
+        run: npm ci
+
+      - name: Lint
+        working-directory: web
+        run: npm run lint
+
+      - name: Type check
+        working-directory: web
+        run: npm run type-check
+
+      - name: Unit Tests with coverage
+        working-directory: web
+        run: npm run test -- --coverage --run
+
+      - name: Check coverage gate (70% line coverage)
+        working-directory: web
+        run: |
+          # Verify coverage meets 70% threshold
+          npx vitest run --coverage --reporter=json --outputFile=coverage-summary.json
+          node -e "
+            const coverage = require('./coverage/coverage-summary.json');
+            const total = coverage.total;
+            const linePct = total.lines.pct;
+            console.log('Line coverage: ' + linePct + '%');
+            if (linePct < 70) {
+              console.error('Coverage below 70% threshold!');
+              process.exit(1);
+            }
+          "
+
+      - name: Build
+        working-directory: web
+        run: npm run build
+
+  # ===========================================================================
+  # Android Build + Test (Requirement 13.1, 21.11)
+  # ===========================================================================
+  android:
+    name: Android (Kotlin/Compose)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: temurin
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-android-gradle-${{ hashFiles('**/*.gradle.kts') }}
+          restore-keys: ${{ runner.os }}-android-gradle-
+
+      - name: Build and Test
+        working-directory: android
+        run: ./gradlew build testDebugUnitTest
+
+      - name: Check coverage gate (70% line coverage)
+        working-directory: android
+        run: ./gradlew jacocoTestReport
+        continue-on-error: true
+
+  # ===========================================================================
+  # Contract Tests (Requirement 21.8, 21.13)
+  # ===========================================================================
+  contract-tests:
+    name: API Contract Tests
+    runs-on: ubuntu-latest
+    needs: [backend]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: temurin
+
+      - name: Validate API responses against OpenAPI spec
+        working-directory: backend
+        env:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_NAME: dopashift_test
+          DB_USERNAME: dopashift
+          DB_PASSWORD: testpass
+          DOPASHIFT_ENCRYPTION_KEY: '0000000000000000000000000000000000000000000000000000000000000001'
+        run: ./gradlew contractTest

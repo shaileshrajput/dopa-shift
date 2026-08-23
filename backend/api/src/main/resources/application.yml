@@ -1,0 +1,66 @@
+spring:
+  application:
+    name: dopashift-api
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:dopashift}
+    username: ${DB_USERNAME:dopashift}
+    password: ${DB_PASSWORD:dopashift}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8180/realms/dopashift}
+
+dopashift:
+  security:
+    keycloak-client-id: ${KEYCLOAK_CLIENT_ID:dopashift-api}
+    keycloak-client-secret: ${KEYCLOAK_CLIENT_SECRET:}
+    encryption-key: ${DOPASHIFT_ENCRYPTION_KEY:0000000000000000000000000000000000000000000000000000000000000000}
+  rate-limiting:
+    enabled: ${RATE_LIMITING_ENABLED:true}
+    auth-requests-per-minute: ${RATE_LIMIT_AUTH:10}
+    data-requests-per-minute: ${RATE_LIMIT_DATA:100}
+
+server:
+  port: ${SERVER_PORT:8080}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+      slo:
+        http.server.requests: 50ms,100ms,200ms,500ms,1s,5s
+    tags:
+      application: dopashift-api
+      service: ${OTEL_SERVICE_NAME:dopashift-api}
+  tracing:
+    sampling:
+      probability: ${TRACING_SAMPLING_PROBABILITY:1.0}
+  otlp:
+    tracing:
+      endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4318}/v1/traces
+    metrics:
+      endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4318}/v1/metrics
