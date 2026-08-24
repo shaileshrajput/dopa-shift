@@ -1,0 +1,118 @@
+# ========================
+# Gradle
+# ========================
+.gradle/
+**/build/
+!src/**/build/
+
+# Gradle wrapper (keep wrapper jar committed for reproducible builds)
+# Uncomment if you prefer NOT to commit the wrapper jar:
+# gradle/wrapper/gradle-wrapper.jar
+
+# Gradle daemon & cache
+.gradle/
+gradle-app.setting
+
+# ========================
+# Android Studio / IntelliJ IDEA
+# ========================
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Navigation editor temp files
+.navigation/
+
+# Android Studio captures
+captures/
+
+# ========================
+# Local configuration
+# ========================
+local.properties
+keystore.properties
+
+# ========================
+# Signing keys & keystores
+# ========================
+*.jks
+*.keystore
+signing/
+
+# ========================
+# Build outputs
+# ========================
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# Map files (R8/ProGuard)
+**/mapping/
+
+# ========================
+# Native builds
+# ========================
+.externalNativeBuild/
+.cxx/
+obj/
+
+# ========================
+# Lint
+# ========================
+lint/intermediates/
+lint/generated/
+lint/outputs/
+lint/tmp/
+
+# ========================
+# Test & Coverage
+# ========================
+**/test-results/
+**/connected*/
+**/coverage/
+*.exec
+jacoco.exec
+
+# ========================
+# Google Services (contains API keys)
+# ========================
+google-services.json
+
+# ========================
+# OS generated files
+# ========================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# ========================
+# Crash logs
+# ========================
+crashlytics-build.properties
+fabric.properties
+
+# ========================
+# Freeline (deprecated but still seen)
+# ========================
+freeline.py
+freeline/
+freeline_project_description.json
+
+# ========================
+# Kotlin
+# ========================
+*.kotlin_module
+
+# ========================
+# Misc
+# ========================
+*.hprof
+output.json
+*.log
