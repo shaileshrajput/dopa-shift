@@ -1,5 +1,5 @@
 ---
-inclusion: always
+inclusion: auto
 ---
 
 # Sync Engine & Offline-First Rules

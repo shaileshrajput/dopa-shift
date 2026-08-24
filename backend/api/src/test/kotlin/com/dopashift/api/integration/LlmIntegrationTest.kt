@@ -1,12 +1,11 @@
 package com.dopashift.api.integration
 
-import com.dopashift.domain.model.LlmProviderType
+import com.dopashift.domain.model.FinishReason
+import com.dopashift.domain.model.LlmCompletionResult
 import com.dopashift.domain.port.LlmAdapter
-import com.dopashift.domain.port.LlmAdapterFactory
-import org.junit.jupiter.api.BeforeEach
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import java.time.Duration
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
@@ -29,7 +28,7 @@ class LlmIntegrationTest {
     inner class ValidResponses {
 
         @Test
-        fun `valid response with YouTube URLs extracts links correctly`() {
+        fun `valid response with YouTube URLs extracts links correctly`() = runBlocking {
             val adapter = FakeLlmAdapter(response = """
                 Here are some videos for learning Kotlin:
                 1. https://www.youtube.com/watch?v=ABC123def45
@@ -37,23 +36,20 @@ class LlmIntegrationTest {
                 These are great for beginners.
             """.trimIndent())
 
-            val result = adapter.generateCompletion("Recommend videos for Kotlin learning")
-            assertTrue(result.isSuccess)
-            val text = result.getOrThrow()
-            assertTrue(text.contains("youtube.com/watch?v=ABC123def45"))
-            assertTrue(text.contains("youtu.be/XYZ789abc12"))
+            val result = adapter.complete("Recommend videos for Kotlin learning")
+            assertTrue(result.text.contains("youtube.com/watch?v=ABC123def45"))
+            assertTrue(result.text.contains("youtu.be/XYZ789abc12"))
         }
 
         @Test
-        fun `valid response without any URLs triggers fallback indicator`() {
+        fun `valid response without any URLs triggers fallback indicator`() = runBlocking {
             val adapter = FakeLlmAdapter(response = """
                 I recommend watching tutorials about Kotlin coroutines and Jetpack Compose.
                 They are very helpful for Android development.
             """.trimIndent())
 
-            val result = adapter.generateCompletion("Recommend videos for Android")
-            assertTrue(result.isSuccess)
-            val text = result.getOrThrow()
+            val result = adapter.complete("Recommend videos for Android")
+            val text = result.text
             // No youtube URLs — calling code should detect this and fallback to search
             val hasYouTubeUrl = text.contains("youtube.com") || text.contains("youtu.be")
             assertTrue(!hasYouTubeUrl, "Response without URLs should trigger fallback")
@@ -70,9 +66,8 @@ class LlmIntegrationTest {
                 errorMessage = "Invalid API key provided"
             )
 
-            val result = adapter.generateCompletion("any prompt")
-            assertTrue(result.isFailure)
-            val exception = result.exceptionOrNull()
+            val exception = runCatching { runBlocking { adapter.complete("any prompt") } }
+                .exceptionOrNull()
             assertNotNull(exception)
             assertTrue(exception.message?.contains("authentication", ignoreCase = true) == true)
         }
@@ -84,9 +79,8 @@ class LlmIntegrationTest {
                 errorMessage = "Rate limit exceeded. Please retry after 60 seconds."
             )
 
-            val result = adapter.generateCompletion("any prompt")
-            assertTrue(result.isFailure)
-            val exception = result.exceptionOrNull()
+            val exception = runCatching { runBlocking { adapter.complete("any prompt") } }
+                .exceptionOrNull()
             assertNotNull(exception)
             assertTrue(exception.message?.contains("rate limit", ignoreCase = true) == true)
         }
@@ -98,9 +92,8 @@ class LlmIntegrationTest {
                 errorMessage = "Request timed out after 10000ms"
             )
 
-            val result = adapter.generateCompletion("any prompt")
-            assertTrue(result.isFailure)
-            val exception = result.exceptionOrNull()
+            val exception = runCatching { runBlocking { adapter.complete("any prompt") } }
+                .exceptionOrNull()
             assertNotNull(exception)
             assertTrue(exception.message?.contains("timeout", ignoreCase = true) == true)
         }
@@ -112,8 +105,9 @@ class LlmIntegrationTest {
                 errorMessage = "Unable to connect to provider"
             )
 
-            val result = adapter.generateCompletion("any prompt")
-            assertTrue(result.isFailure)
+            val exception = runCatching { runBlocking { adapter.complete("any prompt") } }
+                .exceptionOrNull()
+            assertNotNull(exception)
         }
     }
 
@@ -121,7 +115,7 @@ class LlmIntegrationTest {
     inner class FallbackChain {
 
         @Test
-        fun `fallback activates when LLM returns no video links`() {
+        fun `fallback activates when LLM returns no video links`() = runBlocking {
             val adapter = FakeLlmAdapter(response = "No specific videos, just search online")
             val fallbackSearcher = FakeYouTubeSearcher(
                 results = listOf("https://www.youtube.com/watch?v=FallbackVideo1")
@@ -136,7 +130,7 @@ class LlmIntegrationTest {
         }
 
         @Test
-        fun `fallback activates when LLM errors out`() {
+        fun `fallback activates when LLM errors out`() = runBlocking {
             val adapter = FakeLlmAdapter(error = LlmError.TIMEOUT)
             val fallbackSearcher = FakeYouTubeSearcher(
                 results = listOf("https://www.youtube.com/watch?v=FallbackOnError")
@@ -150,7 +144,7 @@ class LlmIntegrationTest {
         }
 
         @Test
-        fun `LLM response with valid YouTube URL uses LLM source`() {
+        fun `LLM response with valid YouTube URL uses LLM source`() = runBlocking {
             val adapter = FakeLlmAdapter(
                 response = "Watch this: https://www.youtube.com/watch?v=LlmRecommended"
             )
@@ -176,7 +170,7 @@ class FakeLlmAdapter(
     private val errorMessage: String = "Error"
 ) : LlmAdapter {
 
-    override fun generateCompletion(prompt: String): Result<String> {
+    override suspend fun complete(prompt: String, maxTokens: Int): LlmCompletionResult {
         if (error != null) {
             val message = when (error) {
                 LlmError.AUTHENTICATION -> "Authentication failed: $errorMessage"
@@ -184,12 +178,18 @@ class FakeLlmAdapter(
                 LlmError.TIMEOUT -> "Timeout: $errorMessage"
                 LlmError.NETWORK -> "Network error: $errorMessage"
             }
-            return Result.failure(RuntimeException(message))
+            throw RuntimeException(message)
         }
-        return Result.success(response ?: "")
+        return LlmCompletionResult(
+            text = response ?: "",
+            tokensUsed = (response?.length ?: 0) / 4,
+            finishReason = FinishReason.COMPLETE
+        )
     }
 
-    override fun getProviderType(): LlmProviderType = LlmProviderType.OPENAI
+    override suspend fun healthCheck(): Boolean = (error == null)
+
+    override val supportsWebBrowsing: Boolean = false
 }
 
 class FakeYouTubeSearcher(
@@ -211,13 +211,13 @@ class VideoRecommendationPipeline(
         """https?://(?:www\.)?(?:youtube\.com/watch\?v=|youtu\.be/)[\w-]+"""
     )
 
-    fun findVideo(goalName: String, keywords: List<String>): VideoResult? {
+    suspend fun findVideo(goalName: String, keywords: List<String>): VideoResult? {
         // Step 1: Try LLM
         val prompt = "Recommend educational YouTube videos about: $goalName (${keywords.joinToString(", ")})"
-        val llmResult = llmAdapter.generateCompletion(prompt)
+        val llmResult = runCatching { llmAdapter.complete(prompt) }
 
         if (llmResult.isSuccess) {
-            val text = llmResult.getOrThrow()
+            val text = llmResult.getOrThrow().text
             val urls = youTubeUrlPattern.findAll(text).map { it.value }.toList()
             if (urls.isNotEmpty()) {
                 return VideoResult(url = urls.first(), source = "LLM")

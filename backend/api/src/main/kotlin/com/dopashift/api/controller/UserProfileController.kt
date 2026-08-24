@@ -52,7 +52,13 @@ class UserProfileController(
     private val webClient: WebClient,
 
     @Value("\${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
-    private val keycloakIssuerUri: String
+    private val keycloakIssuerUri: String,
+
+    @Value("\${dopashift.security.keycloak-client-id:dopashift-api}")
+    private val keycloakClientId: String,
+
+    @Value("\${dopashift.security.keycloak-client-secret:}")
+    private val keycloakClientSecret: String
 ) {
 
     private val logger = LoggerFactory.getLogger(UserProfileController::class.java)
@@ -247,6 +253,9 @@ class UserProfileController(
     /**
      * Verifies the current password by attempting a direct grant (resource owner password)
      * against Keycloak's token endpoint.
+     *
+     * The dopashift-api client is confidential (publicClient=false), so the client_secret
+     * must be included in the token request for Keycloak to accept it.
      */
     private fun verifyCurrentPassword(currentPassword: String) {
         val username = authenticatedUser.getPreferredUsername()
@@ -255,15 +264,16 @@ class UserProfileController(
         val tokenUrl = "$keycloakIssuerUri/protocol/openid-connect/token"
 
         try {
+            val formData = BodyInserters.fromFormData("grant_type", "password")
+                .with("username", username)
+                .with("password", currentPassword)
+                .with("client_id", keycloakClientId)
+                .with("client_secret", keycloakClientSecret)
+
             webClient.post()
                 .uri(tokenUrl)
                 .contentType(org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED)
-                .body(
-                    BodyInserters.fromFormData("grant_type", "password")
-                        .with("username", username)
-                        .with("password", currentPassword)
-                        .with("client_id", "dopashift-api")
-                )
+                .body(formData)
                 .retrieve()
                 .toBodilessEntity()
                 .block()

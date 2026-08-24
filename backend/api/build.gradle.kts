@@ -46,6 +46,10 @@ dependencies {
     // Testing
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation(kotlin("test"))
+    testImplementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
+    testRuntimeOnly("com.h2database:h2")
+    testImplementation("org.springframework.security:spring-security-test")
 }
 
 tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {

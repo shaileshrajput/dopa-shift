@@ -5,6 +5,7 @@ import com.dopashift.data.di.DataModule;
 import com.dopashift.data.di.NetworkModule;
 import com.dopashift.data.di.RepositoryModule;
 import com.dopashift.interception.InterceptionService_GeneratedInjector;
+import com.dopashift.interception.di.InterceptionModule;
 import com.dopashift.interception.overlay.OverlayService_GeneratedInjector;
 import com.dopashift.interception.overlay.OverlayViewModel_HiltModules;
 import com.dopashift.interception.reminder.ReminderEvaluationWorker_HiltModule;
@@ -15,7 +16,9 @@ import com.dopashift.ui.analytics.AnalyticsViewModel_HiltModules;
 import com.dopashift.ui.dashboard.DashboardViewModel_HiltModules;
 import com.dopashift.ui.goals.GoalsViewModel_HiltModules;
 import com.dopashift.ui.habits.HabitRoadmapViewModel_HiltModules;
+import com.dopashift.ui.navigation.DopaShiftAppViewModel_HiltModules;
 import com.dopashift.ui.onboarding.OnboardingViewModel_HiltModules;
+import com.dopashift.ui.onboarding.PermissionSetupViewModel_HiltModules;
 import com.dopashift.ui.reminders.RemindersViewModel_HiltModules;
 import com.dopashift.ui.settings.SettingsViewModel_HiltModules;
 import com.dopashift.ui.tasks.DailyTasksViewModel_HiltModules;
@@ -149,6 +152,7 @@ public final class DopaShiftApplication_HiltComponents {
           ServiceCBuilderModule.class,
           HiltWrapper_FragmentGetContextFix_FragmentGetContextFixModule.class,
           HiltWrapper_WorkerFactoryModule.class,
+          InterceptionModule.class,
           NetworkModule.class,
           ReminderEvaluationWorker_HiltModule.class,
           ReminderModule.class,
@@ -182,6 +186,7 @@ public final class DopaShiftApplication_HiltComponents {
           AnalyticsViewModel_HiltModules.KeyModule.class,
           DailyTasksViewModel_HiltModules.KeyModule.class,
           DashboardViewModel_HiltModules.KeyModule.class,
+          DopaShiftAppViewModel_HiltModules.KeyModule.class,
           ActivityCBuilderModule.class,
           ViewModelCBuilderModule.class,
           GoalsViewModel_HiltModules.KeyModule.class,
@@ -190,6 +195,7 @@ public final class DopaShiftApplication_HiltComponents {
           HiltWrapper_SavedStateHandleModule.class,
           OnboardingViewModel_HiltModules.KeyModule.class,
           OverlayViewModel_HiltModules.KeyModule.class,
+          PermissionSetupViewModel_HiltModules.KeyModule.class,
           RemindersViewModel_HiltModules.KeyModule.class,
           SettingsViewModel_HiltModules.KeyModule.class
       }
@@ -230,11 +236,13 @@ public final class DopaShiftApplication_HiltComponents {
           AnalyticsViewModel_HiltModules.BindsModule.class,
           DailyTasksViewModel_HiltModules.BindsModule.class,
           DashboardViewModel_HiltModules.BindsModule.class,
+          DopaShiftAppViewModel_HiltModules.BindsModule.class,
           GoalsViewModel_HiltModules.BindsModule.class,
           HabitRoadmapViewModel_HiltModules.BindsModule.class,
           HiltWrapper_HiltViewModelFactory_ViewModelModule.class,
           OnboardingViewModel_HiltModules.BindsModule.class,
           OverlayViewModel_HiltModules.BindsModule.class,
+          PermissionSetupViewModel_HiltModules.BindsModule.class,
           RemindersViewModel_HiltModules.BindsModule.class,
           SettingsViewModel_HiltModules.BindsModule.class
       }

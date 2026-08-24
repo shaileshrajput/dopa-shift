@@ -2,15 +2,21 @@ package com.dopashift.ui.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dopashift.domain.port.QuietHoursProvider
+import com.dopashift.domain.repository.LlmConfigRepository
+import com.dopashift.domain.repository.UserPreferencesRepository
+import com.dopashift.domain.service.LlmProviderService
 import com.dopashift.domain.service.LlmProviderType
 import com.dopashift.domain.service.ValidationResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalTime
+import java.util.UUID
 import javax.inject.Inject
 
 /**
@@ -19,7 +25,12 @@ import javax.inject.Inject
 enum class SupportedLocale(val code: String, val displayName: String) {
     ENGLISH("en", "English"),
     HINDI("hi", "हिन्दी"),
-    MARATHI("mr", "मराठी")
+    MARATHI("mr", "मराठी");
+
+    companion object {
+        fun fromCode(code: String): SupportedLocale =
+            entries.firstOrNull { it.code == code } ?: ENGLISH
+    }
 }
 
 /**
@@ -50,6 +61,7 @@ data class SettingsUiState(
     val displayName: String = "",
     val email: String = "",
     val profilePhotoUrl: String? = null,
+    val displayNameSaved: Boolean = false,
 
     // Password change
     val currentPassword: String = "",
@@ -89,12 +101,18 @@ data class SettingsUiState(
  * ViewModel for the Settings screen.
  *
  * Manages profile customization, LLM provider configuration, locale selection,
- * accent color, and quiet hours settings.
+ * accent color, and quiet hours settings. All changes are persisted to local
+ * storage immediately (offline-first).
  *
  * Requirements: 15.1, 15.8, 15.9, 19.1, 19.7, 19.8, 19.12, 19.13, 19.14, 2.8, 12.1
  */
 @HiltViewModel
-class SettingsViewModel @Inject constructor() : ViewModel() {
+class SettingsViewModel @Inject constructor(
+    private val userPreferencesRepository: UserPreferencesRepository,
+    private val llmConfigRepository: LlmConfigRepository,
+    private val quietHoursProvider: QuietHoursProvider,
+    private val llmProviderService: LlmProviderService
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
@@ -105,36 +123,69 @@ class SettingsViewModel @Inject constructor() : ViewModel() {
 
     private fun loadSettings() {
         viewModelScope.launch {
-            // In production, this would fetch from repository/API.
-            // For now, mark as loaded with defaults.
-            _uiState.update { it.copy(isLoading = false) }
+            try {
+                // Load all persisted settings in parallel from local storage
+                val displayName = userPreferencesRepository.observeDisplayName().first()
+                val email = userPreferencesRepository.observeEmail().first()
+                val accentColor = userPreferencesRepository.observeAccentColor().first()
+                val localeCode = userPreferencesRepository.observeLocale().first()
+                val llmProvider = llmConfigRepository.observeProviderType().first()
+                val llmMasked = llmConfigRepository.observeMaskedApiKey().first()
+                val llmConfigured = llmConfigRepository.observeIsConfigured().first()
+                val quietHours = quietHoursProvider.getQuietHours(UUID(0, 0)) // Local user
+
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        displayName = displayName,
+                        email = email,
+                        selectedAccentColor = accentColor,
+                        selectedLocale = SupportedLocale.fromCode(localeCode),
+                        llmProviderType = llmProvider,
+                        llmApiKeyMasked = llmMasked,
+                        llmIsConfigured = llmConfigured,
+                        llmIsValidated = llmConfigured,
+                        quietHoursStart = quietHours?.start,
+                        quietHoursEnd = quietHours?.end
+                    )
+                }
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(isLoading = false, errorMessage = "Failed to load settings: ${e.message}")
+                }
+            }
         }
     }
 
     // === Profile ===
 
     fun updateDisplayName(name: String) {
-        _uiState.update { it.copy(displayName = name) }
+        _uiState.update { it.copy(displayName = name, displayNameSaved = false) }
     }
 
     fun saveDisplayName() {
         viewModelScope.launch {
-            // Would call profile update API
+            try {
+                userPreferencesRepository.setDisplayName(_uiState.value.displayName)
+                _uiState.update { it.copy(displayNameSaved = true) }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(errorMessage = "Failed to save display name") }
+            }
         }
     }
 
     // === Password Change (Requirement 19.7, 19.8, 19.9) ===
 
     fun updateCurrentPassword(password: String) {
-        _uiState.update { it.copy(currentPassword = password, passwordChangeError = null) }
+        _uiState.update { it.copy(currentPassword = password, passwordChangeError = null, passwordChangeSuccess = false) }
     }
 
     fun updateNewPassword(password: String) {
-        _uiState.update { it.copy(newPassword = password, passwordChangeError = null) }
+        _uiState.update { it.copy(newPassword = password, passwordChangeError = null, passwordChangeSuccess = false) }
     }
 
     fun updateConfirmPassword(password: String) {
-        _uiState.update { it.copy(confirmPassword = password, passwordChangeError = null) }
+        _uiState.update { it.copy(confirmPassword = password, passwordChangeError = null, passwordChangeSuccess = false) }
     }
 
     fun changePassword() {
@@ -149,7 +200,8 @@ class SettingsViewModel @Inject constructor() : ViewModel() {
         }
         viewModelScope.launch {
             _uiState.update { it.copy(passwordChangeInProgress = true, passwordChangeError = null) }
-            // Would call Keycloak password change API
+            // TODO: Integrate with Keycloak password change API when backend endpoint is ready.
+            // For now, simulate success to unblock UI flow.
             _uiState.update {
                 it.copy(
                     passwordChangeInProgress = false,
@@ -171,7 +223,11 @@ class SettingsViewModel @Inject constructor() : ViewModel() {
     fun selectAccentColor(hexColor: String) {
         _uiState.update { it.copy(selectedAccentColor = hexColor, customHexInput = "", customHexError = null) }
         viewModelScope.launch {
-            // Would persist to profile
+            try {
+                userPreferencesRepository.setAccentColor(hexColor)
+            } catch (e: Exception) {
+                _uiState.update { it.copy(errorMessage = "Failed to save accent color") }
+            }
         }
     }
 
@@ -186,11 +242,16 @@ class SettingsViewModel @Inject constructor() : ViewModel() {
             _uiState.update { it.copy(customHexError = "Invalid hex color. Use format #RRGGBB") }
             return
         }
+        val normalizedHex = input.uppercase()
         _uiState.update {
-            it.copy(selectedAccentColor = input.uppercase(), customHexInput = "", customHexError = null)
+            it.copy(selectedAccentColor = normalizedHex, customHexInput = "", customHexError = null)
         }
         viewModelScope.launch {
-            // Would persist to profile
+            try {
+                userPreferencesRepository.setAccentColor(normalizedHex)
+            } catch (e: Exception) {
+                _uiState.update { it.copy(errorMessage = "Failed to save custom color") }
+            }
         }
     }
 
@@ -199,7 +260,11 @@ class SettingsViewModel @Inject constructor() : ViewModel() {
     fun selectLocale(locale: SupportedLocale) {
         _uiState.update { it.copy(selectedLocale = locale) }
         viewModelScope.launch {
-            // Would persist and trigger locale change
+            try {
+                userPreferencesRepository.setLocale(locale.code)
+            } catch (e: Exception) {
+                _uiState.update { it.copy(errorMessage = "Failed to save locale") }
+            }
         }
     }
 
@@ -227,35 +292,62 @@ class SettingsViewModel @Inject constructor() : ViewModel() {
             _uiState.update { it.copy(llmValidationError = "API key must be at most 256 characters") }
             return
         }
+        val provider = state.llmProviderType
+        val apiKey = state.llmApiKey
         viewModelScope.launch {
             _uiState.update { it.copy(llmValidationInProgress = true, llmValidationError = null) }
-            // Would call validate API endpoint (Requirement 15.8: 10s timeout)
-            // Simulating success for now
-            _uiState.update {
-                it.copy(
-                    llmValidationInProgress = false,
-                    llmIsConfigured = true,
-                    llmIsValidated = true,
-                    llmApiKey = "",
-                    llmApiKeyMasked = "****${state.llmApiKey.takeLast(4)}"
-                )
+            try {
+                val result = llmProviderService.validateApiKey(provider, apiKey)
+                when (result) {
+                    is ValidationResult.Valid -> {
+                        llmConfigRepository.saveConfig(provider, apiKey)
+                        _uiState.update {
+                            it.copy(
+                                llmValidationInProgress = false,
+                                llmIsConfigured = true,
+                                llmIsValidated = true,
+                                llmApiKey = "",
+                                llmApiKeyMasked = "****${apiKey.takeLast(4)}"
+                            )
+                        }
+                    }
+                    is ValidationResult.Invalid -> {
+                        _uiState.update {
+                            it.copy(
+                                llmValidationInProgress = false,
+                                llmValidationError = result.reason
+                            )
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(
+                        llmValidationInProgress = false,
+                        llmValidationError = "Validation failed: ${e.message ?: "Unknown error"}"
+                    )
+                }
             }
         }
     }
 
     fun removeLlmConfig() {
-        _uiState.update {
-            it.copy(
-                llmProviderType = null,
-                llmApiKey = "",
-                llmApiKeyMasked = "",
-                llmIsConfigured = false,
-                llmIsValidated = false,
-                llmValidationError = null
-            )
-        }
         viewModelScope.launch {
-            // Would call delete LLM config API
+            try {
+                llmConfigRepository.removeConfig()
+                _uiState.update {
+                    it.copy(
+                        llmProviderType = null,
+                        llmApiKey = "",
+                        llmApiKeyMasked = "",
+                        llmIsConfigured = false,
+                        llmIsValidated = false,
+                        llmValidationError = null
+                    )
+                }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(errorMessage = "Failed to remove LLM config") }
+            }
         }
     }
 
@@ -264,14 +356,22 @@ class SettingsViewModel @Inject constructor() : ViewModel() {
     fun updateQuietHoursStart(time: LocalTime?) {
         _uiState.update { it.copy(quietHoursStart = time) }
         viewModelScope.launch {
-            // Would persist to profile
+            try {
+                quietHoursProvider.setQuietHoursStart(time)
+            } catch (e: Exception) {
+                _uiState.update { it.copy(errorMessage = "Failed to save quiet hours") }
+            }
         }
     }
 
     fun updateQuietHoursEnd(time: LocalTime?) {
         _uiState.update { it.copy(quietHoursEnd = time) }
         viewModelScope.launch {
-            // Would persist to profile
+            try {
+                quietHoursProvider.setQuietHoursEnd(time)
+            } catch (e: Exception) {
+                _uiState.update { it.copy(errorMessage = "Failed to save quiet hours") }
+            }
         }
     }
 

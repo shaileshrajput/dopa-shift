@@ -24,6 +24,7 @@ import hilt_aggregated_deps._com_dopashift_data_di_DataModule;
 import hilt_aggregated_deps._com_dopashift_data_di_NetworkModule;
 import hilt_aggregated_deps._com_dopashift_data_di_RepositoryModule;
 import hilt_aggregated_deps._com_dopashift_interception_InterceptionService_GeneratedInjector;
+import hilt_aggregated_deps._com_dopashift_interception_di_InterceptionModule;
 import hilt_aggregated_deps._com_dopashift_interception_overlay_OverlayService_GeneratedInjector;
 import hilt_aggregated_deps._com_dopashift_interception_overlay_OverlayViewModel_HiltModules_BindsModule;
 import hilt_aggregated_deps._com_dopashift_interception_overlay_OverlayViewModel_HiltModules_KeyModule;
@@ -39,8 +40,12 @@ import hilt_aggregated_deps._com_dopashift_ui_goals_GoalsViewModel_HiltModules_B
 import hilt_aggregated_deps._com_dopashift_ui_goals_GoalsViewModel_HiltModules_KeyModule;
 import hilt_aggregated_deps._com_dopashift_ui_habits_HabitRoadmapViewModel_HiltModules_BindsModule;
 import hilt_aggregated_deps._com_dopashift_ui_habits_HabitRoadmapViewModel_HiltModules_KeyModule;
+import hilt_aggregated_deps._com_dopashift_ui_navigation_DopaShiftAppViewModel_HiltModules_BindsModule;
+import hilt_aggregated_deps._com_dopashift_ui_navigation_DopaShiftAppViewModel_HiltModules_KeyModule;
 import hilt_aggregated_deps._com_dopashift_ui_onboarding_OnboardingViewModel_HiltModules_BindsModule;
 import hilt_aggregated_deps._com_dopashift_ui_onboarding_OnboardingViewModel_HiltModules_KeyModule;
+import hilt_aggregated_deps._com_dopashift_ui_onboarding_PermissionSetupViewModel_HiltModules_BindsModule;
+import hilt_aggregated_deps._com_dopashift_ui_onboarding_PermissionSetupViewModel_HiltModules_KeyModule;
 import hilt_aggregated_deps._com_dopashift_ui_reminders_RemindersViewModel_HiltModules_BindsModule;
 import hilt_aggregated_deps._com_dopashift_ui_reminders_RemindersViewModel_HiltModules_KeyModule;
 import hilt_aggregated_deps._com_dopashift_ui_settings_SettingsViewModel_HiltModules_BindsModule;
@@ -94,6 +99,7 @@ import hilt_aggregated_deps._dagger_hilt_android_internal_modules_HiltWrapper_Ac
         _com_dopashift_data_di_NetworkModule.class,
         _com_dopashift_data_di_RepositoryModule.class,
         _com_dopashift_interception_InterceptionService_GeneratedInjector.class,
+        _com_dopashift_interception_di_InterceptionModule.class,
         _com_dopashift_interception_overlay_OverlayService_GeneratedInjector.class,
         _com_dopashift_interception_overlay_OverlayViewModel_HiltModules_BindsModule.class,
         _com_dopashift_interception_overlay_OverlayViewModel_HiltModules_KeyModule.class,
@@ -109,8 +115,12 @@ import hilt_aggregated_deps._dagger_hilt_android_internal_modules_HiltWrapper_Ac
         _com_dopashift_ui_goals_GoalsViewModel_HiltModules_KeyModule.class,
         _com_dopashift_ui_habits_HabitRoadmapViewModel_HiltModules_BindsModule.class,
         _com_dopashift_ui_habits_HabitRoadmapViewModel_HiltModules_KeyModule.class,
+        _com_dopashift_ui_navigation_DopaShiftAppViewModel_HiltModules_BindsModule.class,
+        _com_dopashift_ui_navigation_DopaShiftAppViewModel_HiltModules_KeyModule.class,
         _com_dopashift_ui_onboarding_OnboardingViewModel_HiltModules_BindsModule.class,
         _com_dopashift_ui_onboarding_OnboardingViewModel_HiltModules_KeyModule.class,
+        _com_dopashift_ui_onboarding_PermissionSetupViewModel_HiltModules_BindsModule.class,
+        _com_dopashift_ui_onboarding_PermissionSetupViewModel_HiltModules_KeyModule.class,
         _com_dopashift_ui_reminders_RemindersViewModel_HiltModules_BindsModule.class,
         _com_dopashift_ui_reminders_RemindersViewModel_HiltModules_KeyModule.class,
         _com_dopashift_ui_settings_SettingsViewModel_HiltModules_BindsModule.class,

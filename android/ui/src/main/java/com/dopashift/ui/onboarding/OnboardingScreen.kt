@@ -1,5 +1,6 @@
 package com.dopashift.ui.onboarding
 
+import android.content.Intent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -26,10 +27,8 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.Rocket
-import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.TrackChanges
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -41,11 +40,11 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -68,9 +67,12 @@ import com.dopashift.ui.theme.DopaShiftTheme
 @Composable
 fun OnboardingScreen(
     viewModel: OnboardingViewModel = hiltViewModel(),
+    permissionViewModel: PermissionSetupViewModel = hiltViewModel(),
     onOnboardingComplete: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val permissionState by permissionViewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     LaunchedEffect(uiState.isCompleted) {
         if (uiState.isCompleted) {
@@ -80,6 +82,7 @@ fun OnboardingScreen(
 
     OnboardingScreenContent(
         uiState = uiState,
+        permissionState = permissionState,
         onGoalNameChanged = viewModel::onGoalNameChanged,
         onGoalCategoryChanged = viewModel::onGoalCategoryChanged,
         onGoalKeywordChanged = viewModel::onGoalKeywordChanged,
@@ -88,6 +91,10 @@ fun OnboardingScreen(
         onPreviousStep = viewModel::previousStep,
         onSkipStep = viewModel::skipStep,
         onSkipOnboarding = viewModel::skipOnboarding,
+        onLaunchSettings = { intent -> context.startActivity(intent) },
+        onRefreshPermissions = permissionViewModel::refreshPermissionStatus,
+        usageStatsIntent = permissionViewModel::createUsageStatsSettingsIntent,
+        overlayIntent = permissionViewModel::createOverlaySettingsIntent,
     )
 }
 
@@ -95,6 +102,7 @@ fun OnboardingScreen(
 @Composable
 private fun OnboardingScreenContent(
     uiState: OnboardingUiState,
+    permissionState: PermissionSetupUiState,
     onGoalNameChanged: (String) -> Unit,
     onGoalCategoryChanged: (String) -> Unit,
     onGoalKeywordChanged: (String) -> Unit,
@@ -103,6 +111,10 @@ private fun OnboardingScreenContent(
     onPreviousStep: () -> Unit,
     onSkipStep: () -> Unit,
     onSkipOnboarding: () -> Unit,
+    onLaunchSettings: (Intent) -> Unit,
+    onRefreshPermissions: () -> Unit,
+    usageStatsIntent: () -> Intent,
+    overlayIntent: () -> Intent,
 ) {
     val pagerState = rememberPagerState(
         initialPage = uiState.currentStep,
@@ -158,7 +170,13 @@ private fun OnboardingScreenContent(
                         isLoading = uiState.isCreatingHabit,
                         onHabitDescriptionChanged = onHabitDescriptionChanged,
                     )
-                    OnboardingSteps.PERMISSIONS -> PermissionsPage()
+                    OnboardingSteps.PERMISSIONS -> PermissionSetupPage(
+                        uiState = permissionState,
+                        onLaunchSettings = onLaunchSettings,
+                        onRefreshPermissions = onRefreshPermissions,
+                        usageStatsIntent = usageStatsIntent,
+                        overlayIntent = overlayIntent,
+                    )
                     OnboardingSteps.DONE -> DonePage()
                 }
             }
@@ -421,18 +439,6 @@ private fun SetupHabitPage(
             }
         }
     }
-}
-
-@Composable
-private fun PermissionsPage() {
-    OnboardingPageLayout(
-        icon = Icons.Default.Security,
-        title = "Permissions Needed",
-        description = "DopaShift needs two permissions to work:\n\n" +
-            "\u2022 Usage Access — to monitor screen time for distraction tracking\n\n" +
-            "\u2022 Display Over Apps — to show the intercept overlay when time limits are reached\n\n" +
-            "You'll be asked to grant these in Settings after onboarding.",
-    )
 }
 
 @Composable

@@ -1,5 +1,5 @@
 ---
-inclusion: always
+inclusion: auto
 ---
 
 # Bring-Your-Own-LLM Integration Rules

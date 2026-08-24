@@ -104,4 +104,14 @@ class InterceptionPermissionHelper @Inject constructor() {
             hasOverlay = hasOverlayPermission(context)
         )
     }
+
+    /**
+     * Returns permission status from an [InterceptionContext] abstraction (testable).
+     */
+    fun checkPermissionStatus(context: InterceptionContext): PermissionStatus {
+        return PermissionStatus(
+            hasUsageStats = context.hasUsageStats,
+            hasOverlay = context.hasOverlay
+        )
+    }
 }

@@ -223,6 +223,15 @@ class SyncManagerTest {
         override suspend fun deleteOlderThan(cutoff: Long) {
             allEntries.removeAll { it.timestamp < cutoff }
         }
+
+        override fun observeRecent(userId: String, limit: Int, offset: Int): Flow<List<LocalChangeLogEntry>> {
+            return flowOf(
+                allEntries.filter { it.userId == userId }
+                    .sortedByDescending { it.timestamp }
+                    .drop(offset)
+                    .take(limit)
+            )
+        }
     }
 
     class FakeSyncStateDao : SyncStateDao {
@@ -253,5 +262,54 @@ class SyncManagerTest {
             if (shouldFail) throw RuntimeException("Network error")
             return pullResponse
         }
+
+        // --- Stubs for unused API methods in sync tests ---
+
+        override suspend fun exchangeToken(request: com.dopashift.data.remote.dto.TokenRequest) = throw NotImplementedError()
+        override suspend fun refreshToken(request: com.dopashift.data.remote.dto.RefreshTokenRequest) = throw NotImplementedError()
+        override suspend fun logout(request: com.dopashift.data.remote.dto.LogoutRequest) = throw NotImplementedError()
+        override suspend fun createGoal(request: com.dopashift.data.remote.dto.CreateGoalRequest) = throw NotImplementedError()
+        override suspend fun getGoals() = throw NotImplementedError()
+        override suspend fun getGoal(id: String) = throw NotImplementedError()
+        override suspend fun updateGoal(id: String, request: com.dopashift.data.remote.dto.UpdateGoalRequest) = throw NotImplementedError()
+        override suspend fun deleteGoal(id: String, action: String, reassignGoalId: String?) = throw NotImplementedError()
+        override suspend fun createChecklistItem(goalId: String, request: com.dopashift.data.remote.dto.CreateChecklistItemRequest) = throw NotImplementedError()
+        override suspend fun getChecklistItems(goalId: String) = throw NotImplementedError()
+        override suspend fun updateChecklistItem(goalId: String, itemId: String, request: com.dopashift.data.remote.dto.UpdateChecklistItemRequest) = throw NotImplementedError()
+        override suspend fun deleteChecklistItem(goalId: String, itemId: String) = throw NotImplementedError()
+        override suspend fun createTodo(request: com.dopashift.data.remote.dto.CreateTodoRequest) = throw NotImplementedError()
+        override suspend fun getTodos(date: String) = throw NotImplementedError()
+        override suspend fun getPendingTodos() = throw NotImplementedError()
+        override suspend fun updateTodo(id: String, request: com.dopashift.data.remote.dto.UpdateTodoRequest) = throw NotImplementedError()
+        override suspend fun deleteTodo(id: String) = throw NotImplementedError()
+        override suspend fun activateHabitTrack(request: com.dopashift.data.remote.dto.ActivateHabitTrackRequest) = throw NotImplementedError()
+        override suspend fun getHabitTracks(goalId: String?) = throw NotImplementedError()
+        override suspend fun getHabitTrack(id: String) = throw NotImplementedError()
+        override suspend fun updateCheckpoint(trackId: String, day: Int, request: com.dopashift.data.remote.dto.UpdateCheckpointRequest) = throw NotImplementedError()
+        override suspend fun getCurrentHabitForOverlay() = throw NotImplementedError()
+        override suspend fun createReminder(request: com.dopashift.data.remote.dto.CreateReminderRequest) = throw NotImplementedError()
+        override suspend fun getReminders() = throw NotImplementedError()
+        override suspend fun updateReminder(id: String, request: com.dopashift.data.remote.dto.UpdateReminderRequest) = throw NotImplementedError()
+        override suspend fun deleteReminder(id: String) = throw NotImplementedError()
+        override suspend fun createInterceptionRule(request: com.dopashift.data.remote.dto.CreateInterceptionRuleRequest) = throw NotImplementedError()
+        override suspend fun getInterceptionRules() = throw NotImplementedError()
+        override suspend fun updateInterceptionRule(id: String, request: com.dopashift.data.remote.dto.UpdateInterceptionRuleRequest) = throw NotImplementedError()
+        override suspend fun deleteInterceptionRule(id: String) = throw NotImplementedError()
+        override suspend fun getConflicts(since: Long) = throw NotImplementedError()
+        override suspend fun getEfficiencyScores(from: String, to: String) = throw NotImplementedError()
+        override suspend fun submitEfficiencyScore(request: com.dopashift.data.remote.dto.SubmitEfficiencyScoreRequest) = throw NotImplementedError()
+        override suspend fun getDashboardSummary() = throw NotImplementedError()
+        override suspend fun getActivityFeed(page: Int, size: Int) = throw NotImplementedError()
+        override suspend fun getProfile() = throw NotImplementedError()
+        override suspend fun updateProfile(request: com.dopashift.data.remote.dto.UpdateProfileRequest) = throw NotImplementedError()
+        override suspend fun uploadProfilePhoto(photo: okhttp3.MultipartBody.Part) = throw NotImplementedError()
+        override suspend fun deleteProfilePhoto() = throw NotImplementedError()
+        override suspend fun changePassword(request: com.dopashift.data.remote.dto.ChangePasswordRequest) = throw NotImplementedError()
+        override suspend fun configureLlm(request: com.dopashift.data.remote.dto.ConfigureLlmRequest) = throw NotImplementedError()
+        override suspend fun getLlmConfig() = throw NotImplementedError()
+        override suspend fun updateLlmConfig(request: com.dopashift.data.remote.dto.ConfigureLlmRequest) = throw NotImplementedError()
+        override suspend fun deleteLlmConfig() = throw NotImplementedError()
+        override suspend fun validateLlmConfig() = throw NotImplementedError()
+        override suspend fun getVideoRecommendation(goalId: String) = throw NotImplementedError()
     }
 }

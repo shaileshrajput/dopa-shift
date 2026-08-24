@@ -44,6 +44,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -154,6 +156,7 @@ private fun SettingsContent(
             displayName = uiState.displayName,
             email = uiState.email,
             profilePhotoUrl = uiState.profilePhotoUrl,
+            displayNameSaved = uiState.displayNameSaved,
             onDisplayNameChange = onDisplayNameChange,
             onSaveDisplayName = onSaveDisplayName
         )
@@ -252,6 +255,7 @@ private fun ProfileSection(
     displayName: String,
     email: String,
     profilePhotoUrl: String?,
+    displayNameSaved: Boolean,
     onDisplayNameChange: (String) -> Unit,
     onSaveDisplayName: () -> Unit
 ) {
@@ -334,6 +338,24 @@ private fun ProfileSection(
         enabled = displayName.isNotBlank()
     ) {
         Text("Save")
+    }
+
+    if (displayNameSaved) {
+        Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.base))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                Icons.Default.Check,
+                contentDescription = null,
+                tint = DopaShiftTheme.colors.successGreen,
+                modifier = Modifier.size(16.dp)
+            )
+            Spacer(modifier = Modifier.width(DopaShiftTheme.spacing.compact))
+            Text(
+                text = "Display name saved",
+                style = MaterialTheme.typography.bodySmall,
+                color = DopaShiftTheme.colors.successGreen
+            )
+        }
     }
 }
 
@@ -478,10 +500,11 @@ private fun AccentColorSection(
         verticalArrangement = Arrangement.spacedBy(DopaShiftTheme.spacing.base)
     ) {
         PredefinedAccentColors.forEach { colorLong ->
-            val hexString = "#${colorLong.toString(16).padStart(8, '0').takeLast(6).uppercase()}"
+            val argbInt = colorLong.toInt()
+            val hexString = "#%06X".format(argbInt and 0xFFFFFF)
             val isSelected = selectedColor?.equals(hexString, ignoreCase = true) == true
             ColorSwatch(
-                color = Color(colorLong),
+                color = Color(argbInt),
                 isSelected = isSelected,
                 onClick = { onSelectColor(hexString) }
             )
@@ -866,6 +889,7 @@ private fun InterceptionBypassNotice() {
 // Quiet Hours Section (Requirement 5.13)
 // =====================================================================================
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun QuietHoursSection(
     startTime: java.time.LocalTime?,
@@ -873,6 +897,9 @@ private fun QuietHoursSection(
     onStartTimeChange: (java.time.LocalTime?) -> Unit,
     onEndTimeChange: (java.time.LocalTime?) -> Unit
 ) {
+    var showStartPicker by remember { mutableStateOf(false) }
+    var showEndPicker by remember { mutableStateOf(false) }
+
     SectionHeader(title = "Quiet Hours")
     Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.stackSm))
 
@@ -896,13 +923,20 @@ private fun QuietHoursSection(
             )
             Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.compact))
             OutlinedTextField(
-                value = startTime?.toString() ?: "",
-                onValueChange = { /* Would open a time picker */ },
+                value = startTime?.let { formatTime(it) } ?: "",
+                onValueChange = {},
                 readOnly = true,
                 placeholder = { Text("22:00") },
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { showStartPicker = true },
+                enabled = false
             )
+            Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.compact))
+            TextButton(onClick = { showStartPicker = true }) {
+                Text("Set start time")
+            }
         }
         Column(modifier = Modifier.weight(1f)) {
             Text(
@@ -911,15 +945,101 @@ private fun QuietHoursSection(
             )
             Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.compact))
             OutlinedTextField(
-                value = endTime?.toString() ?: "",
-                onValueChange = { /* Would open a time picker */ },
+                value = endTime?.let { formatTime(it) } ?: "",
+                onValueChange = {},
                 readOnly = true,
                 placeholder = { Text("07:00") },
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { showEndPicker = true },
+                enabled = false
             )
+            Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.compact))
+            TextButton(onClick = { showEndPicker = true }) {
+                Text("Set end time")
+            }
         }
     }
+
+    if (startTime != null || endTime != null) {
+        Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.base))
+        TextButton(onClick = {
+            onStartTimeChange(null)
+            onEndTimeChange(null)
+        }) {
+            Text("Clear quiet hours")
+        }
+    }
+
+    // Start time picker dialog
+    if (showStartPicker) {
+        TimePickerDialog(
+            initialHour = startTime?.hour ?: 22,
+            initialMinute = startTime?.minute ?: 0,
+            title = "Quiet hours start",
+            onConfirm = { hour, minute ->
+                onStartTimeChange(java.time.LocalTime.of(hour, minute))
+                showStartPicker = false
+            },
+            onDismiss = { showStartPicker = false }
+        )
+    }
+
+    // End time picker dialog
+    if (showEndPicker) {
+        TimePickerDialog(
+            initialHour = endTime?.hour ?: 7,
+            initialMinute = endTime?.minute ?: 0,
+            title = "Quiet hours end",
+            onConfirm = { hour, minute ->
+                onEndTimeChange(java.time.LocalTime.of(hour, minute))
+                showEndPicker = false
+            },
+            onDismiss = { showEndPicker = false }
+        )
+    }
+}
+
+/**
+ * Material3 TimePicker wrapped in an AlertDialog.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TimePickerDialog(
+    initialHour: Int,
+    initialMinute: Int,
+    title: String,
+    onConfirm: (hour: Int, minute: Int) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val timePickerState = rememberTimePickerState(
+        initialHour = initialHour,
+        initialMinute = initialMinute,
+        is24Hour = true
+    )
+
+    androidx.compose.material3.AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(onClick = { onConfirm(timePickerState.hour, timePickerState.minute) }) {
+                Text("OK")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        },
+        title = { Text(title) },
+        text = {
+            TimePicker(state = timePickerState)
+        }
+    )
+}
+
+private fun formatTime(time: java.time.LocalTime): String {
+    return "%02d:%02d".format(time.hour, time.minute)
 }
 
 // =====================================================================================

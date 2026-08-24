@@ -5,4 +5,16 @@
     <string name="nav_goals">Goals</string>
     <string name="nav_analytics">Analytics</string>
     <string name="nav_settings">Settings</string>
+
+    <!-- Permission Setup (Onboarding) -->
+    <string name="permission_setup_title">Grant Permissions</string>
+    <string name="permission_setup_description">DopaShift needs two special permissions to monitor screen time and display the interception overlay. Tap each button to open Settings and grant access.</string>
+    <string name="permission_usage_stats_label">Usage Access</string>
+    <string name="permission_usage_stats_hint">Monitor screen time for distraction tracking</string>
+    <string name="permission_overlay_label">Display Over Other Apps</string>
+    <string name="permission_overlay_hint">Show the intercept overlay when time limits are reached</string>
+    <string name="permission_check_status">Refresh Status</string>
+    <string name="permission_all_granted">All permissions granted — you\'re ready to go!</string>
+    <string name="permission_grant">Grant</string>
+    <string name="permission_granted_label">Granted</string>
 </resources>

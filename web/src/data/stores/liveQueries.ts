@@ -10,7 +10,7 @@
  */
 
 import { db } from '../db';
-import type { LocalGoal, LocalDailyTodo, LocalHabitTrack } from '../db';
+import type { LocalGoal, LocalDailyTodo, LocalHabitTrack, LocalHabitCheckpoint } from '../db';
 
 // ─── Goals ───────────────────────────────────────────────────────────────────
 
@@ -87,4 +87,32 @@ export function activeHabitTracksForUser(
  */
 export function habitTracksForGoal(goalId: string): () => Promise<LocalHabitTrack[]> {
   return () => db.habitTracks.where('goalId').equals(goalId).toArray();
+}
+
+// ─── Habit Checkpoints ───────────────────────────────────────────────────────
+
+/**
+ * Returns a querier for all checkpoints belonging to a specific habit track.
+ */
+export function checkpointsForHabitTrack(
+  habitTrackId: string,
+): () => Promise<LocalHabitCheckpoint[]> {
+  return () =>
+    db.habitCheckpoints
+      .where('habitTrackId')
+      .equals(habitTrackId)
+      .toArray();
+}
+
+/**
+ * Returns a querier for all checkpoints belonging to a user (across all tracks).
+ */
+export function checkpointsForUser(
+  userId: string,
+): () => Promise<LocalHabitCheckpoint[]> {
+  return () =>
+    db.habitCheckpoints
+      .where('userId')
+      .equals(userId)
+      .toArray();
 }

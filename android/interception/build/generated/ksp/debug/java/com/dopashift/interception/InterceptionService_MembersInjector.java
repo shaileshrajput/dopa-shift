@@ -1,5 +1,6 @@
 package com.dopashift.interception;
 
+import com.dopashift.interception.reminder.InterceptionTodoReminderNotifier;
 import dagger.MembersInjector;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.InjectedFieldSignature;
@@ -24,23 +25,35 @@ public final class InterceptionService_MembersInjector implements MembersInjecto
 
   private final Provider<DeviceCapabilityChecker> deviceCapabilityCheckerProvider;
 
+  private final Provider<AllowanceTracker> allowanceTrackerProvider;
+
+  private final Provider<InterceptionTodoReminderNotifier> todoReminderNotifierProvider;
+
   public InterceptionService_MembersInjector(
       Provider<InterceptionPermissionHelper> permissionHelperProvider,
-      Provider<DeviceCapabilityChecker> deviceCapabilityCheckerProvider) {
+      Provider<DeviceCapabilityChecker> deviceCapabilityCheckerProvider,
+      Provider<AllowanceTracker> allowanceTrackerProvider,
+      Provider<InterceptionTodoReminderNotifier> todoReminderNotifierProvider) {
     this.permissionHelperProvider = permissionHelperProvider;
     this.deviceCapabilityCheckerProvider = deviceCapabilityCheckerProvider;
+    this.allowanceTrackerProvider = allowanceTrackerProvider;
+    this.todoReminderNotifierProvider = todoReminderNotifierProvider;
   }
 
   public static MembersInjector<InterceptionService> create(
       Provider<InterceptionPermissionHelper> permissionHelperProvider,
-      Provider<DeviceCapabilityChecker> deviceCapabilityCheckerProvider) {
-    return new InterceptionService_MembersInjector(permissionHelperProvider, deviceCapabilityCheckerProvider);
+      Provider<DeviceCapabilityChecker> deviceCapabilityCheckerProvider,
+      Provider<AllowanceTracker> allowanceTrackerProvider,
+      Provider<InterceptionTodoReminderNotifier> todoReminderNotifierProvider) {
+    return new InterceptionService_MembersInjector(permissionHelperProvider, deviceCapabilityCheckerProvider, allowanceTrackerProvider, todoReminderNotifierProvider);
   }
 
   @Override
   public void injectMembers(InterceptionService instance) {
     injectPermissionHelper(instance, permissionHelperProvider.get());
     injectDeviceCapabilityChecker(instance, deviceCapabilityCheckerProvider.get());
+    injectAllowanceTracker(instance, allowanceTrackerProvider.get());
+    injectTodoReminderNotifier(instance, todoReminderNotifierProvider.get());
   }
 
   @InjectedFieldSignature("com.dopashift.interception.InterceptionService.permissionHelper")
@@ -53,5 +66,17 @@ public final class InterceptionService_MembersInjector implements MembersInjecto
   public static void injectDeviceCapabilityChecker(InterceptionService instance,
       DeviceCapabilityChecker deviceCapabilityChecker) {
     instance.deviceCapabilityChecker = deviceCapabilityChecker;
+  }
+
+  @InjectedFieldSignature("com.dopashift.interception.InterceptionService.allowanceTracker")
+  public static void injectAllowanceTracker(InterceptionService instance,
+      AllowanceTracker allowanceTracker) {
+    instance.allowanceTracker = allowanceTracker;
+  }
+
+  @InjectedFieldSignature("com.dopashift.interception.InterceptionService.todoReminderNotifier")
+  public static void injectTodoReminderNotifier(InterceptionService instance,
+      InterceptionTodoReminderNotifier todoReminderNotifier) {
+    instance.todoReminderNotifier = todoReminderNotifier;
   }
 }

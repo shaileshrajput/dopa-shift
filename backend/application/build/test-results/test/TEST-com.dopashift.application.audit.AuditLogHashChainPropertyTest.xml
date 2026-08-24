@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.dopashift.application.audit.AuditLogHashChainPropertyTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-08-23T06:27:16" hostname="SHAILESH" time="0.733">
+<testsuite name="com.dopashift.application.audit.AuditLogHashChainPropertyTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-08-23T11:01:47" hostname="SHAILESH" time="1.889">
   <properties/>
-  <testcase name="Property 16: Hash chain integrity - first entry has GENESIS previousHash and subsequent entries chain correctly" classname="com.dopashift.application.audit.AuditLogHashChainPropertyTest" time="0.36"/>
-  <testcase name="Property 16: Hash chain tamper detection - modifying any entry's beforeState makes chain invalid" classname="com.dopashift.application.audit.AuditLogHashChainPropertyTest" time="0.181"/>
-  <testcase name="Property 16: Hash chain tamper detection - modifying any entry's afterState makes chain invalid" classname="com.dopashift.application.audit.AuditLogHashChainPropertyTest" time="0.186"/>
+  <testcase name="Property 16: Hash chain integrity - first entry has GENESIS previousHash and subsequent entries chain correctly" classname="com.dopashift.application.audit.AuditLogHashChainPropertyTest" time="0.851"/>
+  <testcase name="Property 16: Hash chain tamper detection - modifying any entry's beforeState makes chain invalid" classname="com.dopashift.application.audit.AuditLogHashChainPropertyTest" time="0.412"/>
+  <testcase name="Property 16: Hash chain tamper detection - modifying any entry's afterState makes chain invalid" classname="com.dopashift.application.audit.AuditLogHashChainPropertyTest" time="0.614"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

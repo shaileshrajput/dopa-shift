@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.dopashift.domain.repository.UserPreferencesRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -19,6 +20,8 @@ private val Context.userPrefsDataStore: DataStore<Preferences> by preferencesDat
 
 /**
  * DataStore-backed implementation of [UserPreferencesRepository].
+ *
+ * Persists onboarding state, accent color, locale, and display name.
  */
 @Singleton
 class UserPreferencesRepositoryImpl @Inject constructor(
@@ -27,7 +30,13 @@ class UserPreferencesRepositoryImpl @Inject constructor(
 
     private companion object {
         val ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")
+        val ACCENT_COLOR = stringPreferencesKey("accent_color")
+        val LOCALE = stringPreferencesKey("locale")
+        val DISPLAY_NAME = stringPreferencesKey("display_name")
+        val EMAIL = stringPreferencesKey("email")
     }
+
+    // === Onboarding ===
 
     override fun observeOnboardingCompleted(): Flow<Boolean> {
         return context.userPrefsDataStore.data.map { prefs ->
@@ -38,6 +47,66 @@ class UserPreferencesRepositoryImpl @Inject constructor(
     override suspend fun setOnboardingCompleted(completed: Boolean) {
         context.userPrefsDataStore.edit { prefs ->
             prefs[ONBOARDING_COMPLETED] = completed
+        }
+    }
+
+    // === Accent Color ===
+
+    override fun observeAccentColor(): Flow<String?> {
+        return context.userPrefsDataStore.data.map { prefs ->
+            prefs[ACCENT_COLOR]
+        }
+    }
+
+    override suspend fun setAccentColor(hexColor: String?) {
+        context.userPrefsDataStore.edit { prefs ->
+            if (hexColor != null) {
+                prefs[ACCENT_COLOR] = hexColor
+            } else {
+                prefs.remove(ACCENT_COLOR)
+            }
+        }
+    }
+
+    // === Locale ===
+
+    override fun observeLocale(): Flow<String> {
+        return context.userPrefsDataStore.data.map { prefs ->
+            prefs[LOCALE] ?: "en"
+        }
+    }
+
+    override suspend fun setLocale(localeCode: String) {
+        context.userPrefsDataStore.edit { prefs ->
+            prefs[LOCALE] = localeCode
+        }
+    }
+
+    // === Display Name ===
+
+    override fun observeDisplayName(): Flow<String> {
+        return context.userPrefsDataStore.data.map { prefs ->
+            prefs[DISPLAY_NAME] ?: ""
+        }
+    }
+
+    override suspend fun setDisplayName(name: String) {
+        context.userPrefsDataStore.edit { prefs ->
+            prefs[DISPLAY_NAME] = name
+        }
+    }
+
+    // === Email ===
+
+    override fun observeEmail(): Flow<String> {
+        return context.userPrefsDataStore.data.map { prefs ->
+            prefs[EMAIL] ?: ""
+        }
+    }
+
+    override suspend fun setEmail(email: String) {
+        context.userPrefsDataStore.edit { prefs ->
+            prefs[EMAIL] = email
         }
     }
 }

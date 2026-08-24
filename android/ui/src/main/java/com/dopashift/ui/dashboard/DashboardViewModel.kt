@@ -236,6 +236,26 @@ class DashboardViewModel @Inject constructor(
     }
 
     /**
+     * Req 20.14: Quick-add a new DailyTodoItem from the "Today's Focus" inline input.
+     * Writes locally first (offline-first), Room invalidation propagates to UI immediately.
+     */
+    fun addTodo(text: String) {
+        viewModelScope.launch {
+            val newTodo = DailyTodoItem(
+                id = UUID.randomUUID(),
+                userId = userId,
+                text = text,
+                dueDateTime = null,
+                isCompleted = false,
+                createdAt = Instant.now(),
+                updatedAt = Instant.now(),
+                dayDate = today
+            )
+            dailyTodoRepository.save(newTodo)
+        }
+    }
+
+    /**
      * Req 20.4a: Mark a DailyTodoItem as complete directly from the dashboard.
      * Optimistic UI update within 200ms (Req 20.5).
      */

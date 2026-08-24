@@ -235,7 +235,7 @@ class InterceptionIntegrationTest {
  * Fake context for testing permission and capability checks without real Android Context.
  */
 class FakeContext(
-    val hasUsageStats: Boolean = true,
-    val hasOverlay: Boolean = true,
-    val isLowRamDevice: Boolean = false
-)
+    override val hasUsageStats: Boolean = true,
+    override val hasOverlay: Boolean = true,
+    override val isLowRamDevice: Boolean = false
+) : InterceptionContext

@@ -152,11 +152,13 @@ class SyncProcessor(
     ) {
         val historyEntry = ConflictHistoryEntry(
             id = UUID.randomUUID(),
+            userId = supersededEntry.userId,
             changeLogId = winningEntryId,
             supersededValue = supersededEntry.value,
             supersededDeviceId = supersededEntry.deviceId,
             supersededTimestamp = supersededEntry.timestamp,
             resolutionReason = reason,
+            resolvedAt = Instant.now(clock),
             createdAt = Instant.now(clock)
         )
         conflictHistoryRepository.save(historyEntry)

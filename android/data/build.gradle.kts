@@ -65,6 +65,9 @@ dependencies {
     // DataStore
     implementation(libs.datastore.preferences)
 
+    // Security (encrypted storage for LLM API keys)
+    implementation(libs.security.crypto)
+
     // Testing
     testImplementation(libs.junit)
     testImplementation(libs.coroutines.test)

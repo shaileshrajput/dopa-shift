@@ -1,5 +1,5 @@
 ---
-inclusion: always
+inclusion: auto
 ---
 
 # Performance, Memory & Battery Efficiency Rules

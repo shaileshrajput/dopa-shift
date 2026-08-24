@@ -1,11 +1,13 @@
 package com.dopashift.data.di
 
+import com.dopashift.data.remote.LlmProviderServiceImpl
 import com.dopashift.data.repository.ChangeLogRepositoryImpl
 import com.dopashift.data.repository.DailyTodoRepositoryImpl
 import com.dopashift.data.repository.EfficiencyScoreRepositoryImpl
 import com.dopashift.data.repository.GoalChecklistItemRepositoryImpl
 import com.dopashift.data.repository.GoalRepositoryImpl
 import com.dopashift.data.repository.HabitTrackRepositoryImpl
+import com.dopashift.data.repository.LlmConfigRepositoryImpl
 import com.dopashift.data.repository.ReminderRepositoryImpl
 import com.dopashift.data.repository.UserPreferencesRepositoryImpl
 import com.dopashift.domain.repository.ChangeLogRepository
@@ -14,8 +16,10 @@ import com.dopashift.domain.repository.EfficiencyScoreRepository
 import com.dopashift.domain.repository.GoalChecklistItemRepository
 import com.dopashift.domain.repository.GoalRepository
 import com.dopashift.domain.repository.HabitTrackRepository
+import com.dopashift.domain.repository.LlmConfigRepository
 import com.dopashift.domain.repository.ReminderRepository
 import com.dopashift.domain.repository.UserPreferencesRepository
+import com.dopashift.domain.service.LlmProviderService
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -59,4 +63,10 @@ abstract class RepositoryModule {
     abstract fun bindGoalChecklistItemRepository(
         impl: GoalChecklistItemRepositoryImpl
     ): GoalChecklistItemRepository
+
+    @Binds
+    abstract fun bindLlmConfigRepository(impl: LlmConfigRepositoryImpl): LlmConfigRepository
+
+    @Binds
+    abstract fun bindLlmProviderService(impl: LlmProviderServiceImpl): LlmProviderService
 }

@@ -53,6 +53,19 @@ class DeviceCapabilityChecker @Inject constructor() {
     }
 
     /**
+     * Checks interception support from an [InterceptionContext] abstraction (testable).
+     */
+    fun checkInterceptionSupport(context: InterceptionContext): DeviceSupport {
+        if (context.isLowRamDevice) {
+            val reason = "Overlay interception is unavailable on this device. " +
+                "Android Go edition (low-RAM) devices have restrictions that prevent " +
+                "reliable background monitoring and overlay display."
+            return DeviceSupport.Unsupported(reason)
+        }
+        return DeviceSupport.Supported
+    }
+
+    /**
      * Convenience check: returns true only if the device is fully capable of interception.
      */
     fun isInterceptionAvailable(context: Context): Boolean {

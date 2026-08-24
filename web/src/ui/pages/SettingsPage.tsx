@@ -128,7 +128,7 @@ function PasswordSection() {
 
       setSubmitting(true);
       try {
-        await apiClient.post('/auth/change-password', {
+        await apiClient.post('/profile/password', {
           currentPassword,
           newPassword,
         });

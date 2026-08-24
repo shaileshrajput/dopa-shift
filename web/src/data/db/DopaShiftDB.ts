@@ -47,6 +47,22 @@ export interface LocalHabitTrack {
   updatedAt: string;
 }
 
+/** Status of an individual habit checkpoint day. */
+export type CheckpointStatus = 'PENDING' | 'COMPLETED' | 'MISSED';
+
+/** Local habit checkpoint record stored in IndexedDB (one per day per track). */
+export interface LocalHabitCheckpoint {
+  id: string;
+  habitTrackId: string;
+  userId: string;
+  dayNumber: number; // 1-30
+  description: string; // max 200 chars
+  status: CheckpointStatus;
+  completedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
 /** Local change log entry for offline sync queue. */
 export interface LocalChangeLog {
   id: string;
@@ -101,6 +117,7 @@ export class DopaShiftDB extends Dexie {
   goalChecklistItems!: Table<LocalGoalChecklistItem, string>;
   dailyTodos!: Table<LocalDailyTodo, string>;
   habitTracks!: Table<LocalHabitTrack, string>;
+  habitCheckpoints!: Table<LocalHabitCheckpoint, string>;
   reminders!: Table<LocalReminder, string>;
   changeLog!: Table<LocalChangeLog, string>;
   syncState!: Table<LocalSyncState, string>;
@@ -122,6 +139,17 @@ export class DopaShiftDB extends Dexie {
       goalChecklistItems: 'id, goalId, userId',
       dailyTodos: 'id, userId, dayDate, [userId+dayDate]',
       habitTracks: 'id, goalId, userId',
+      reminders: 'id, userId, entityId, entityType',
+      changeLog: 'id, [userId+timestamp], entityId',
+      syncState: 'key',
+    });
+
+    this.version(3).stores({
+      goals: 'id, userId, name',
+      goalChecklistItems: 'id, goalId, userId',
+      dailyTodos: 'id, userId, dayDate, [userId+dayDate]',
+      habitTracks: 'id, goalId, userId',
+      habitCheckpoints: 'id, habitTrackId, userId, [habitTrackId+dayNumber]',
       reminders: 'id, userId, entityId, entityType',
       changeLog: 'id, [userId+timestamp], entityId',
       syncState: 'key',

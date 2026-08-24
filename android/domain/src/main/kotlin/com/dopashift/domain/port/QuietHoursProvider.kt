@@ -1,11 +1,12 @@
 package com.dopashift.domain.port
 
 import com.dopashift.domain.model.QuietHoursWindow
+import java.time.LocalTime
 import java.time.ZoneId
 import java.util.UUID
 
 /**
- * Port interface for retrieving the user's quiet-hours configuration and timezone.
+ * Port interface for retrieving and updating the user's quiet-hours configuration and timezone.
  *
  * Implementations may read from local storage (DataStore/Room) or derive
  * from the user profile, enabling offline-capable evaluation.
@@ -21,4 +22,14 @@ interface QuietHoursProvider {
      * Returns the user's configured timezone for date/time calculations.
      */
     suspend fun getUserTimeZone(userId: UUID): ZoneId
+
+    /**
+     * Persists the user's quiet-hours start time. Pass null to clear.
+     */
+    suspend fun setQuietHoursStart(start: LocalTime?)
+
+    /**
+     * Persists the user's quiet-hours end time. Pass null to clear.
+     */
+    suspend fun setQuietHoursEnd(end: LocalTime?)
 }

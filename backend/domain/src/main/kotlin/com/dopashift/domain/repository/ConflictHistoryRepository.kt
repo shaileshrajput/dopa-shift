@@ -11,6 +11,7 @@ import java.util.UUID
  */
 interface ConflictHistoryRepository {
     suspend fun save(entry: ConflictHistoryEntry)
-    suspend fun findByUserId(userId: UUID, since: Instant): List<ConflictHistoryEntry>
+    suspend fun findByUserId(userId: UUID): List<ConflictHistoryEntry>
+    suspend fun findSince(userId: UUID, since: Instant): List<ConflictHistoryEntry>
     suspend fun deleteOlderThan(cutoff: Instant)
 }

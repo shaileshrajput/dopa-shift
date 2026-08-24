@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:dopashift}
     username: ${DB_USERNAME:dopashift}
-    password: ${DB_PASSWORD:dopashift}
+    password: ${DB_PASSWORD:dopashift_dev_pass}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -16,15 +16,17 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
+    baseline-on-migrate: true
   data:
     redis:
       host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:redis_dev_pass}
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8180/realms/dopashift}
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8443/realms/dopashift}
 
 dopashift:
   security:

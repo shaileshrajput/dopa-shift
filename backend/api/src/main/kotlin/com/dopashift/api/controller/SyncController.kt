@@ -178,7 +178,7 @@ class SyncController(
         val userId = UUID.fromString(jwt.subject)
         val sinceInstant = Instant.parse(since)
 
-        val entries = conflictHistoryRepository.findByUserId(userId, sinceInstant)
+        val entries = conflictHistoryRepository.findSince(userId, sinceInstant)
 
         val conflictDtos = entries.map { entry ->
             ConflictHistoryDto(

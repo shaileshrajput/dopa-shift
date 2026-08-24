@@ -3,6 +3,7 @@ package com.dopashift.data.repository
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.dopashift.domain.model.QuietHoursWindow
@@ -22,7 +23,7 @@ private val Context.reminderPrefsDataStore: DataStore<Preferences> by preference
 /**
  * DataStore-backed implementation of [QuietHoursProvider].
  *
- * Reads the user's quiet-hours start/end times and timezone from local
+ * Reads and writes the user's quiet-hours start/end times and timezone from local
  * preferences, enabling fully offline-capable reminder evaluation.
  */
 @Singleton
@@ -58,6 +59,26 @@ class LocalQuietHoursProvider @Inject constructor(
             if (tzStr != null) ZoneId.of(tzStr) else ZoneId.systemDefault()
         } catch (_: Exception) {
             ZoneId.systemDefault()
+        }
+    }
+
+    override suspend fun setQuietHoursStart(start: LocalTime?) {
+        context.reminderPrefsDataStore.edit { prefs ->
+            if (start != null) {
+                prefs[QUIET_HOURS_START] = start.toString()
+            } else {
+                prefs.remove(QUIET_HOURS_START)
+            }
+        }
+    }
+
+    override suspend fun setQuietHoursEnd(end: LocalTime?) {
+        context.reminderPrefsDataStore.edit { prefs ->
+            if (end != null) {
+                prefs[QUIET_HOURS_END] = end.toString()
+            } else {
+                prefs.remove(QUIET_HOURS_END)
+            }
         }
     }
 }

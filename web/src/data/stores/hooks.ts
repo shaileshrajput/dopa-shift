@@ -19,9 +19,11 @@ import {
   pendingTodosForUserAndDate,
   activeHabitTracksForUser,
   habitTracksForGoal,
+  checkpointsForHabitTrack,
+  checkpointsForUser,
 } from './liveQueries';
 import { syncStatusStore, type SyncStatus } from '../sync/SyncStatus';
-import type { LocalGoal, LocalDailyTodo, LocalHabitTrack } from '../db';
+import type { LocalGoal, LocalDailyTodo, LocalHabitTrack, LocalHabitCheckpoint } from '../db';
 
 // ─── Goal Hooks ──────────────────────────────────────────────────────────────
 
@@ -63,6 +65,18 @@ export function useActiveHabitTracks(userId: string): LiveQueryState<LocalHabitT
 /** Subscribe to habit tracks for a specific goal. */
 export function useHabitTracksForGoal(goalId: string): LiveQueryState<LocalHabitTrack[]> {
   return useLiveQuery(habitTracksForGoal(goalId), [goalId], []);
+}
+
+// ─── Habit Checkpoint Hooks ──────────────────────────────────────────────────
+
+/** Subscribe to all checkpoints for a specific habit track. */
+export function useCheckpointsForTrack(habitTrackId: string): LiveQueryState<LocalHabitCheckpoint[]> {
+  return useLiveQuery(checkpointsForHabitTrack(habitTrackId), [habitTrackId], []);
+}
+
+/** Subscribe to all checkpoints for a user (across all tracks). */
+export function useCheckpointsForUser(userId: string): LiveQueryState<LocalHabitCheckpoint[]> {
+  return useLiveQuery(checkpointsForUser(userId), [userId], []);
 }
 
 // ─── Sync Status Hook ────────────────────────────────────────────────────────

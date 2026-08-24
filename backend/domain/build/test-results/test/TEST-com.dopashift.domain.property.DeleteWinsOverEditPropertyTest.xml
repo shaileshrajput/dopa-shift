@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.dopashift.domain.property.DeleteWinsOverEditPropertyTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-08-23T06:26:25" hostname="SHAILESH" time="0.103">
+<testsuite name="com.dopashift.domain.property.DeleteWinsOverEditPropertyTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-08-23T11:01:56" hostname="SHAILESH" time="0.111">
   <properties/>
-  <testcase name="remote delete always wins over local edit regardless of timestamps" classname="com.dopashift.domain.property.DeleteWinsOverEditPropertyTest" time="0.039"/>
-  <testcase name="local delete always wins over remote edit regardless of timestamps" classname="com.dopashift.domain.property.DeleteWinsOverEditPropertyTest" time="0.024"/>
-  <testcase name="the edit entry always appears as supersededEntry in the merge result" classname="com.dopashift.domain.property.DeleteWinsOverEditPropertyTest" time="0.034"/>
+  <testcase name="remote delete always wins over local edit regardless of timestamps" classname="com.dopashift.domain.property.DeleteWinsOverEditPropertyTest" time="0.043"/>
+  <testcase name="local delete always wins over remote edit regardless of timestamps" classname="com.dopashift.domain.property.DeleteWinsOverEditPropertyTest" time="0.028"/>
+  <testcase name="the edit entry always appears as supersededEntry in the merge result" classname="com.dopashift.domain.property.DeleteWinsOverEditPropertyTest" time="0.032"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

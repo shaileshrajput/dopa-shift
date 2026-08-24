@@ -4,4 +4,14 @@
     <string name="nav_goals">लक्ष्य</string>
     <string name="nav_home">होम</string>
     <string name="nav_settings">सेटिंग्स</string>
+    <string name="permission_all_granted">सभी अनुमतियाँ दी गईं — आप तैयार हैं!</string>
+    <string name="permission_check_status">स्थिति जाँचें</string>
+    <string name="permission_grant">दें</string>
+    <string name="permission_granted_label">दी गई</string>
+    <string name="permission_overlay_hint">समय सीमा पूरी होने पर इंटरसेप्ट ओवरले दिखाएँ</string>
+    <string name="permission_overlay_label">अन्य ऐप्स के ऊपर प्रदर्शित करें</string>
+    <string name="permission_setup_description">DopaShift को स्क्रीन समय की निगरानी और इंटरसेप्शन ओवरले दिखाने के लिए दो विशेष अनुमतियों की आवश्यकता है। सेटिंग्स खोलने और एक्सेस देने के लिए प्रत्येक बटन पर टैप करें।</string>
+    <string name="permission_setup_title">अनुमतियाँ दें</string>
+    <string name="permission_usage_stats_hint">विकर्षण ट्रैकिंग के लिए स्क्रीन समय की निगरानी</string>
+    <string name="permission_usage_stats_label">उपयोग पहुँच</string>
 </resources>

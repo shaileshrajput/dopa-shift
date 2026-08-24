@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.dopashift.ui.analytics.AnalyticsScreen
 import com.dopashift.ui.dashboard.DashboardScreen
 import com.dopashift.ui.goals.GoalsScreen
 import com.dopashift.ui.onboarding.OnboardingScreen
@@ -25,11 +26,12 @@ object DopaShiftRoutes {
 @Composable
 fun DopaShiftNavGraph(
     navController: NavHostController,
+    startDestination: String = DopaShiftRoutes.DASHBOARD,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
         navController = navController,
-        startDestination = DopaShiftRoutes.DASHBOARD,
+        startDestination = startDestination,
         modifier = modifier,
     ) {
         composable(DopaShiftRoutes.ONBOARDING) {
@@ -48,7 +50,7 @@ fun DopaShiftNavGraph(
             GoalsScreen()
         }
         composable(DopaShiftRoutes.ANALYTICS) {
-            // AnalyticsScreen - to be implemented
+            AnalyticsScreen()
         }
         composable(DopaShiftRoutes.SETTINGS) {
             SettingsScreen()

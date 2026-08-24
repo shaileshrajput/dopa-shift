@@ -1,5 +1,35 @@
 package com.dopashift.api.contract
 
+import com.dopashift.api.config.AuthenticatedUser
+import com.dopashift.api.config.KeycloakAuthService
+import com.dopashift.application.sync.SyncProcessor
+import com.dopashift.domain.port.EncryptionService
+import com.dopashift.domain.port.LlmAdapterFactory
+import com.dopashift.domain.port.ProfileStorageService
+import com.dopashift.domain.repository.ChangeLogRepository
+import com.dopashift.domain.repository.ConflictHistoryRepository
+import com.dopashift.domain.repository.DailyTodoRepository
+import com.dopashift.domain.repository.EfficiencyScoreRepository
+import com.dopashift.domain.repository.GoalChecklistItemRepository
+import com.dopashift.domain.repository.GoalRepository
+import com.dopashift.domain.repository.HabitTrackRepository
+import com.dopashift.domain.repository.InterceptionRuleRepository
+import com.dopashift.domain.repository.LlmConfigRepository
+import com.dopashift.domain.repository.ReminderRepository
+import com.dopashift.domain.repository.UserProfileRepository
+import com.dopashift.domain.usecase.ComputeEfficiencyScoreUseCase
+import com.dopashift.domain.usecase.VideoRecommendationUseCase
+import com.dopashift.domain.usecase.goal.CreateGoalUseCase
+import com.dopashift.domain.usecase.goal.DeleteGoalUseCase
+import com.dopashift.domain.usecase.goal.UpdateGoalUseCase
+import com.dopashift.domain.usecase.habit.ActivateHabitTrackUseCase
+import com.dopashift.domain.usecase.habit.AdvanceDayUseCase
+import com.dopashift.domain.usecase.habit.MarkCheckpointUseCase
+import com.dopashift.domain.usecase.habit.RecordMissedDayUseCase
+import com.dopashift.domain.usecase.todo.CreateTodoUseCase
+import com.dopashift.domain.usecase.todo.DeleteTodoUseCase
+import com.dopashift.domain.usecase.todo.MarkTodoCompleteUseCase
+import com.dopashift.domain.usecase.todo.UpdateTodoUseCase
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import org.junit.jupiter.api.BeforeAll
@@ -7,13 +37,13 @@ import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.api.TestInstance
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.core.io.ClassPathResource
-import org.springframework.http.HttpMethod
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import java.time.Clock
 
 /**
  * Automated contract tests validating API responses against the OpenAPI specification.
@@ -28,14 +58,62 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
  * 2. For each endpoint, verifies that it exists and responds with the correct
  *    content type and HTTP status code.
  * 3. Validates response structure against schema definitions.
+ *
+ * Uses @WebMvcTest to load only the web layer (controllers + security filters)
+ * without requiring a database, Redis, or Keycloak connection.
  */
-@SpringBootTest
-@AutoConfigureMockMvc
+@WebMvcTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@org.springframework.context.annotation.Import(com.dopashift.api.config.TestSecurityConfig::class)
+@org.springframework.test.context.TestPropertySource(properties = [
+    "spring.main.allow-bean-definition-overriding=true",
+    "dopashift.rate-limiting.enabled=false"
+])
 class OpenApiContractTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvc
+
+    // --- Repository mocks ---
+    @MockBean private lateinit var goalRepository: GoalRepository
+    @MockBean private lateinit var goalChecklistItemRepository: GoalChecklistItemRepository
+    @MockBean private lateinit var efficiencyScoreRepository: EfficiencyScoreRepository
+    @MockBean private lateinit var dailyTodoRepository: DailyTodoRepository
+    @MockBean private lateinit var habitTrackRepository: HabitTrackRepository
+    @MockBean private lateinit var changeLogRepository: ChangeLogRepository
+    @MockBean private lateinit var conflictHistoryRepository: ConflictHistoryRepository
+    @MockBean private lateinit var llmConfigRepository: LlmConfigRepository
+    @MockBean private lateinit var reminderRepository: ReminderRepository
+    @MockBean private lateinit var interceptionRuleRepository: InterceptionRuleRepository
+    @MockBean private lateinit var userProfileRepository: UserProfileRepository
+
+    // --- Use case mocks ---
+    @MockBean private lateinit var computeEfficiencyScoreUseCase: ComputeEfficiencyScoreUseCase
+    @MockBean private lateinit var videoRecommendationUseCase: VideoRecommendationUseCase
+    @MockBean private lateinit var createGoalUseCase: CreateGoalUseCase
+    @MockBean private lateinit var updateGoalUseCase: UpdateGoalUseCase
+    @MockBean private lateinit var deleteGoalUseCase: DeleteGoalUseCase
+    @MockBean private lateinit var createTodoUseCase: CreateTodoUseCase
+    @MockBean private lateinit var updateTodoUseCase: UpdateTodoUseCase
+    @MockBean private lateinit var deleteTodoUseCase: DeleteTodoUseCase
+    @MockBean private lateinit var markTodoCompleteUseCase: MarkTodoCompleteUseCase
+    @MockBean private lateinit var activateHabitTrackUseCase: ActivateHabitTrackUseCase
+    @MockBean private lateinit var markCheckpointUseCase: MarkCheckpointUseCase
+    @MockBean private lateinit var advanceDayUseCase: AdvanceDayUseCase
+    @MockBean private lateinit var recordMissedDayUseCase: RecordMissedDayUseCase
+
+    // --- Port/Service mocks ---
+    @MockBean private lateinit var encryptionService: EncryptionService
+    @MockBean private lateinit var llmAdapterFactory: LlmAdapterFactory
+    @MockBean private lateinit var profileStorageService: ProfileStorageService
+    @MockBean private lateinit var syncProcessor: SyncProcessor
+
+    // --- Infrastructure mocks ---
+    @MockBean private lateinit var clock: Clock
+    @MockBean private lateinit var authenticatedUser: AuthenticatedUser
+    @MockBean private lateinit var keycloakAuthService: KeycloakAuthService
+    @MockBean private lateinit var stringRedisTemplate: org.springframework.data.redis.core.StringRedisTemplate
+    @MockBean private lateinit var webClient: org.springframework.web.reactive.function.client.WebClient
 
     private lateinit var openApiSpec: Map<String, Any>
     private lateinit var paths: Map<String, Map<String, Any>>
@@ -89,14 +167,12 @@ class OpenApiContractTest {
                     val isPublicEndpoint = isPublicEndpoint(path, method)
 
                     if (isPublicEndpoint) {
-                        // Public endpoints: should respond (400 for bad body, 200 for gets)
+                        // Public endpoints: should respond with non-404 (proves registration).
+                        // May return 400 (bad body), 200, 405, or 500 (mocked dependencies).
                         result.andExpect(
                             MockMvcResultMatchers.status().`is`(
-                                org.hamcrest.Matchers.anyOf(
-                                    org.hamcrest.Matchers.`is`(200),
-                                    org.hamcrest.Matchers.`is`(400),
-                                    org.hamcrest.Matchers.`is`(404),
-                                    org.hamcrest.Matchers.`is`(405)
+                                org.hamcrest.Matchers.not(
+                                    org.hamcrest.Matchers.`is`(404)
                                 )
                             )
                         )
@@ -174,6 +250,9 @@ class OpenApiContractTest {
 
     @Suppress("UNCHECKED_CAST")
     private fun isPublicEndpoint(path: String, method: String): Boolean {
+        // Auth endpoints are always public per Spring Security config
+        if (path.startsWith("/v1/auth/")) return true
+
         val pathDef = paths[path] as? Map<String, Any> ?: return false
         val methodDef = pathDef[method] as? Map<String, Any> ?: return false
         val security = methodDef["security"] as? List<*>

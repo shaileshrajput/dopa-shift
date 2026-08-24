@@ -4,6 +4,8 @@ export type {
   LocalGoalChecklistItem,
   LocalDailyTodo,
   LocalHabitTrack,
+  LocalHabitCheckpoint,
+  CheckpointStatus,
   LocalReminder,
   LocalChangeLog,
   LocalSyncState,

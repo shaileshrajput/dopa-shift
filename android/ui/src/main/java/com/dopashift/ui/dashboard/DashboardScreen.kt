@@ -1,10 +1,12 @@
 package com.dopashift.ui.dashboard
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,35 +14,50 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.TrendingDown
-import androidx.compose.material.icons.automirrored.filled.TrendingFlat
-import androidx.compose.material.icons.automirrored.filled.TrendingUp
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dopashift.domain.entity.DailyTodoItem
@@ -53,16 +70,14 @@ import java.util.UUID
 /**
  * Dashboard screen implementing Requirements 20.1–20.15.
  *
- * Displays:
- * - Today's Status card (pending todos, habit status, goal progress, efficiency score)
- * - Efficiency score card with trend indicator (improving/declining/stable)
- * - Goal cards grid with progress rings
- * - Quick-action todo checkboxes (optimistic UI within 200ms)
- * - Quick-action habit completion
- * - Paginated activity feed (20 items per page)
+ * Layout matches the wireframe exactly (mobile single-column):
+ * 1. "Overview" display heading + subtitle
+ * 2. Efficiency Score card with circular progress ring
+ * 3. "Active Goals" heading + full-width stacked goal cards
+ * 4. "Today's Focus" card with todo items + inline quick-add
+ * 5. Activity feed (paginated)
  *
- * Reactive data propagation: Room -> Repository (Flow) -> ViewModel (combine) -> UI (collectAsStateWithLifecycle).
- * No polling required; Room's invalidation tracker triggers re-emission.
+ * Reactive data: Room -> Repository (Flow) -> ViewModel (combine) -> UI.
  */
 @Composable
 fun DashboardScreen(
@@ -77,17 +92,18 @@ fun DashboardScreen(
             else viewModel.markTodoIncomplete(todoId)
         },
         onHabitComplete = { trackId -> viewModel.completeHabitCheckpoint(trackId) },
-        onLoadMoreActivity = { viewModel.loadMoreActivityFeed() }
+        onLoadMoreActivity = { viewModel.loadMoreActivityFeed() },
+        onAddTodo = { text -> viewModel.addTodo(text) }
     )
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun DashboardContent(
     uiState: DashboardUiState,
     onTodoCheckedChange: (UUID, Boolean) -> Unit,
     onHabitComplete: (UUID) -> Unit,
-    onLoadMoreActivity: () -> Unit
+    onLoadMoreActivity: () -> Unit,
+    onAddTodo: (String) -> Unit
 ) {
     if (uiState.isLoading) {
         Box(
@@ -99,7 +115,7 @@ private fun DashboardContent(
         return
     }
 
-    // Req 20.11: Empty state when no goals, todos, or habits
+    // Req 20.11: Empty state
     if (uiState.isEmpty) {
         Box(
             modifier = Modifier
@@ -126,18 +142,29 @@ private fun DashboardContent(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = DopaShiftTheme.spacing.gutter),
-        verticalArrangement = Arrangement.spacedBy(DopaShiftTheme.spacing.gutter)
+            .padding(horizontal = DopaShiftTheme.spacing.margin),
+        verticalArrangement = Arrangement.spacedBy(DopaShiftTheme.spacing.margin)
     ) {
-        // Spacing at top
         item { Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.base)) }
 
-        // === Today's Status Card (Req 20.2) ===
+        // === 1. "Overview" heading + subtitle (wireframe: large display text) ===
         item {
-            TodaysStatusCard(uiState = uiState)
+            Column {
+                Text(
+                    text = "Overview",
+                    style = MaterialTheme.typography.displaySmall,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.base))
+                Text(
+                    text = "Welcome back. Your momentum is building.",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
 
-        // === Efficiency Score Card with Trend (Req 20.2d, 20.3) ===
+        // === 2. Efficiency Score Card (wireframe: ring left, text right) ===
         item {
             EfficiencyScoreCard(
                 score = uiState.todayScore,
@@ -146,49 +173,37 @@ private fun DashboardContent(
             )
         }
 
-        // === Goal Cards Grid (Req 20.2c) ===
+        // === 3. "Active Goals" heading + full-width stacked goal cards ===
         if (uiState.goalProgressSummaries.isNotEmpty()) {
             item {
-                SectionHeader(title = "Goals", count = uiState.goalProgressSummaries.size)
+                Text(
+                    text = "Active Goals",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.SemiBold
+                )
             }
-            item {
-                FlowRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(DopaShiftTheme.spacing.base),
-                    verticalArrangement = Arrangement.spacedBy(DopaShiftTheme.spacing.base),
-                    maxItemsInEachRow = 2
-                ) {
-                    uiState.goalProgressSummaries.forEach { summary ->
-                        GoalProgressCard(
-                            summary = summary,
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
-                    // Padding item if odd number
-                    if (uiState.goalProgressSummaries.size % 2 != 0) {
-                        Spacer(modifier = Modifier.weight(1f))
-                    }
-                }
+            items(uiState.goalProgressSummaries, key = { it.goal.id }) { summary ->
+                GoalCard(summary = summary)
             }
         }
 
-        // === Quick-Action Todo Checkboxes (Req 20.4a, 20.5) ===
-        if (uiState.todayTodos.isNotEmpty()) {
-            item {
-                SectionHeader(title = "Today's Tasks", count = uiState.todayTodos.size)
-            }
-            items(uiState.todayTodos, key = { it.id }) { todo ->
-                TodoQuickActionItem(
-                    todo = todo,
-                    onCheckedChange = { isCompleted -> onTodoCheckedChange(todo.id, isCompleted) }
-                )
-            }
+        // === 4. "Today's Focus" card with todos + quick-add ===
+        item {
+            TodaysFocusCard(
+                todos = uiState.todayTodos,
+                onTodoCheckedChange = onTodoCheckedChange,
+                onAddTodo = onAddTodo
+            )
         }
 
         // === Quick-Action Habit Completion (Req 20.4b) ===
         if (uiState.activeHabitTracks.isNotEmpty()) {
             item {
-                SectionHeader(title = "Active Habits", count = uiState.activeHabitTracks.size)
+                Text(
+                    text = "Active Habits",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
             }
             items(uiState.activeHabitTracks, key = { it.id }) { track ->
                 HabitQuickActionItem(
@@ -201,12 +216,15 @@ private fun DashboardContent(
         // === Activity Feed (Req 20.6, 20.10) ===
         if (uiState.activityFeed.isNotEmpty()) {
             item {
-                SectionHeader(title = "Activity", count = uiState.activityFeed.size)
+                Text(
+                    text = "Activity",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
             }
             items(uiState.activityFeed, key = { it.id }) { entry ->
                 ActivityFeedItem(entry = entry)
             }
-            // Load More button for pagination (Req 20.10)
             if (uiState.activityFeedHasMore) {
                 item {
                     TextButton(
@@ -219,79 +237,14 @@ private fun DashboardContent(
             }
         }
 
-        // Bottom spacing
-        item { Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.section)) }
+        // Bottom spacing for nav bar
+        item { Spacer(modifier = Modifier.height(80.dp)) }
     }
 }
 
 // =====================================================================================
-// Today's Status Card (Req 20.2: pending todos, active habits status, goal progress)
-// =====================================================================================
-
-@Composable
-private fun TodaysStatusCard(uiState: DashboardUiState) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .semantics { contentDescription = "Today's status summary" },
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
-        )
-    ) {
-        Column(modifier = Modifier.padding(DopaShiftTheme.spacing.gutter)) {
-            Text(
-                text = "Today's Status",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold
-            )
-            Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.stackSm))
-
-            // Req 20.2a: Pending todos count
-            StatusRow(
-                label = "Pending Tasks",
-                value = "${uiState.pendingTodoCount} of ${uiState.todayTodos.size}"
-            )
-            Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.compact))
-
-            // Req 20.2b: Habit tracks status
-            StatusRow(
-                label = "Habits",
-                value = "${uiState.completedHabitCount} done, ${uiState.pendingHabitCount} pending" +
-                    if (uiState.missedHabitCount > 0) ", ${uiState.missedHabitCount} missed" else ""
-            )
-            Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.compact))
-
-            // Req 20.2c: Goal progress (count of active goals)
-            StatusRow(
-                label = "Active Goals",
-                value = "${uiState.goals.size}"
-            )
-        }
-    }
-}
-
-@Composable
-private fun StatusRow(label: String, value: String) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Text(
-            text = value,
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Medium
-        )
-    }
-}
-
-// =====================================================================================
-// Efficiency Score Card (Req 20.2d, 20.3)
+// Efficiency Score Card
+// Wireframe: surfaceContainerLow card, circular ring (left), "Efficiency" + trend text (right)
 // =====================================================================================
 
 @Composable
@@ -303,215 +256,397 @@ private fun EfficiencyScoreCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .semantics { contentDescription = "Efficiency score card" },
+            .semantics { contentDescription = "Efficiency score" },
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
-        )
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+        ),
+        shape = RoundedCornerShape(16.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(DopaShiftTheme.spacing.gutter),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(DopaShiftTheme.spacing.gutter)
         ) {
+            // Circular progress ring
+            CircularProgressRing(
+                progress = (score ?: 0) / 100f,
+                label = if (score != null) "${score}%" else "—",
+                size = 56.dp,
+                ringColor = DopaShiftTheme.colors.productiveBlue,
+                trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                strokeWidth = 6f
+            )
+
             Column {
                 Text(
-                    text = "Efficiency Score",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-                Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.compact))
-                Text(
-                    text = if (score != null) "$score%" else "No data",
-                    style = MaterialTheme.typography.headlineLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    text = "Efficiency",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Medium
                 )
                 if (previousScore != null && score != null) {
                     val diff = score - previousScore
-                    val diffText = if (diff >= 0) "+$diff" else "$diff"
+                    val diffText = if (diff >= 0) "+$diff%" else "$diff%"
                     Text(
                         text = "$diffText from yesterday",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = DopaShiftTheme.colors.momentumTeal
+                    )
+                } else {
+                    Text(
+                        text = when (trend) {
+                            EfficiencyTrend.NOT_ENOUGH_DATA -> "Not enough data"
+                            EfficiencyTrend.IMPROVING -> "Improving"
+                            EfficiencyTrend.DECLINING -> "Declining"
+                            EfficiencyTrend.STABLE -> "Stable"
+                        },
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        }
+    }
+}
+
+// =====================================================================================
+// Goal Card — full width, single column (matches wireframe stacked layout)
+// Icon top-left, streak badge top-right, name, description, then ring + progress bar
+// =====================================================================================
+
+@Composable
+private fun GoalCard(summary: GoalProgressSummary) {
+    val gradientColor = if (summary.progressPercent >= 50) {
+        DopaShiftTheme.colors.momentumTeal
+    } else {
+        DopaShiftTheme.colors.productiveBlue
+    }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .semantics {
+                contentDescription = "${summary.goal.name}: ${summary.progressPercent}% complete"
+            },
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+        ),
+        shape = RoundedCornerShape(16.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+    ) {
+        Box {
+            // Subtle gradient overlay
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .background(
+                        Brush.linearGradient(
+                            colors = listOf(
+                                gradientColor.copy(alpha = 0.05f),
+                                Color.Transparent
+                            )
+                        )
+                    )
+            )
+
+            Column(
+                modifier = Modifier.padding(
+                    horizontal = DopaShiftTheme.spacing.margin,
+                    vertical = DopaShiftTheme.spacing.gutter
+                )
+            ) {
+                // Row 1: category icon (left) + streak badge (right)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // Category icon in colored container
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(MaterialTheme.colorScheme.primaryContainer),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = summary.goal.category.take(1).uppercase(),
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }
+
+                    // Streak badge pill
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(50))
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                            .padding(horizontal = 10.dp, vertical = 4.dp)
+                    ) {
+                        Text(
+                            text = if (summary.streakDays > 0) {
+                                "${summary.streakDays} Days Streak"
+                            } else {
+                                "In Progress"
+                            },
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.gutter))
+
+                // Row 2: Goal name
+                Text(
+                    text = summary.goal.name,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.compact))
+
+                // Row 3: Description / category
+                Text(
+                    text = summary.goal.category,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.gutter))
+
+                // Row 4: Circular ring + "X% Complete" + linear progress bar
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(DopaShiftTheme.spacing.stackSm)
+                ) {
+                    CircularProgressRing(
+                        progress = summary.progressPercent / 100f,
+                        label = "${summary.completedItems}/${summary.totalItems}",
+                        size = 48.dp,
+                        ringColor = DopaShiftTheme.colors.momentumTeal,
+                        trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                        strokeWidth = 5f
+                    )
+
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "${summary.progressPercent}% Complete",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.base))
+                        // Linear progress bar with rounded ends
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(6.dp)
+                                .clip(RoundedCornerShape(3.dp))
+                                .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth(
+                                        fraction = (summary.progressPercent / 100f).coerceIn(0f, 1f)
+                                    )
+                                    .height(6.dp)
+                                    .clip(RoundedCornerShape(3.dp))
+                                    .background(gradientColor)
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// =====================================================================================
+// Today's Focus Card
+// Wireframe: surfaceContainer card, "Today's Focus" heading + teal add button,
+// task items with square checkboxes, completed = teal check + strikethrough + dimmed,
+// quick-add input at bottom
+// =====================================================================================
+
+@Composable
+private fun TodaysFocusCard(
+    todos: List<DailyTodoItem>,
+    onTodoCheckedChange: (UUID, Boolean) -> Unit,
+    onAddTodo: (String) -> Unit
+) {
+    var quickAddText by remember { mutableStateOf("") }
+    val focusManager = LocalFocusManager.current
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .semantics { contentDescription = "Today's focus tasks" },
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainer
+        ),
+        shape = RoundedCornerShape(16.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+    ) {
+        Column(modifier = Modifier.padding(DopaShiftTheme.spacing.margin)) {
+            // Header row: "Today's Focus" + circular add button
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Today's Focus",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.SemiBold
+                )
+                IconButton(
+                    onClick = { /* focus the input */ },
+                    modifier = Modifier
+                        .size(32.dp)
+                        .border(
+                            width = 1.5.dp,
+                            color = DopaShiftTheme.colors.momentumTeal,
+                            shape = CircleShape
+                        ),
+                    colors = IconButtonDefaults.iconButtonColors(
+                        contentColor = DopaShiftTheme.colors.momentumTeal
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Add task",
+                        modifier = Modifier.size(16.dp)
                     )
                 }
             }
 
-            // Trend indicator (Req 20.3)
-            TrendIndicator(trend = trend)
-        }
-    }
-}
+            Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.gutter))
 
-@Composable
-private fun TrendIndicator(trend: EfficiencyTrend) {
-    val (icon, label, color) = when (trend) {
-        EfficiencyTrend.IMPROVING -> Triple(
-            Icons.AutoMirrored.Filled.TrendingUp,
-            "Improving",
-            DopaShiftTheme.colors.successGreen
-        )
-        EfficiencyTrend.DECLINING -> Triple(
-            Icons.AutoMirrored.Filled.TrendingDown,
-            "Declining",
-            DopaShiftTheme.colors.errorRose
-        )
-        EfficiencyTrend.STABLE -> Triple(
-            Icons.AutoMirrored.Filled.TrendingFlat,
-            "Stable",
-            DopaShiftTheme.colors.warningAmber
-        )
-        EfficiencyTrend.NOT_ENOUGH_DATA -> Triple(
-            Icons.Default.Remove,
-            "Not enough data",
-            MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.5f)
-        )
-    }
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.semantics { contentDescription = "Trend: $label" }
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = label,
-            tint = color,
-            modifier = Modifier.size(32.dp)
-        )
-        Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.compact))
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onPrimaryContainer
-        )
-    }
-}
-
-// =====================================================================================
-// Goal Cards Grid (Req 20.2c)
-// =====================================================================================
-
-@Composable
-private fun GoalProgressCard(
-    summary: GoalProgressSummary,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier.semantics {
-            contentDescription = "${summary.goal.name}: ${summary.progressPercent}% complete"
-        },
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
-        )
-    ) {
-        Column(
-            modifier = Modifier.padding(DopaShiftTheme.spacing.stackSm)
-        ) {
-            Text(
-                text = summary.goal.name,
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.SemiBold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.compact))
-            Text(
-                text = summary.goal.category,
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.primary
-            )
-            Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.base))
-
-            // Progress indicator
-            LinearProgressIndicator(
-                progress = { summary.progressPercent / 100f },
-                modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.primary,
-                trackColor = MaterialTheme.colorScheme.surfaceVariant,
-                strokeCap = StrokeCap.Round,
-            )
-            Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.compact))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
+            // Task items
+            if (todos.isEmpty()) {
                 Text(
-                    text = "${summary.completedItems}/${summary.totalItems} tasks",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    text = "No tasks for today. Add one below!",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(vertical = DopaShiftTheme.spacing.stackSm)
                 )
-                Text(
-                    text = "${summary.progressPercent}%",
-                    style = MaterialTheme.typography.labelSmall,
-                    fontWeight = FontWeight.Medium
-                )
+            } else {
+                todos.forEach { todo ->
+                    TodoItem(
+                        todo = todo,
+                        onCheckedChange = { isCompleted ->
+                            onTodoCheckedChange(todo.id, isCompleted)
+                        }
+                    )
+                    Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.stackSm))
+                }
             }
+
+            // Divider + Quick-add input
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.outlineVariant,
+                modifier = Modifier.padding(vertical = DopaShiftTheme.spacing.stackSm)
+            )
+
+            OutlinedTextField(
+                value = quickAddText,
+                onValueChange = { quickAddText = it },
+                placeholder = {
+                    Text("Add new task...", style = MaterialTheme.typography.bodyMedium)
+                },
+                modifier = Modifier.fillMaxWidth(),
+                textStyle = MaterialTheme.typography.bodyMedium,
+                singleLine = true,
+                shape = RoundedCornerShape(12.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                    focusedBorderColor = DopaShiftTheme.colors.productiveBlue
+                ),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        if (quickAddText.isNotBlank()) {
+                            onAddTodo(quickAddText.trim())
+                            quickAddText = ""
+                            focusManager.clearFocus()
+                        }
+                    }
+                )
+            )
         }
     }
 }
 
 // =====================================================================================
-// Todo Quick-Action Items (Req 20.4a, 20.5 — optimistic UI within 200ms)
+// Todo Item — matches wireframe exactly:
+// - Incomplete: rounded row, square border checkbox (empty), normal text
+// - Completed: teal filled square checkbox with checkmark, strikethrough text, dimmed
 // =====================================================================================
 
 @Composable
-private fun TodoQuickActionItem(
+private fun TodoItem(
     todo: DailyTodoItem,
     onCheckedChange: (Boolean) -> Unit
 ) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
-        )
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    start = DopaShiftTheme.spacing.compact,
-                    end = DopaShiftTheme.spacing.stackSm,
-                    top = DopaShiftTheme.spacing.compact,
-                    bottom = DopaShiftTheme.spacing.compact
-                ),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Checkbox for quick-action completion (Req 20.4a)
-            Checkbox(
-                checked = todo.isCompleted,
-                onCheckedChange = onCheckedChange
-            )
-            Spacer(modifier = Modifier.width(DopaShiftTheme.spacing.base))
-            Text(
-                text = todo.text,
-                style = MaterialTheme.typography.bodyMedium,
-                textDecoration = if (todo.isCompleted) TextDecoration.LineThrough else null,
+    val containerColor = if (todo.isCompleted) {
+        MaterialTheme.colorScheme.surfaceContainerLowest
+    } else {
+        MaterialTheme.colorScheme.surfaceContainerLow
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(containerColor)
+            .border(
+                width = 1.dp,
                 color = if (todo.isCompleted) {
-                    MaterialTheme.colorScheme.onSurfaceVariant
+                    MaterialTheme.colorScheme.surfaceContainerHighest
                 } else {
-                    MaterialTheme.colorScheme.onSurface
+                    MaterialTheme.colorScheme.outlineVariant
                 },
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.weight(1f)
+                shape = RoundedCornerShape(12.dp)
             )
-            if (todo.isCompleted) {
-                Icon(
-                    imageVector = Icons.Default.CheckCircle,
-                    contentDescription = "Completed",
-                    tint = DopaShiftTheme.colors.successGreen,
-                    modifier = Modifier.size(20.dp)
-                )
-            }
-        }
+            .padding(
+                horizontal = DopaShiftTheme.spacing.stackSm,
+                vertical = DopaShiftTheme.spacing.stackSm
+            ),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(DopaShiftTheme.spacing.stackSm)
+    ) {
+        // Custom visual checkbox matching wireframe + clickable via M3 Checkbox
+        Checkbox(
+            checked = todo.isCompleted,
+            onCheckedChange = onCheckedChange
+        )
+
+        Text(
+            text = todo.text,
+            style = MaterialTheme.typography.bodyMedium,
+            textDecoration = if (todo.isCompleted) TextDecoration.LineThrough else null,
+            color = if (todo.isCompleted) {
+                MaterialTheme.colorScheme.onSurfaceVariant
+            } else {
+                MaterialTheme.colorScheme.onSurface
+            },
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.weight(1f)
+        )
     }
 }
 
 // =====================================================================================
-// Habit Quick-Action Items (Req 20.4b)
+// Habit Quick-Action Item (Req 20.4b)
 // =====================================================================================
 
 @Composable
@@ -526,25 +661,22 @@ private fun HabitQuickActionItem(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerLow
-        )
+        ),
+        shape = RoundedCornerShape(12.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(
-                    start = DopaShiftTheme.spacing.compact,
-                    end = DopaShiftTheme.spacing.stackSm,
-                    top = DopaShiftTheme.spacing.compact,
-                    bottom = DopaShiftTheme.spacing.compact
-                ),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(DopaShiftTheme.spacing.stackSm),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(DopaShiftTheme.spacing.stackSm)
         ) {
             Checkbox(
                 checked = !isPending,
                 onCheckedChange = { if (isPending) onComplete() },
                 enabled = isPending
             )
-            Spacer(modifier = Modifier.width(DopaShiftTheme.spacing.base))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = currentCheckpoint?.description ?: "Day ${track.currentDay}",
@@ -558,21 +690,21 @@ private fun HabitQuickActionItem(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-            // Progress ring for the habit track
-            CircularProgressIndicator(
-                progress = { track.currentDay / 30f },
-                modifier = Modifier.size(32.dp),
-                color = DopaShiftTheme.colors.momentumTeal,
-                trackColor = MaterialTheme.colorScheme.surfaceVariant,
-                strokeWidth = 3.dp,
-                strokeCap = StrokeCap.Round,
+            // Circular ring for habit progress
+            CircularProgressRing(
+                progress = track.currentDay / 30f,
+                label = "${track.currentDay}/30",
+                size = 36.dp,
+                ringColor = DopaShiftTheme.colors.momentumTeal,
+                trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                strokeWidth = 4f
             )
         }
     }
 }
 
 // =====================================================================================
-// Activity Feed (Req 20.6, 20.10 — paginated 20 items per page)
+// Activity Feed Item (Req 20.6)
 // =====================================================================================
 
 @Composable
@@ -607,25 +739,59 @@ private fun ActivityFeedItem(entry: ActivityFeedEntry) {
 }
 
 // =====================================================================================
-// Section Header
+// Circular Progress Ring — Canvas-drawn arc matching wireframe SVG rings
+// Used for: Efficiency score, goal progress, habit progress
 // =====================================================================================
 
 @Composable
-private fun SectionHeader(title: String, count: Int) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+private fun CircularProgressRing(
+    progress: Float,
+    label: String,
+    size: androidx.compose.ui.unit.Dp,
+    ringColor: Color,
+    trackColor: Color,
+    strokeWidth: Float
+) {
+    Box(
+        modifier = Modifier.size(size),
+        contentAlignment = Alignment.Center
     ) {
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            val sweepAngle = progress.coerceIn(0f, 1f) * 360f
+            val inset = strokeWidth / 2f
+            val arcSize = Size(this.size.width - strokeWidth, this.size.height - strokeWidth)
+            val topLeft = Offset(inset, inset)
+
+            // Background track
+            drawArc(
+                color = trackColor,
+                startAngle = -90f,
+                sweepAngle = 360f,
+                useCenter = false,
+                topLeft = topLeft,
+                size = arcSize,
+                style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
+            )
+
+            // Progress arc
+            if (sweepAngle > 0f) {
+                drawArc(
+                    color = ringColor,
+                    startAngle = -90f,
+                    sweepAngle = sweepAngle,
+                    useCenter = false,
+                    topLeft = topLeft,
+                    size = arcSize,
+                    style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
+                )
+            }
+        }
+
         Text(
-            text = title,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold
-        )
-        Text(
-            text = count.toString(),
-            style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.primary
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = if (size <= 40.dp) 9.sp else 12.sp
         )
     }
 }
@@ -634,9 +800,6 @@ private fun SectionHeader(title: String, count: Int) {
 // Utilities
 // =====================================================================================
 
-/**
- * Formats an [Instant] as a relative timestamp string (Req 20.6: relative timestamp).
- */
 private fun formatRelativeTime(timestamp: Instant): String {
     val now = Instant.now()
     val duration = Duration.between(timestamp, now)

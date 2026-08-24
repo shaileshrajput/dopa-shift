@@ -5,4 +5,16 @@
     <string name="nav_goals">ध्येये</string>
     <string name="nav_analytics">विश्लेषण</string>
     <string name="nav_settings">सेटिंग्ज</string>
+
+    <!-- Permission Setup (Onboarding) -->
+    <string name="permission_setup_title">परवानग्या द्या</string>
+    <string name="permission_setup_description">DopaShift ला स्क्रीन वेळ निरीक्षण आणि इंटरसेप्शन ओव्हरले दाखवण्यासाठी दोन विशेष परवानग्या आवश्यक आहेत। सेटिंग्ज उघडण्यासाठी आणि ऍक्सेस देण्यासाठी प्रत्येक बटणावर टॅप करा।</string>
+    <string name="permission_usage_stats_label">वापर ऍक्सेस</string>
+    <string name="permission_usage_stats_hint">विचलन ट्रॅकिंगसाठी स्क्रीन वेळेचे निरीक्षण</string>
+    <string name="permission_overlay_label">इतर ॲप्सवर दाखवा</string>
+    <string name="permission_overlay_hint">वेळ मर्यादा संपल्यावर इंटरसेप्ट ओव्हरले दाखवा</string>
+    <string name="permission_check_status">स्थिती तपासा</string>
+    <string name="permission_all_granted">सर्व परवानग्या दिल्या — तुम्ही तयार आहात!</string>
+    <string name="permission_grant">द्या</string>
+    <string name="permission_granted_label">दिली</string>
 </resources>

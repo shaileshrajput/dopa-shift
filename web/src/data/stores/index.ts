@@ -8,6 +8,8 @@ export {
   pendingTodosForUserAndDate,
   activeHabitTracksForUser,
   habitTracksForGoal,
+  checkpointsForHabitTrack,
+  checkpointsForUser,
 } from './liveQueries';
 
 export {
@@ -17,5 +19,7 @@ export {
   usePendingTodos,
   useActiveHabitTracks,
   useHabitTracksForGoal,
+  useCheckpointsForTrack,
+  useCheckpointsForUser,
   useSyncStatus,
 } from './hooks';

@@ -257,7 +257,7 @@ class GoalsViewModel @Inject constructor(
      * Per Requirement 1.5: display all dependent items and require user choice.
      */
     fun showDeleteDialog() {
-        val goal = uiState.value.selectedGoal ?: return
+        val goal = resolveSelectedGoal() ?: return
         viewModelScope.launch {
             val checklistItems = checklistRepository.findByGoalId(goal.id)
             val habitTracks = habitTrackRepository.findActiveByGoalId(goal.id)
@@ -317,7 +317,11 @@ class GoalsViewModel @Inject constructor(
      * Update the selected goal.
      */
     fun updateGoal(name: String, category: String, keywords: List<String>) {
-        val goal = uiState.value.selectedGoal ?: return
+        val goal = resolveSelectedGoal()
+        if (goal == null) {
+            _errorMessage.value = "No goal selected — please select a goal first"
+            return
+        }
         viewModelScope.launch {
             // Check name uniqueness if name changed (Requirement 1.7)
             if (name != goal.name) {
@@ -343,7 +347,11 @@ class GoalsViewModel @Inject constructor(
      * Delete the selected goal with dependency handling (Requirement 1.5, 1.6).
      */
     fun deleteGoal(action: DeleteGoalAction) {
-        val goal = uiState.value.selectedGoal ?: return
+        val goal = resolveSelectedGoal()
+        if (goal == null) {
+            _errorMessage.value = "No goal selected — please select a goal first"
+            return
+        }
         viewModelScope.launch {
             when (action) {
                 is DeleteGoalAction.DeleteAll -> {
@@ -363,10 +371,24 @@ class GoalsViewModel @Inject constructor(
     // === Checklist Operations ===
 
     /**
+     * Resolves the currently selected goal directly from the authoritative state flows,
+     * bypassing the combine-based uiState to avoid race conditions where uiState.value
+     * hasn't yet re-emitted after a selection change.
+     */
+    private fun resolveSelectedGoal(): GoalProfile? {
+        val selectedId = _selectedGoalId.value ?: return null
+        return goals.value.find { it.id == selectedId }
+    }
+
+    /**
      * Add a checklist item to the selected goal (Requirement 1.3).
      */
     fun addChecklistItem(text: String) {
-        val goal = uiState.value.selectedGoal ?: return
+        val goal = resolveSelectedGoal()
+        if (goal == null) {
+            _errorMessage.value = "No goal selected — please select a goal first"
+            return
+        }
         viewModelScope.launch {
             val now = Instant.now()
             val item = GoalChecklistItem(

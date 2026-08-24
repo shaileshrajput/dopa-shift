@@ -3,6 +3,8 @@ package com.dopashift.app;
 import android.app.Activity;
 import android.app.Service;
 import android.view.View;
+import androidx.datastore.core.DataStore;
+import androidx.datastore.preferences.core.Preferences;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
@@ -13,7 +15,18 @@ import com.dopashift.data.di.DataModule_ProvideEfficiencyScoreDaoFactory;
 import com.dopashift.data.di.DataModule_ProvideGoalChecklistDaoFactory;
 import com.dopashift.data.di.DataModule_ProvideGoalDaoFactory;
 import com.dopashift.data.di.DataModule_ProvideHabitTrackDaoFactory;
+import com.dopashift.data.di.DataModule_ProvideInterceptionRuleDaoFactory;
 import com.dopashift.data.di.DataModule_ProvideReminderDaoFactory;
+import com.dopashift.data.di.DataModule_ProvideTelemetryDaoFactory;
+import com.dopashift.data.di.NetworkModule_ProvideAuthApiProviderFactory;
+import com.dopashift.data.di.NetworkModule_ProvideAuthDataStoreFactory;
+import com.dopashift.data.di.NetworkModule_ProvideAuthOkHttpClientFactory;
+import com.dopashift.data.di.NetworkModule_ProvideAuthRetrofitFactory;
+import com.dopashift.data.di.NetworkModule_ProvideDopaShiftApiFactory;
+import com.dopashift.data.di.NetworkModule_ProvideMoshiFactory;
+import com.dopashift.data.di.NetworkModule_ProvideOkHttpClientFactory;
+import com.dopashift.data.di.NetworkModule_ProvideRetrofitFactory;
+import com.dopashift.data.di.NetworkModule_ProvideTokenManagerFactory;
 import com.dopashift.data.local.DopaShiftDatabase;
 import com.dopashift.data.local.dao.ChangeLogDao;
 import com.dopashift.data.local.dao.DailyTodoDao;
@@ -21,23 +34,37 @@ import com.dopashift.data.local.dao.EfficiencyScoreDao;
 import com.dopashift.data.local.dao.GoalChecklistDao;
 import com.dopashift.data.local.dao.GoalDao;
 import com.dopashift.data.local.dao.HabitTrackDao;
+import com.dopashift.data.local.dao.InterceptionRuleDao;
 import com.dopashift.data.local.dao.ReminderDao;
+import com.dopashift.data.local.dao.TelemetryDao;
+import com.dopashift.data.remote.AuthApiProvider;
+import com.dopashift.data.remote.AuthInterceptor;
+import com.dopashift.data.remote.DopaShiftApi;
+import com.dopashift.data.remote.LlmProviderServiceImpl;
+import com.dopashift.data.remote.TokenManager;
 import com.dopashift.data.repository.ChangeLogRepositoryImpl;
 import com.dopashift.data.repository.DailyTodoRepositoryImpl;
 import com.dopashift.data.repository.EfficiencyScoreRepositoryImpl;
 import com.dopashift.data.repository.GoalChecklistItemRepositoryImpl;
 import com.dopashift.data.repository.GoalRepositoryImpl;
 import com.dopashift.data.repository.HabitTrackRepositoryImpl;
+import com.dopashift.data.repository.LlmConfigRepositoryImpl;
+import com.dopashift.data.repository.LocalQuietHoursProvider;
+import com.dopashift.data.repository.LocalTelemetryRepository;
 import com.dopashift.data.repository.ReminderRepositoryImpl;
 import com.dopashift.data.repository.UserPreferencesRepositoryImpl;
+import com.dopashift.interception.AllowanceTracker;
 import com.dopashift.interception.DeviceCapabilityChecker;
 import com.dopashift.interception.InterceptionPermissionHelper;
 import com.dopashift.interception.InterceptionService;
 import com.dopashift.interception.InterceptionService_MembersInjector;
+import com.dopashift.interception.PermissionRevocationDetector;
 import com.dopashift.interception.overlay.OverlayService;
 import com.dopashift.interception.overlay.OverlayService_MembersInjector;
 import com.dopashift.interception.overlay.OverlayViewModel;
 import com.dopashift.interception.overlay.OverlayViewModel_HiltModules_KeyModule_ProvideFactory;
+import com.dopashift.interception.reminder.InterceptionTodoReminderNotifier;
+import com.dopashift.interception.reminder.di.ReminderModule_Companion_ProvideClockFactory;
 import com.dopashift.ui.analytics.AnalyticsViewModel;
 import com.dopashift.ui.analytics.AnalyticsViewModel_HiltModules_KeyModule_ProvideFactory;
 import com.dopashift.ui.dashboard.DashboardViewModel;
@@ -46,14 +73,19 @@ import com.dopashift.ui.goals.GoalsViewModel;
 import com.dopashift.ui.goals.GoalsViewModel_HiltModules_KeyModule_ProvideFactory;
 import com.dopashift.ui.habits.HabitRoadmapViewModel;
 import com.dopashift.ui.habits.HabitRoadmapViewModel_HiltModules_KeyModule_ProvideFactory;
+import com.dopashift.ui.navigation.DopaShiftAppViewModel;
+import com.dopashift.ui.navigation.DopaShiftAppViewModel_HiltModules_KeyModule_ProvideFactory;
 import com.dopashift.ui.onboarding.OnboardingViewModel;
 import com.dopashift.ui.onboarding.OnboardingViewModel_HiltModules_KeyModule_ProvideFactory;
+import com.dopashift.ui.onboarding.PermissionSetupViewModel;
+import com.dopashift.ui.onboarding.PermissionSetupViewModel_HiltModules_KeyModule_ProvideFactory;
 import com.dopashift.ui.reminders.RemindersViewModel;
 import com.dopashift.ui.reminders.RemindersViewModel_HiltModules_KeyModule_ProvideFactory;
 import com.dopashift.ui.settings.SettingsViewModel;
 import com.dopashift.ui.settings.SettingsViewModel_HiltModules_KeyModule_ProvideFactory;
 import com.dopashift.ui.tasks.DailyTasksViewModel;
 import com.dopashift.ui.tasks.DailyTasksViewModel_HiltModules_KeyModule_ProvideFactory;
+import com.squareup.moshi.Moshi;
 import dagger.hilt.android.ActivityRetainedLifecycle;
 import dagger.hilt.android.ViewModelLifecycle;
 import dagger.hilt.android.internal.builders.ActivityComponentBuilder;
@@ -75,10 +107,13 @@ import dagger.internal.MapBuilder;
 import dagger.internal.Preconditions;
 import dagger.internal.Provider;
 import dagger.internal.SetBuilder;
+import java.time.Clock;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.processing.Generated;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
 
 @DaggerGenerated
 @Generated(
@@ -402,6 +437,7 @@ public final class DaggerDopaShiftApplication_HiltComponents_SingletonC {
 
     @Override
     public void injectMainActivity(MainActivity arg0) {
+      injectMainActivity2(arg0);
     }
 
     @Override
@@ -411,7 +447,7 @@ public final class DaggerDopaShiftApplication_HiltComponents_SingletonC {
 
     @Override
     public Set<String> getViewModelKeys() {
-      return SetBuilder.<String>newSetBuilder(9).add(AnalyticsViewModel_HiltModules_KeyModule_ProvideFactory.provide()).add(DailyTasksViewModel_HiltModules_KeyModule_ProvideFactory.provide()).add(DashboardViewModel_HiltModules_KeyModule_ProvideFactory.provide()).add(GoalsViewModel_HiltModules_KeyModule_ProvideFactory.provide()).add(HabitRoadmapViewModel_HiltModules_KeyModule_ProvideFactory.provide()).add(OnboardingViewModel_HiltModules_KeyModule_ProvideFactory.provide()).add(OverlayViewModel_HiltModules_KeyModule_ProvideFactory.provide()).add(RemindersViewModel_HiltModules_KeyModule_ProvideFactory.provide()).add(SettingsViewModel_HiltModules_KeyModule_ProvideFactory.provide()).build();
+      return SetBuilder.<String>newSetBuilder(11).add(AnalyticsViewModel_HiltModules_KeyModule_ProvideFactory.provide()).add(DailyTasksViewModel_HiltModules_KeyModule_ProvideFactory.provide()).add(DashboardViewModel_HiltModules_KeyModule_ProvideFactory.provide()).add(DopaShiftAppViewModel_HiltModules_KeyModule_ProvideFactory.provide()).add(GoalsViewModel_HiltModules_KeyModule_ProvideFactory.provide()).add(HabitRoadmapViewModel_HiltModules_KeyModule_ProvideFactory.provide()).add(OnboardingViewModel_HiltModules_KeyModule_ProvideFactory.provide()).add(OverlayViewModel_HiltModules_KeyModule_ProvideFactory.provide()).add(PermissionSetupViewModel_HiltModules_KeyModule_ProvideFactory.provide()).add(RemindersViewModel_HiltModules_KeyModule_ProvideFactory.provide()).add(SettingsViewModel_HiltModules_KeyModule_ProvideFactory.provide()).build();
     }
 
     @Override
@@ -428,6 +464,12 @@ public final class DaggerDopaShiftApplication_HiltComponents_SingletonC {
     public ViewComponentBuilder viewComponentBuilder() {
       return new ViewCBuilder(singletonCImpl, activityRetainedCImpl, activityCImpl);
     }
+
+    private MainActivity injectMainActivity2(MainActivity instance) {
+      MainActivity_MembersInjector.injectPermissionRevocationDetector(instance, singletonCImpl.permissionRevocationDetectorProvider.get());
+      MainActivity_MembersInjector.injectPermissionHelper(instance, singletonCImpl.interceptionPermissionHelperProvider.get());
+      return instance;
+    }
   }
 
   private static final class ViewModelCImpl extends DopaShiftApplication_HiltComponents.ViewModelC {
@@ -443,6 +485,8 @@ public final class DaggerDopaShiftApplication_HiltComponents_SingletonC {
 
     private Provider<DashboardViewModel> dashboardViewModelProvider;
 
+    private Provider<DopaShiftAppViewModel> dopaShiftAppViewModelProvider;
+
     private Provider<GoalsViewModel> goalsViewModelProvider;
 
     private Provider<HabitRoadmapViewModel> habitRoadmapViewModelProvider;
@@ -450,6 +494,8 @@ public final class DaggerDopaShiftApplication_HiltComponents_SingletonC {
     private Provider<OnboardingViewModel> onboardingViewModelProvider;
 
     private Provider<OverlayViewModel> overlayViewModelProvider;
+
+    private Provider<PermissionSetupViewModel> permissionSetupViewModelProvider;
 
     private Provider<RemindersViewModel> remindersViewModelProvider;
 
@@ -471,17 +517,19 @@ public final class DaggerDopaShiftApplication_HiltComponents_SingletonC {
       this.analyticsViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 0);
       this.dailyTasksViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 1);
       this.dashboardViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 2);
-      this.goalsViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 3);
-      this.habitRoadmapViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 4);
-      this.onboardingViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 5);
-      this.overlayViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 6);
-      this.remindersViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 7);
-      this.settingsViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 8);
+      this.dopaShiftAppViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 3);
+      this.goalsViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 4);
+      this.habitRoadmapViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 5);
+      this.onboardingViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 6);
+      this.overlayViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 7);
+      this.permissionSetupViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 8);
+      this.remindersViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 9);
+      this.settingsViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 10);
     }
 
     @Override
     public Map<String, javax.inject.Provider<ViewModel>> getHiltViewModelMap() {
-      return MapBuilder.<String, javax.inject.Provider<ViewModel>>newMapBuilder(9).put("com.dopashift.ui.analytics.AnalyticsViewModel", ((Provider) analyticsViewModelProvider)).put("com.dopashift.ui.tasks.DailyTasksViewModel", ((Provider) dailyTasksViewModelProvider)).put("com.dopashift.ui.dashboard.DashboardViewModel", ((Provider) dashboardViewModelProvider)).put("com.dopashift.ui.goals.GoalsViewModel", ((Provider) goalsViewModelProvider)).put("com.dopashift.ui.habits.HabitRoadmapViewModel", ((Provider) habitRoadmapViewModelProvider)).put("com.dopashift.ui.onboarding.OnboardingViewModel", ((Provider) onboardingViewModelProvider)).put("com.dopashift.interception.overlay.OverlayViewModel", ((Provider) overlayViewModelProvider)).put("com.dopashift.ui.reminders.RemindersViewModel", ((Provider) remindersViewModelProvider)).put("com.dopashift.ui.settings.SettingsViewModel", ((Provider) settingsViewModelProvider)).build();
+      return MapBuilder.<String, javax.inject.Provider<ViewModel>>newMapBuilder(11).put("com.dopashift.ui.analytics.AnalyticsViewModel", ((Provider) analyticsViewModelProvider)).put("com.dopashift.ui.tasks.DailyTasksViewModel", ((Provider) dailyTasksViewModelProvider)).put("com.dopashift.ui.dashboard.DashboardViewModel", ((Provider) dashboardViewModelProvider)).put("com.dopashift.ui.navigation.DopaShiftAppViewModel", ((Provider) dopaShiftAppViewModelProvider)).put("com.dopashift.ui.goals.GoalsViewModel", ((Provider) goalsViewModelProvider)).put("com.dopashift.ui.habits.HabitRoadmapViewModel", ((Provider) habitRoadmapViewModelProvider)).put("com.dopashift.ui.onboarding.OnboardingViewModel", ((Provider) onboardingViewModelProvider)).put("com.dopashift.interception.overlay.OverlayViewModel", ((Provider) overlayViewModelProvider)).put("com.dopashift.ui.onboarding.PermissionSetupViewModel", ((Provider) permissionSetupViewModelProvider)).put("com.dopashift.ui.reminders.RemindersViewModel", ((Provider) remindersViewModelProvider)).put("com.dopashift.ui.settings.SettingsViewModel", ((Provider) settingsViewModelProvider)).build();
     }
 
     @Override
@@ -519,23 +567,29 @@ public final class DaggerDopaShiftApplication_HiltComponents_SingletonC {
           case 2: // com.dopashift.ui.dashboard.DashboardViewModel 
           return (T) new DashboardViewModel(singletonCImpl.goalRepositoryImplProvider.get(), singletonCImpl.dailyTodoRepositoryImplProvider.get(), singletonCImpl.habitTrackRepositoryImplProvider.get(), singletonCImpl.efficiencyScoreRepositoryImplProvider.get(), singletonCImpl.changeLogRepositoryImplProvider.get(), singletonCImpl.goalChecklistItemRepositoryImplProvider.get());
 
-          case 3: // com.dopashift.ui.goals.GoalsViewModel 
+          case 3: // com.dopashift.ui.navigation.DopaShiftAppViewModel 
+          return (T) new DopaShiftAppViewModel(singletonCImpl.userPreferencesRepositoryImplProvider.get());
+
+          case 4: // com.dopashift.ui.goals.GoalsViewModel 
           return (T) new GoalsViewModel(singletonCImpl.goalRepositoryImplProvider.get(), singletonCImpl.goalChecklistItemRepositoryImplProvider.get(), singletonCImpl.habitTrackRepositoryImplProvider.get());
 
-          case 4: // com.dopashift.ui.habits.HabitRoadmapViewModel 
+          case 5: // com.dopashift.ui.habits.HabitRoadmapViewModel 
           return (T) new HabitRoadmapViewModel(singletonCImpl.habitTrackRepositoryImplProvider.get(), singletonCImpl.goalRepositoryImplProvider.get());
 
-          case 5: // com.dopashift.ui.onboarding.OnboardingViewModel 
+          case 6: // com.dopashift.ui.onboarding.OnboardingViewModel 
           return (T) new OnboardingViewModel(singletonCImpl.goalRepositoryImplProvider.get(), singletonCImpl.habitTrackRepositoryImplProvider.get(), singletonCImpl.userPreferencesRepositoryImplProvider.get());
 
-          case 6: // com.dopashift.interception.overlay.OverlayViewModel 
+          case 7: // com.dopashift.interception.overlay.OverlayViewModel 
           return (T) new OverlayViewModel(singletonCImpl.dailyTodoRepositoryImplProvider.get(), singletonCImpl.habitTrackRepositoryImplProvider.get());
 
-          case 7: // com.dopashift.ui.reminders.RemindersViewModel 
+          case 8: // com.dopashift.ui.onboarding.PermissionSetupViewModel 
+          return (T) new PermissionSetupViewModel(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
+
+          case 9: // com.dopashift.ui.reminders.RemindersViewModel 
           return (T) new RemindersViewModel(singletonCImpl.reminderRepositoryImplProvider.get());
 
-          case 8: // com.dopashift.ui.settings.SettingsViewModel 
-          return (T) new SettingsViewModel();
+          case 10: // com.dopashift.ui.settings.SettingsViewModel 
+          return (T) new SettingsViewModel(singletonCImpl.userPreferencesRepositoryImplProvider.get(), singletonCImpl.llmConfigRepositoryImplProvider.get(), singletonCImpl.localQuietHoursProvider.get(), singletonCImpl.llmProviderServiceImplProvider.get());
 
           default: throw new AssertionError(id);
         }
@@ -624,6 +678,8 @@ public final class DaggerDopaShiftApplication_HiltComponents_SingletonC {
     private InterceptionService injectInterceptionService2(InterceptionService instance) {
       InterceptionService_MembersInjector.injectPermissionHelper(instance, singletonCImpl.interceptionPermissionHelperProvider.get());
       InterceptionService_MembersInjector.injectDeviceCapabilityChecker(instance, singletonCImpl.deviceCapabilityCheckerProvider.get());
+      InterceptionService_MembersInjector.injectAllowanceTracker(instance, singletonCImpl.allowanceTrackerProvider.get());
+      InterceptionService_MembersInjector.injectTodoReminderNotifier(instance, singletonCImpl.interceptionTodoReminderNotifierProvider.get());
       return instance;
     }
 
@@ -638,6 +694,10 @@ public final class DaggerDopaShiftApplication_HiltComponents_SingletonC {
     private final ApplicationContextModule applicationContextModule;
 
     private final SingletonCImpl singletonCImpl = this;
+
+    private Provider<InterceptionPermissionHelper> interceptionPermissionHelperProvider;
+
+    private Provider<PermissionRevocationDetector> permissionRevocationDetectorProvider;
 
     private Provider<DopaShiftDatabase> provideDatabaseProvider;
 
@@ -657,9 +717,41 @@ public final class DaggerDopaShiftApplication_HiltComponents_SingletonC {
 
     private Provider<ReminderRepositoryImpl> reminderRepositoryImplProvider;
 
-    private Provider<InterceptionPermissionHelper> interceptionPermissionHelperProvider;
+    private Provider<LlmConfigRepositoryImpl> llmConfigRepositoryImplProvider;
+
+    private Provider<LocalQuietHoursProvider> localQuietHoursProvider;
+
+    private Provider<DataStore<Preferences>> provideAuthDataStoreProvider;
+
+    private Provider<OkHttpClient> provideAuthOkHttpClientProvider;
+
+    private Provider<Moshi> provideMoshiProvider;
+
+    private Provider<Retrofit> provideAuthRetrofitProvider;
+
+    private Provider<AuthApiProvider> provideAuthApiProvider;
+
+    private Provider<TokenManager> provideTokenManagerProvider;
+
+    private Provider<AuthInterceptor> authInterceptorProvider;
+
+    private Provider<OkHttpClient> provideOkHttpClientProvider;
+
+    private Provider<Retrofit> provideRetrofitProvider;
+
+    private Provider<DopaShiftApi> provideDopaShiftApiProvider;
+
+    private Provider<LlmProviderServiceImpl> llmProviderServiceImplProvider;
 
     private Provider<DeviceCapabilityChecker> deviceCapabilityCheckerProvider;
+
+    private Provider<LocalTelemetryRepository> localTelemetryRepositoryProvider;
+
+    private Provider<Clock> provideClockProvider;
+
+    private Provider<AllowanceTracker> allowanceTrackerProvider;
+
+    private Provider<InterceptionTodoReminderNotifier> interceptionTodoReminderNotifierProvider;
 
     private SingletonCImpl(ApplicationContextModule applicationContextModuleParam) {
       this.applicationContextModule = applicationContextModuleParam;
@@ -695,23 +787,49 @@ public final class DaggerDopaShiftApplication_HiltComponents_SingletonC {
       return DataModule_ProvideReminderDaoFactory.provideReminderDao(provideDatabaseProvider.get());
     }
 
+    private InterceptionRuleDao interceptionRuleDao() {
+      return DataModule_ProvideInterceptionRuleDaoFactory.provideInterceptionRuleDao(provideDatabaseProvider.get());
+    }
+
+    private TelemetryDao telemetryDao() {
+      return DataModule_ProvideTelemetryDaoFactory.provideTelemetryDao(provideDatabaseProvider.get());
+    }
+
     @SuppressWarnings("unchecked")
     private void initialize(final ApplicationContextModule applicationContextModuleParam) {
-      this.provideDatabaseProvider = DoubleCheck.provider(new SwitchingProvider<DopaShiftDatabase>(singletonCImpl, 1));
-      this.efficiencyScoreRepositoryImplProvider = DoubleCheck.provider(new SwitchingProvider<EfficiencyScoreRepositoryImpl>(singletonCImpl, 0));
-      this.dailyTodoRepositoryImplProvider = DoubleCheck.provider(new SwitchingProvider<DailyTodoRepositoryImpl>(singletonCImpl, 2));
-      this.goalRepositoryImplProvider = DoubleCheck.provider(new SwitchingProvider<GoalRepositoryImpl>(singletonCImpl, 3));
-      this.habitTrackRepositoryImplProvider = DoubleCheck.provider(new SwitchingProvider<HabitTrackRepositoryImpl>(singletonCImpl, 4));
-      this.changeLogRepositoryImplProvider = DoubleCheck.provider(new SwitchingProvider<ChangeLogRepositoryImpl>(singletonCImpl, 5));
-      this.goalChecklistItemRepositoryImplProvider = DoubleCheck.provider(new SwitchingProvider<GoalChecklistItemRepositoryImpl>(singletonCImpl, 6));
-      this.userPreferencesRepositoryImplProvider = DoubleCheck.provider(new SwitchingProvider<UserPreferencesRepositoryImpl>(singletonCImpl, 7));
-      this.reminderRepositoryImplProvider = DoubleCheck.provider(new SwitchingProvider<ReminderRepositoryImpl>(singletonCImpl, 8));
-      this.interceptionPermissionHelperProvider = DoubleCheck.provider(new SwitchingProvider<InterceptionPermissionHelper>(singletonCImpl, 9));
-      this.deviceCapabilityCheckerProvider = DoubleCheck.provider(new SwitchingProvider<DeviceCapabilityChecker>(singletonCImpl, 10));
+      this.interceptionPermissionHelperProvider = DoubleCheck.provider(new SwitchingProvider<InterceptionPermissionHelper>(singletonCImpl, 1));
+      this.permissionRevocationDetectorProvider = DoubleCheck.provider(new SwitchingProvider<PermissionRevocationDetector>(singletonCImpl, 0));
+      this.provideDatabaseProvider = DoubleCheck.provider(new SwitchingProvider<DopaShiftDatabase>(singletonCImpl, 3));
+      this.efficiencyScoreRepositoryImplProvider = DoubleCheck.provider(new SwitchingProvider<EfficiencyScoreRepositoryImpl>(singletonCImpl, 2));
+      this.dailyTodoRepositoryImplProvider = DoubleCheck.provider(new SwitchingProvider<DailyTodoRepositoryImpl>(singletonCImpl, 4));
+      this.goalRepositoryImplProvider = DoubleCheck.provider(new SwitchingProvider<GoalRepositoryImpl>(singletonCImpl, 5));
+      this.habitTrackRepositoryImplProvider = DoubleCheck.provider(new SwitchingProvider<HabitTrackRepositoryImpl>(singletonCImpl, 6));
+      this.changeLogRepositoryImplProvider = DoubleCheck.provider(new SwitchingProvider<ChangeLogRepositoryImpl>(singletonCImpl, 7));
+      this.goalChecklistItemRepositoryImplProvider = DoubleCheck.provider(new SwitchingProvider<GoalChecklistItemRepositoryImpl>(singletonCImpl, 8));
+      this.userPreferencesRepositoryImplProvider = DoubleCheck.provider(new SwitchingProvider<UserPreferencesRepositoryImpl>(singletonCImpl, 9));
+      this.reminderRepositoryImplProvider = DoubleCheck.provider(new SwitchingProvider<ReminderRepositoryImpl>(singletonCImpl, 10));
+      this.llmConfigRepositoryImplProvider = DoubleCheck.provider(new SwitchingProvider<LlmConfigRepositoryImpl>(singletonCImpl, 11));
+      this.localQuietHoursProvider = DoubleCheck.provider(new SwitchingProvider<LocalQuietHoursProvider>(singletonCImpl, 12));
+      this.provideAuthDataStoreProvider = DoubleCheck.provider(new SwitchingProvider<DataStore<Preferences>>(singletonCImpl, 19));
+      this.provideAuthOkHttpClientProvider = DoubleCheck.provider(new SwitchingProvider<OkHttpClient>(singletonCImpl, 22));
+      this.provideMoshiProvider = DoubleCheck.provider(new SwitchingProvider<Moshi>(singletonCImpl, 23));
+      this.provideAuthRetrofitProvider = DoubleCheck.provider(new SwitchingProvider<Retrofit>(singletonCImpl, 21));
+      this.provideAuthApiProvider = DoubleCheck.provider(new SwitchingProvider<AuthApiProvider>(singletonCImpl, 20));
+      this.provideTokenManagerProvider = DoubleCheck.provider(new SwitchingProvider<TokenManager>(singletonCImpl, 18));
+      this.authInterceptorProvider = DoubleCheck.provider(new SwitchingProvider<AuthInterceptor>(singletonCImpl, 17));
+      this.provideOkHttpClientProvider = DoubleCheck.provider(new SwitchingProvider<OkHttpClient>(singletonCImpl, 16));
+      this.provideRetrofitProvider = DoubleCheck.provider(new SwitchingProvider<Retrofit>(singletonCImpl, 15));
+      this.provideDopaShiftApiProvider = DoubleCheck.provider(new SwitchingProvider<DopaShiftApi>(singletonCImpl, 14));
+      this.llmProviderServiceImplProvider = DoubleCheck.provider(new SwitchingProvider<LlmProviderServiceImpl>(singletonCImpl, 13));
+      this.deviceCapabilityCheckerProvider = DoubleCheck.provider(new SwitchingProvider<DeviceCapabilityChecker>(singletonCImpl, 24));
+      this.localTelemetryRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<LocalTelemetryRepository>(singletonCImpl, 26));
+      this.provideClockProvider = DoubleCheck.provider(new SwitchingProvider<Clock>(singletonCImpl, 27));
+      this.allowanceTrackerProvider = DoubleCheck.provider(new SwitchingProvider<AllowanceTracker>(singletonCImpl, 25));
+      this.interceptionTodoReminderNotifierProvider = DoubleCheck.provider(new SwitchingProvider<InterceptionTodoReminderNotifier>(singletonCImpl, 28));
     }
 
     @Override
-    public void injectDopaShiftApplication(DopaShiftApplication arg0) {
+    public void injectDopaShiftApplication(DopaShiftApplication dopaShiftApplication) {
     }
 
     @Override
@@ -743,38 +861,92 @@ public final class DaggerDopaShiftApplication_HiltComponents_SingletonC {
       @Override
       public T get() {
         switch (id) {
-          case 0: // com.dopashift.data.repository.EfficiencyScoreRepositoryImpl 
-          return (T) new EfficiencyScoreRepositoryImpl(singletonCImpl.efficiencyScoreDao());
+          case 0: // com.dopashift.interception.PermissionRevocationDetector 
+          return (T) new PermissionRevocationDetector(singletonCImpl.interceptionPermissionHelperProvider.get());
 
-          case 1: // com.dopashift.data.local.DopaShiftDatabase 
-          return (T) DataModule_ProvideDatabaseFactory.provideDatabase(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
-
-          case 2: // com.dopashift.data.repository.DailyTodoRepositoryImpl 
-          return (T) new DailyTodoRepositoryImpl(singletonCImpl.dailyTodoDao());
-
-          case 3: // com.dopashift.data.repository.GoalRepositoryImpl 
-          return (T) new GoalRepositoryImpl(singletonCImpl.goalDao());
-
-          case 4: // com.dopashift.data.repository.HabitTrackRepositoryImpl 
-          return (T) new HabitTrackRepositoryImpl(singletonCImpl.habitTrackDao());
-
-          case 5: // com.dopashift.data.repository.ChangeLogRepositoryImpl 
-          return (T) new ChangeLogRepositoryImpl(singletonCImpl.changeLogDao());
-
-          case 6: // com.dopashift.data.repository.GoalChecklistItemRepositoryImpl 
-          return (T) new GoalChecklistItemRepositoryImpl(singletonCImpl.goalChecklistDao());
-
-          case 7: // com.dopashift.data.repository.UserPreferencesRepositoryImpl 
-          return (T) new UserPreferencesRepositoryImpl(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
-
-          case 8: // com.dopashift.data.repository.ReminderRepositoryImpl 
-          return (T) new ReminderRepositoryImpl(singletonCImpl.reminderDao());
-
-          case 9: // com.dopashift.interception.InterceptionPermissionHelper 
+          case 1: // com.dopashift.interception.InterceptionPermissionHelper 
           return (T) new InterceptionPermissionHelper();
 
-          case 10: // com.dopashift.interception.DeviceCapabilityChecker 
+          case 2: // com.dopashift.data.repository.EfficiencyScoreRepositoryImpl 
+          return (T) new EfficiencyScoreRepositoryImpl(singletonCImpl.efficiencyScoreDao());
+
+          case 3: // com.dopashift.data.local.DopaShiftDatabase 
+          return (T) DataModule_ProvideDatabaseFactory.provideDatabase(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
+
+          case 4: // com.dopashift.data.repository.DailyTodoRepositoryImpl 
+          return (T) new DailyTodoRepositoryImpl(singletonCImpl.dailyTodoDao());
+
+          case 5: // com.dopashift.data.repository.GoalRepositoryImpl 
+          return (T) new GoalRepositoryImpl(singletonCImpl.goalDao());
+
+          case 6: // com.dopashift.data.repository.HabitTrackRepositoryImpl 
+          return (T) new HabitTrackRepositoryImpl(singletonCImpl.habitTrackDao());
+
+          case 7: // com.dopashift.data.repository.ChangeLogRepositoryImpl 
+          return (T) new ChangeLogRepositoryImpl(singletonCImpl.changeLogDao());
+
+          case 8: // com.dopashift.data.repository.GoalChecklistItemRepositoryImpl 
+          return (T) new GoalChecklistItemRepositoryImpl(singletonCImpl.goalChecklistDao());
+
+          case 9: // com.dopashift.data.repository.UserPreferencesRepositoryImpl 
+          return (T) new UserPreferencesRepositoryImpl(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
+
+          case 10: // com.dopashift.data.repository.ReminderRepositoryImpl 
+          return (T) new ReminderRepositoryImpl(singletonCImpl.reminderDao());
+
+          case 11: // com.dopashift.data.repository.LlmConfigRepositoryImpl 
+          return (T) new LlmConfigRepositoryImpl(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
+
+          case 12: // com.dopashift.data.repository.LocalQuietHoursProvider 
+          return (T) new LocalQuietHoursProvider(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
+
+          case 13: // com.dopashift.data.remote.LlmProviderServiceImpl 
+          return (T) new LlmProviderServiceImpl(singletonCImpl.provideDopaShiftApiProvider.get());
+
+          case 14: // com.dopashift.data.remote.DopaShiftApi 
+          return (T) NetworkModule_ProvideDopaShiftApiFactory.provideDopaShiftApi(singletonCImpl.provideRetrofitProvider.get());
+
+          case 15: // retrofit2.Retrofit 
+          return (T) NetworkModule_ProvideRetrofitFactory.provideRetrofit(singletonCImpl.provideOkHttpClientProvider.get(), singletonCImpl.provideMoshiProvider.get());
+
+          case 16: // okhttp3.OkHttpClient 
+          return (T) NetworkModule_ProvideOkHttpClientFactory.provideOkHttpClient(singletonCImpl.authInterceptorProvider.get());
+
+          case 17: // com.dopashift.data.remote.AuthInterceptor 
+          return (T) new AuthInterceptor(singletonCImpl.provideTokenManagerProvider.get());
+
+          case 18: // com.dopashift.data.remote.TokenManager 
+          return (T) NetworkModule_ProvideTokenManagerFactory.provideTokenManager(singletonCImpl.provideAuthDataStoreProvider.get(), singletonCImpl.provideAuthApiProvider.get());
+
+          case 19: // androidx.datastore.core.DataStore<androidx.datastore.preferences.core.Preferences> 
+          return (T) NetworkModule_ProvideAuthDataStoreFactory.provideAuthDataStore(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
+
+          case 20: // com.dopashift.data.remote.AuthApiProvider 
+          return (T) NetworkModule_ProvideAuthApiProviderFactory.provideAuthApiProvider(singletonCImpl.provideAuthRetrofitProvider.get());
+
+          case 21: // @com.dopashift.data.di.AuthClient retrofit2.Retrofit 
+          return (T) NetworkModule_ProvideAuthRetrofitFactory.provideAuthRetrofit(singletonCImpl.provideAuthOkHttpClientProvider.get(), singletonCImpl.provideMoshiProvider.get());
+
+          case 22: // @com.dopashift.data.di.AuthClient okhttp3.OkHttpClient 
+          return (T) NetworkModule_ProvideAuthOkHttpClientFactory.provideAuthOkHttpClient();
+
+          case 23: // com.squareup.moshi.Moshi 
+          return (T) NetworkModule_ProvideMoshiFactory.provideMoshi();
+
+          case 24: // com.dopashift.interception.DeviceCapabilityChecker 
           return (T) new DeviceCapabilityChecker();
+
+          case 25: // com.dopashift.interception.AllowanceTracker 
+          return (T) new AllowanceTracker(singletonCImpl.interceptionRuleDao(), singletonCImpl.localTelemetryRepositoryProvider.get(), singletonCImpl.provideClockProvider.get());
+
+          case 26: // com.dopashift.data.repository.LocalTelemetryRepository 
+          return (T) new LocalTelemetryRepository(singletonCImpl.telemetryDao());
+
+          case 27: // java.time.Clock 
+          return (T) ReminderModule_Companion_ProvideClockFactory.provideClock();
+
+          case 28: // com.dopashift.interception.reminder.InterceptionTodoReminderNotifier 
+          return (T) new InterceptionTodoReminderNotifier(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule), singletonCImpl.dailyTodoRepositoryImplProvider.get());
 
           default: throw new AssertionError(id);
         }
