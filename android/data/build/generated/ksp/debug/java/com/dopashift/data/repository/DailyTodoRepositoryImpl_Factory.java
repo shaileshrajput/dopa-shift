@@ -3,10 +3,10 @@ package com.dopashift.data.repository;
 import com.dopashift.data.local.dao.DailyTodoDao;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
+import dagger.internal.Provider;
 import dagger.internal.QualifierMetadata;
 import dagger.internal.ScopeMetadata;
 import javax.annotation.processing.Generated;
-import javax.inject.Provider;
 
 @ScopeMetadata("javax.inject.Singleton")
 @QualifierMetadata
@@ -19,12 +19,15 @@ import javax.inject.Provider;
     "unchecked",
     "rawtypes",
     "KotlinInternal",
-    "KotlinInternalInJava"
+    "KotlinInternalInJava",
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class DailyTodoRepositoryImpl_Factory implements Factory<DailyTodoRepositoryImpl> {
   private final Provider<DailyTodoDao> dailyTodoDaoProvider;
 
-  public DailyTodoRepositoryImpl_Factory(Provider<DailyTodoDao> dailyTodoDaoProvider) {
+  private DailyTodoRepositoryImpl_Factory(Provider<DailyTodoDao> dailyTodoDaoProvider) {
     this.dailyTodoDaoProvider = dailyTodoDaoProvider;
   }
 

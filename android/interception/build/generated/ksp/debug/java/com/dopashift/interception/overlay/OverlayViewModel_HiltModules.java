@@ -10,9 +10,7 @@ import dagger.hilt.android.components.ViewModelComponent;
 import dagger.hilt.android.internal.lifecycle.HiltViewModelMap;
 import dagger.hilt.codegen.OriginatingElement;
 import dagger.multibindings.IntoMap;
-import dagger.multibindings.IntoSet;
-import dagger.multibindings.StringKey;
-import java.lang.String;
+import dagger.multibindings.LazyClassKey;
 import javax.annotation.processing.Generated;
 
 @Generated("dagger.hilt.android.processor.internal.viewmodel.ViewModelProcessor")
@@ -31,7 +29,7 @@ public final class OverlayViewModel_HiltModules {
 
     @Binds
     @IntoMap
-    @StringKey("com.dopashift.interception.overlay.OverlayViewModel")
+    @LazyClassKey(OverlayViewModel.class)
     @HiltViewModelMap
     public abstract ViewModel binds(OverlayViewModel vm);
   }
@@ -43,10 +41,11 @@ public final class OverlayViewModel_HiltModules {
     }
 
     @Provides
-    @IntoSet
+    @IntoMap
+    @LazyClassKey(OverlayViewModel.class)
     @HiltViewModelMap.KeySet
-    public static String provide() {
-      return "com.dopashift.interception.overlay.OverlayViewModel";
+    public static boolean provide() {
+      return true;
     }
   }
 }

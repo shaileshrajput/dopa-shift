@@ -16,7 +16,10 @@ import javax.inject.Provider;
     "unchecked",
     "rawtypes",
     "KotlinInternal",
-    "KotlinInternalInJava"
+    "KotlinInternalInJava",
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class ReminderEvaluationWorker_AssistedFactory_Impl implements ReminderEvaluationWorker_AssistedFactory {
   private final ReminderEvaluationWorker_Factory delegateFactory;

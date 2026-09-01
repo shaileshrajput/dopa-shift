@@ -5,11 +5,11 @@ import com.dopashift.domain.port.QuietHoursProvider;
 import com.dopashift.domain.repository.HabitTrackRepository;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
+import dagger.internal.Provider;
 import dagger.internal.QualifierMetadata;
 import dagger.internal.ScopeMetadata;
 import java.time.Clock;
 import javax.annotation.processing.Generated;
-import javax.inject.Provider;
 
 @ScopeMetadata("javax.inject.Singleton")
 @QualifierMetadata
@@ -22,7 +22,10 @@ import javax.inject.Provider;
     "unchecked",
     "rawtypes",
     "KotlinInternal",
-    "KotlinInternalInJava"
+    "KotlinInternalInJava",
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class HabitTrackEscalationReminder_Factory implements Factory<HabitTrackEscalationReminder> {
   private final Provider<Context> contextProvider;
@@ -33,7 +36,7 @@ public final class HabitTrackEscalationReminder_Factory implements Factory<Habit
 
   private final Provider<Clock> clockProvider;
 
-  public HabitTrackEscalationReminder_Factory(Provider<Context> contextProvider,
+  private HabitTrackEscalationReminder_Factory(Provider<Context> contextProvider,
       Provider<HabitTrackRepository> habitTrackRepositoryProvider,
       Provider<QuietHoursProvider> quietHoursProvider, Provider<Clock> clockProvider) {
     this.contextProvider = contextProvider;

@@ -5,11 +5,11 @@ import com.dopashift.domain.service.ReminderEvaluationService;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
 import dagger.internal.Preconditions;
+import dagger.internal.Provider;
 import dagger.internal.QualifierMetadata;
 import dagger.internal.ScopeMetadata;
 import java.time.Clock;
 import javax.annotation.processing.Generated;
-import javax.inject.Provider;
 
 @ScopeMetadata("javax.inject.Singleton")
 @QualifierMetadata
@@ -22,14 +22,17 @@ import javax.inject.Provider;
     "unchecked",
     "rawtypes",
     "KotlinInternal",
-    "KotlinInternalInJava"
+    "KotlinInternalInJava",
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class ReminderModule_Companion_ProvideReminderEvaluationServiceFactory implements Factory<ReminderEvaluationService> {
   private final Provider<Clock> clockProvider;
 
   private final Provider<EntityCompletionChecker> entityCompletionCheckerProvider;
 
-  public ReminderModule_Companion_ProvideReminderEvaluationServiceFactory(
+  private ReminderModule_Companion_ProvideReminderEvaluationServiceFactory(
       Provider<Clock> clockProvider,
       Provider<EntityCompletionChecker> entityCompletionCheckerProvider) {
     this.clockProvider = clockProvider;

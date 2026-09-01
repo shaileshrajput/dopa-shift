@@ -17,7 +17,10 @@ import javax.annotation.processing.Generated;
     "unchecked",
     "rawtypes",
     "KotlinInternal",
-    "KotlinInternalInJava"
+    "KotlinInternalInJava",
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class BatteryEfficiencyManager_Factory implements Factory<BatteryEfficiencyManager> {
   @Override
@@ -34,6 +37,6 @@ public final class BatteryEfficiencyManager_Factory implements Factory<BatteryEf
   }
 
   private static final class InstanceHolder {
-    private static final BatteryEfficiencyManager_Factory INSTANCE = new BatteryEfficiencyManager_Factory();
+    static final BatteryEfficiencyManager_Factory INSTANCE = new BatteryEfficiencyManager_Factory();
   }
 }

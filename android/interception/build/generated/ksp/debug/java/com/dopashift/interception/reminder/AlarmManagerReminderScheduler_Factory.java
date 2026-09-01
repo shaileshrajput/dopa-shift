@@ -3,10 +3,10 @@ package com.dopashift.interception.reminder;
 import android.content.Context;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
+import dagger.internal.Provider;
 import dagger.internal.QualifierMetadata;
 import dagger.internal.ScopeMetadata;
 import javax.annotation.processing.Generated;
-import javax.inject.Provider;
 
 @ScopeMetadata("javax.inject.Singleton")
 @QualifierMetadata
@@ -19,12 +19,15 @@ import javax.inject.Provider;
     "unchecked",
     "rawtypes",
     "KotlinInternal",
-    "KotlinInternalInJava"
+    "KotlinInternalInJava",
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class AlarmManagerReminderScheduler_Factory implements Factory<AlarmManagerReminderScheduler> {
   private final Provider<Context> contextProvider;
 
-  public AlarmManagerReminderScheduler_Factory(Provider<Context> contextProvider) {
+  private AlarmManagerReminderScheduler_Factory(Provider<Context> contextProvider) {
     this.contextProvider = contextProvider;
   }
 

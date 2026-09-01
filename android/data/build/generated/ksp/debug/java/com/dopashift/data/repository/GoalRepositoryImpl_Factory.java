@@ -3,10 +3,10 @@ package com.dopashift.data.repository;
 import com.dopashift.data.local.dao.GoalDao;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
+import dagger.internal.Provider;
 import dagger.internal.QualifierMetadata;
 import dagger.internal.ScopeMetadata;
 import javax.annotation.processing.Generated;
-import javax.inject.Provider;
 
 @ScopeMetadata("javax.inject.Singleton")
 @QualifierMetadata
@@ -19,12 +19,15 @@ import javax.inject.Provider;
     "unchecked",
     "rawtypes",
     "KotlinInternal",
-    "KotlinInternalInJava"
+    "KotlinInternalInJava",
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class GoalRepositoryImpl_Factory implements Factory<GoalRepositoryImpl> {
   private final Provider<GoalDao> goalDaoProvider;
 
-  public GoalRepositoryImpl_Factory(Provider<GoalDao> goalDaoProvider) {
+  private GoalRepositoryImpl_Factory(Provider<GoalDao> goalDaoProvider) {
     this.goalDaoProvider = goalDaoProvider;
   }
 

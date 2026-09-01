@@ -17,7 +17,10 @@ import javax.annotation.processing.Generated;
     "unchecked",
     "rawtypes",
     "KotlinInternal",
-    "KotlinInternalInJava"
+    "KotlinInternalInJava",
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class DeviceCapabilityChecker_Factory implements Factory<DeviceCapabilityChecker> {
   @Override
@@ -34,6 +37,6 @@ public final class DeviceCapabilityChecker_Factory implements Factory<DeviceCapa
   }
 
   private static final class InstanceHolder {
-    private static final DeviceCapabilityChecker_Factory INSTANCE = new DeviceCapabilityChecker_Factory();
+    static final DeviceCapabilityChecker_Factory INSTANCE = new DeviceCapabilityChecker_Factory();
   }
 }

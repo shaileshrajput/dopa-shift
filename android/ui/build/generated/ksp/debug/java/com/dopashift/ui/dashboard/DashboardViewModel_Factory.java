@@ -8,10 +8,10 @@ import com.dopashift.domain.repository.GoalRepository;
 import com.dopashift.domain.repository.HabitTrackRepository;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
+import dagger.internal.Provider;
 import dagger.internal.QualifierMetadata;
 import dagger.internal.ScopeMetadata;
 import javax.annotation.processing.Generated;
-import javax.inject.Provider;
 
 @ScopeMetadata
 @QualifierMetadata
@@ -24,7 +24,10 @@ import javax.inject.Provider;
     "unchecked",
     "rawtypes",
     "KotlinInternal",
-    "KotlinInternalInJava"
+    "KotlinInternalInJava",
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class DashboardViewModel_Factory implements Factory<DashboardViewModel> {
   private final Provider<GoalRepository> goalRepositoryProvider;
@@ -39,7 +42,7 @@ public final class DashboardViewModel_Factory implements Factory<DashboardViewMo
 
   private final Provider<GoalChecklistItemRepository> goalChecklistItemRepositoryProvider;
 
-  public DashboardViewModel_Factory(Provider<GoalRepository> goalRepositoryProvider,
+  private DashboardViewModel_Factory(Provider<GoalRepository> goalRepositoryProvider,
       Provider<DailyTodoRepository> dailyTodoRepositoryProvider,
       Provider<HabitTrackRepository> habitTrackRepositoryProvider,
       Provider<EfficiencyScoreRepository> efficiencyScoreRepositoryProvider,

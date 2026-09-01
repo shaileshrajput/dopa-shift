@@ -13,8 +13,10 @@ import javax.annotation.processing.Generated;
     originatingRoot = "com.dopashift.app.DopaShiftApplication",
     originatingRootPackage = "com.dopashift.app",
     rootAnnotation = HiltAndroidApp.class,
+    rootComponentPackage = "dagger.hilt.components",
     rootSimpleNames = "DopaShiftApplication",
-    originatingRootSimpleNames = "DopaShiftApplication"
+    originatingRootSimpleNames = "DopaShiftApplication",
+    rootComponentSimpleNames = "SingletonComponent"
 )
 @Generated("dagger.hilt.processor.internal.root.AggregatedRootGenerator")
 public class _com_dopashift_app_DopaShiftApplication {

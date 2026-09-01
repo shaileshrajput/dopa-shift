@@ -7,10 +7,10 @@ import com.dopashift.sync.SyncManager;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
 import dagger.internal.Preconditions;
+import dagger.internal.Provider;
 import dagger.internal.QualifierMetadata;
 import dagger.internal.ScopeMetadata;
 import javax.annotation.processing.Generated;
-import javax.inject.Provider;
 
 @ScopeMetadata("javax.inject.Singleton")
 @QualifierMetadata
@@ -23,7 +23,10 @@ import javax.inject.Provider;
     "unchecked",
     "rawtypes",
     "KotlinInternal",
-    "KotlinInternalInJava"
+    "KotlinInternalInJava",
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class SyncModule_ProvideSyncManagerFactory implements Factory<SyncManager> {
   private final Provider<ChangeLogDao> changeLogDaoProvider;
@@ -32,7 +35,7 @@ public final class SyncModule_ProvideSyncManagerFactory implements Factory<SyncM
 
   private final Provider<DopaShiftApi> apiProvider;
 
-  public SyncModule_ProvideSyncManagerFactory(Provider<ChangeLogDao> changeLogDaoProvider,
+  private SyncModule_ProvideSyncManagerFactory(Provider<ChangeLogDao> changeLogDaoProvider,
       Provider<SyncStateDao> syncStateDaoProvider, Provider<DopaShiftApi> apiProvider) {
     this.changeLogDaoProvider = changeLogDaoProvider;
     this.syncStateDaoProvider = syncStateDaoProvider;

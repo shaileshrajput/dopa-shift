@@ -5,11 +5,11 @@ import com.dopashift.domain.repository.ReminderRepository;
 import com.dopashift.domain.service.ReminderEvaluationService;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
+import dagger.internal.Provider;
 import dagger.internal.QualifierMetadata;
 import dagger.internal.ScopeMetadata;
 import java.time.Clock;
 import javax.annotation.processing.Generated;
-import javax.inject.Provider;
 
 @ScopeMetadata("javax.inject.Singleton")
 @QualifierMetadata
@@ -22,7 +22,10 @@ import javax.inject.Provider;
     "unchecked",
     "rawtypes",
     "KotlinInternal",
-    "KotlinInternalInJava"
+    "KotlinInternalInJava",
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class ClientReminderEngine_Factory implements Factory<ClientReminderEngine> {
   private final Provider<ReminderRepository> reminderRepositoryProvider;
@@ -35,7 +38,7 @@ public final class ClientReminderEngine_Factory implements Factory<ClientReminde
 
   private final Provider<Clock> clockProvider;
 
-  public ClientReminderEngine_Factory(Provider<ReminderRepository> reminderRepositoryProvider,
+  private ClientReminderEngine_Factory(Provider<ReminderRepository> reminderRepositoryProvider,
       Provider<ReminderEvaluationService> evaluationServiceProvider,
       Provider<QuietHoursProvider> quietHoursProvider,
       Provider<ReminderNotificationScheduler> notificationSchedulerProvider,

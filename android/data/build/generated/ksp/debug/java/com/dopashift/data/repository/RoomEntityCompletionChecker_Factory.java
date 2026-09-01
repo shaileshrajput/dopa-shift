@@ -5,10 +5,10 @@ import com.dopashift.data.local.dao.GoalChecklistDao;
 import com.dopashift.data.local.dao.HabitTrackDao;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
+import dagger.internal.Provider;
 import dagger.internal.QualifierMetadata;
 import dagger.internal.ScopeMetadata;
 import javax.annotation.processing.Generated;
-import javax.inject.Provider;
 
 @ScopeMetadata("javax.inject.Singleton")
 @QualifierMetadata
@@ -21,7 +21,10 @@ import javax.inject.Provider;
     "unchecked",
     "rawtypes",
     "KotlinInternal",
-    "KotlinInternalInJava"
+    "KotlinInternalInJava",
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class RoomEntityCompletionChecker_Factory implements Factory<RoomEntityCompletionChecker> {
   private final Provider<DailyTodoDao> dailyTodoDaoProvider;
@@ -30,7 +33,7 @@ public final class RoomEntityCompletionChecker_Factory implements Factory<RoomEn
 
   private final Provider<HabitTrackDao> habitTrackDaoProvider;
 
-  public RoomEntityCompletionChecker_Factory(Provider<DailyTodoDao> dailyTodoDaoProvider,
+  private RoomEntityCompletionChecker_Factory(Provider<DailyTodoDao> dailyTodoDaoProvider,
       Provider<GoalChecklistDao> goalChecklistDaoProvider,
       Provider<HabitTrackDao> habitTrackDaoProvider) {
     this.dailyTodoDaoProvider = dailyTodoDaoProvider;

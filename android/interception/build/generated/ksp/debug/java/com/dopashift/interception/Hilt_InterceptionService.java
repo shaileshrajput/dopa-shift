@@ -20,10 +20,6 @@ public abstract class Hilt_InterceptionService extends Service implements Genera
 
   private boolean injected = false;
 
-  Hilt_InterceptionService() {
-    super();
-  }
-
   @CallSuper
   @Override
   public void onCreate() {

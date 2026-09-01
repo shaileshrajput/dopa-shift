@@ -4,10 +4,10 @@ import com.dopashift.domain.repository.ChangeLogRepository;
 import com.dopashift.domain.repository.DailyTodoRepository;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
+import dagger.internal.Provider;
 import dagger.internal.QualifierMetadata;
 import dagger.internal.ScopeMetadata;
 import javax.annotation.processing.Generated;
-import javax.inject.Provider;
 
 @ScopeMetadata("javax.inject.Singleton")
 @QualifierMetadata
@@ -20,14 +20,17 @@ import javax.inject.Provider;
     "unchecked",
     "rawtypes",
     "KotlinInternal",
-    "KotlinInternalInJava"
+    "KotlinInternalInJava",
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class OverlayTodoCompletionHandler_Factory implements Factory<OverlayTodoCompletionHandler> {
   private final Provider<DailyTodoRepository> dailyTodoRepositoryProvider;
 
   private final Provider<ChangeLogRepository> changeLogRepositoryProvider;
 
-  public OverlayTodoCompletionHandler_Factory(
+  private OverlayTodoCompletionHandler_Factory(
       Provider<DailyTodoRepository> dailyTodoRepositoryProvider,
       Provider<ChangeLogRepository> changeLogRepositoryProvider) {
     this.dailyTodoRepositoryProvider = dailyTodoRepositoryProvider;

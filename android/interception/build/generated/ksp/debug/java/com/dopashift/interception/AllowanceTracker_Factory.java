@@ -4,11 +4,11 @@ import com.dopashift.data.local.dao.InterceptionRuleDao;
 import com.dopashift.data.repository.LocalTelemetryRepository;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
+import dagger.internal.Provider;
 import dagger.internal.QualifierMetadata;
 import dagger.internal.ScopeMetadata;
 import java.time.Clock;
 import javax.annotation.processing.Generated;
-import javax.inject.Provider;
 
 @ScopeMetadata("javax.inject.Singleton")
 @QualifierMetadata
@@ -21,7 +21,10 @@ import javax.inject.Provider;
     "unchecked",
     "rawtypes",
     "KotlinInternal",
-    "KotlinInternalInJava"
+    "KotlinInternalInJava",
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class AllowanceTracker_Factory implements Factory<AllowanceTracker> {
   private final Provider<InterceptionRuleDao> interceptionRuleDaoProvider;
@@ -30,7 +33,7 @@ public final class AllowanceTracker_Factory implements Factory<AllowanceTracker>
 
   private final Provider<Clock> clockProvider;
 
-  public AllowanceTracker_Factory(Provider<InterceptionRuleDao> interceptionRuleDaoProvider,
+  private AllowanceTracker_Factory(Provider<InterceptionRuleDao> interceptionRuleDaoProvider,
       Provider<LocalTelemetryRepository> telemetryRepositoryProvider,
       Provider<Clock> clockProvider) {
     this.interceptionRuleDaoProvider = interceptionRuleDaoProvider;

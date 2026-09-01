@@ -4,9 +4,9 @@ import com.dopashift.interception.reminder.InterceptionTodoReminderNotifier;
 import dagger.MembersInjector;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.InjectedFieldSignature;
+import dagger.internal.Provider;
 import dagger.internal.QualifierMetadata;
 import javax.annotation.processing.Generated;
-import javax.inject.Provider;
 
 @QualifierMetadata
 @DaggerGenerated
@@ -18,7 +18,10 @@ import javax.inject.Provider;
     "unchecked",
     "rawtypes",
     "KotlinInternal",
-    "KotlinInternalInJava"
+    "KotlinInternalInJava",
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class InterceptionService_MembersInjector implements MembersInjector<InterceptionService> {
   private final Provider<InterceptionPermissionHelper> permissionHelperProvider;
@@ -29,7 +32,7 @@ public final class InterceptionService_MembersInjector implements MembersInjecto
 
   private final Provider<InterceptionTodoReminderNotifier> todoReminderNotifierProvider;
 
-  public InterceptionService_MembersInjector(
+  private InterceptionService_MembersInjector(
       Provider<InterceptionPermissionHelper> permissionHelperProvider,
       Provider<DeviceCapabilityChecker> deviceCapabilityCheckerProvider,
       Provider<AllowanceTracker> allowanceTrackerProvider,
@@ -40,20 +43,20 @@ public final class InterceptionService_MembersInjector implements MembersInjecto
     this.todoReminderNotifierProvider = todoReminderNotifierProvider;
   }
 
-  public static MembersInjector<InterceptionService> create(
-      Provider<InterceptionPermissionHelper> permissionHelperProvider,
-      Provider<DeviceCapabilityChecker> deviceCapabilityCheckerProvider,
-      Provider<AllowanceTracker> allowanceTrackerProvider,
-      Provider<InterceptionTodoReminderNotifier> todoReminderNotifierProvider) {
-    return new InterceptionService_MembersInjector(permissionHelperProvider, deviceCapabilityCheckerProvider, allowanceTrackerProvider, todoReminderNotifierProvider);
-  }
-
   @Override
   public void injectMembers(InterceptionService instance) {
     injectPermissionHelper(instance, permissionHelperProvider.get());
     injectDeviceCapabilityChecker(instance, deviceCapabilityCheckerProvider.get());
     injectAllowanceTracker(instance, allowanceTrackerProvider.get());
     injectTodoReminderNotifier(instance, todoReminderNotifierProvider.get());
+  }
+
+  public static MembersInjector<InterceptionService> create(
+      Provider<InterceptionPermissionHelper> permissionHelperProvider,
+      Provider<DeviceCapabilityChecker> deviceCapabilityCheckerProvider,
+      Provider<AllowanceTracker> allowanceTrackerProvider,
+      Provider<InterceptionTodoReminderNotifier> todoReminderNotifierProvider) {
+    return new InterceptionService_MembersInjector(permissionHelperProvider, deviceCapabilityCheckerProvider, allowanceTrackerProvider, todoReminderNotifierProvider);
   }
 
   @InjectedFieldSignature("com.dopashift.interception.InterceptionService.permissionHelper")

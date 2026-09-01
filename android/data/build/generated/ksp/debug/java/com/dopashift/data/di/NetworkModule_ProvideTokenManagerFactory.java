@@ -7,10 +7,10 @@ import com.dopashift.data.remote.TokenManager;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
 import dagger.internal.Preconditions;
+import dagger.internal.Provider;
 import dagger.internal.QualifierMetadata;
 import dagger.internal.ScopeMetadata;
 import javax.annotation.processing.Generated;
-import javax.inject.Provider;
 
 @ScopeMetadata("javax.inject.Singleton")
 @QualifierMetadata
@@ -23,14 +23,17 @@ import javax.inject.Provider;
     "unchecked",
     "rawtypes",
     "KotlinInternal",
-    "KotlinInternalInJava"
+    "KotlinInternalInJava",
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class NetworkModule_ProvideTokenManagerFactory implements Factory<TokenManager> {
   private final Provider<DataStore<Preferences>> dataStoreProvider;
 
   private final Provider<AuthApiProvider> authApiProvider;
 
-  public NetworkModule_ProvideTokenManagerFactory(
+  private NetworkModule_ProvideTokenManagerFactory(
       Provider<DataStore<Preferences>> dataStoreProvider,
       Provider<AuthApiProvider> authApiProvider) {
     this.dataStoreProvider = dataStoreProvider;

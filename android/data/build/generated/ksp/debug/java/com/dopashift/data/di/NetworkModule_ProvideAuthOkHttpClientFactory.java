@@ -19,7 +19,10 @@ import okhttp3.OkHttpClient;
     "unchecked",
     "rawtypes",
     "KotlinInternal",
-    "KotlinInternalInJava"
+    "KotlinInternalInJava",
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class NetworkModule_ProvideAuthOkHttpClientFactory implements Factory<OkHttpClient> {
   @Override
@@ -36,6 +39,6 @@ public final class NetworkModule_ProvideAuthOkHttpClientFactory implements Facto
   }
 
   private static final class InstanceHolder {
-    private static final NetworkModule_ProvideAuthOkHttpClientFactory INSTANCE = new NetworkModule_ProvideAuthOkHttpClientFactory();
+    static final NetworkModule_ProvideAuthOkHttpClientFactory INSTANCE = new NetworkModule_ProvideAuthOkHttpClientFactory();
   }
 }

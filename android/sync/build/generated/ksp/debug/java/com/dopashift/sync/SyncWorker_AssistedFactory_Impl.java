@@ -16,7 +16,10 @@ import javax.inject.Provider;
     "unchecked",
     "rawtypes",
     "KotlinInternal",
-    "KotlinInternalInJava"
+    "KotlinInternalInJava",
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class SyncWorker_AssistedFactory_Impl implements SyncWorker_AssistedFactory {
   private final SyncWorker_Factory delegateFactory;

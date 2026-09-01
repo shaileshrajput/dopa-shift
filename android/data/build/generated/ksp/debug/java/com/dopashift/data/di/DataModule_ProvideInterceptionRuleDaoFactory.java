@@ -5,10 +5,10 @@ import com.dopashift.data.local.dao.InterceptionRuleDao;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
 import dagger.internal.Preconditions;
+import dagger.internal.Provider;
 import dagger.internal.QualifierMetadata;
 import dagger.internal.ScopeMetadata;
 import javax.annotation.processing.Generated;
-import javax.inject.Provider;
 
 @ScopeMetadata
 @QualifierMetadata
@@ -21,12 +21,15 @@ import javax.inject.Provider;
     "unchecked",
     "rawtypes",
     "KotlinInternal",
-    "KotlinInternalInJava"
+    "KotlinInternalInJava",
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class DataModule_ProvideInterceptionRuleDaoFactory implements Factory<InterceptionRuleDao> {
   private final Provider<DopaShiftDatabase> dbProvider;
 
-  public DataModule_ProvideInterceptionRuleDaoFactory(Provider<DopaShiftDatabase> dbProvider) {
+  private DataModule_ProvideInterceptionRuleDaoFactory(Provider<DopaShiftDatabase> dbProvider) {
     this.dbProvider = dbProvider;
   }
 

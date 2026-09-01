@@ -17,7 +17,10 @@ import javax.annotation.processing.Generated;
     "unchecked",
     "rawtypes",
     "KotlinInternal",
-    "KotlinInternalInJava"
+    "KotlinInternalInJava",
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class InterceptionPermissionHelper_Factory implements Factory<InterceptionPermissionHelper> {
   @Override
@@ -34,6 +37,6 @@ public final class InterceptionPermissionHelper_Factory implements Factory<Inter
   }
 
   private static final class InstanceHolder {
-    private static final InterceptionPermissionHelper_Factory INSTANCE = new InterceptionPermissionHelper_Factory();
+    static final InterceptionPermissionHelper_Factory INSTANCE = new InterceptionPermissionHelper_Factory();
   }
 }

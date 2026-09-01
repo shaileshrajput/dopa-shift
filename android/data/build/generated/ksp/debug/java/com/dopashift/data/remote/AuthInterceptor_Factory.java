@@ -2,10 +2,10 @@ package com.dopashift.data.remote;
 
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
+import dagger.internal.Provider;
 import dagger.internal.QualifierMetadata;
 import dagger.internal.ScopeMetadata;
 import javax.annotation.processing.Generated;
-import javax.inject.Provider;
 
 @ScopeMetadata("javax.inject.Singleton")
 @QualifierMetadata
@@ -18,12 +18,15 @@ import javax.inject.Provider;
     "unchecked",
     "rawtypes",
     "KotlinInternal",
-    "KotlinInternalInJava"
+    "KotlinInternalInJava",
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class AuthInterceptor_Factory implements Factory<AuthInterceptor> {
   private final Provider<TokenManager> tokenManagerProvider;
 
-  public AuthInterceptor_Factory(Provider<TokenManager> tokenManagerProvider) {
+  private AuthInterceptor_Factory(Provider<TokenManager> tokenManagerProvider) {
     this.tokenManagerProvider = tokenManagerProvider;
   }
 

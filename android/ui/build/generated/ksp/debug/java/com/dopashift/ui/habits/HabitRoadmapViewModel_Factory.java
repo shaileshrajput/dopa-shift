@@ -4,10 +4,10 @@ import com.dopashift.domain.repository.GoalRepository;
 import com.dopashift.domain.repository.HabitTrackRepository;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
+import dagger.internal.Provider;
 import dagger.internal.QualifierMetadata;
 import dagger.internal.ScopeMetadata;
 import javax.annotation.processing.Generated;
-import javax.inject.Provider;
 
 @ScopeMetadata
 @QualifierMetadata
@@ -20,14 +20,17 @@ import javax.inject.Provider;
     "unchecked",
     "rawtypes",
     "KotlinInternal",
-    "KotlinInternalInJava"
+    "KotlinInternalInJava",
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class HabitRoadmapViewModel_Factory implements Factory<HabitRoadmapViewModel> {
   private final Provider<HabitTrackRepository> habitTrackRepositoryProvider;
 
   private final Provider<GoalRepository> goalRepositoryProvider;
 
-  public HabitRoadmapViewModel_Factory(Provider<HabitTrackRepository> habitTrackRepositoryProvider,
+  private HabitRoadmapViewModel_Factory(Provider<HabitTrackRepository> habitTrackRepositoryProvider,
       Provider<GoalRepository> goalRepositoryProvider) {
     this.habitTrackRepositoryProvider = habitTrackRepositoryProvider;
     this.goalRepositoryProvider = goalRepositoryProvider;

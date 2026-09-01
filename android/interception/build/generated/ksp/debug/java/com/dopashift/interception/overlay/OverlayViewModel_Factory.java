@@ -4,10 +4,10 @@ import com.dopashift.domain.repository.DailyTodoRepository;
 import com.dopashift.domain.repository.HabitTrackRepository;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
+import dagger.internal.Provider;
 import dagger.internal.QualifierMetadata;
 import dagger.internal.ScopeMetadata;
 import javax.annotation.processing.Generated;
-import javax.inject.Provider;
 
 @ScopeMetadata
 @QualifierMetadata
@@ -20,14 +20,17 @@ import javax.inject.Provider;
     "unchecked",
     "rawtypes",
     "KotlinInternal",
-    "KotlinInternalInJava"
+    "KotlinInternalInJava",
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class OverlayViewModel_Factory implements Factory<OverlayViewModel> {
   private final Provider<DailyTodoRepository> dailyTodoRepositoryProvider;
 
   private final Provider<HabitTrackRepository> habitTrackRepositoryProvider;
 
-  public OverlayViewModel_Factory(Provider<DailyTodoRepository> dailyTodoRepositoryProvider,
+  private OverlayViewModel_Factory(Provider<DailyTodoRepository> dailyTodoRepositoryProvider,
       Provider<HabitTrackRepository> habitTrackRepositoryProvider) {
     this.dailyTodoRepositoryProvider = dailyTodoRepositoryProvider;
     this.habitTrackRepositoryProvider = habitTrackRepositoryProvider;

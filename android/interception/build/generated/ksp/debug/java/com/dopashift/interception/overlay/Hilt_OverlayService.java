@@ -20,10 +20,6 @@ public abstract class Hilt_OverlayService extends Service implements GeneratedCo
 
   private boolean injected = false;
 
-  Hilt_OverlayService() {
-    super();
-  }
-
   @CallSuper
   @Override
   public void onCreate() {

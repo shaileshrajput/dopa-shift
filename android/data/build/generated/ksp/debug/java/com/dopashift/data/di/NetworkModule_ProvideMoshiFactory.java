@@ -19,7 +19,10 @@ import javax.annotation.processing.Generated;
     "unchecked",
     "rawtypes",
     "KotlinInternal",
-    "KotlinInternalInJava"
+    "KotlinInternalInJava",
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class NetworkModule_ProvideMoshiFactory implements Factory<Moshi> {
   @Override
@@ -36,6 +39,6 @@ public final class NetworkModule_ProvideMoshiFactory implements Factory<Moshi> {
   }
 
   private static final class InstanceHolder {
-    private static final NetworkModule_ProvideMoshiFactory INSTANCE = new NetworkModule_ProvideMoshiFactory();
+    static final NetworkModule_ProvideMoshiFactory INSTANCE = new NetworkModule_ProvideMoshiFactory();
   }
 }

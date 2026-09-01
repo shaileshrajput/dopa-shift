@@ -2,7 +2,6 @@ package com.dopashift.ui.goals;
 
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
-import dagger.internal.Preconditions;
 import dagger.internal.QualifierMetadata;
 import dagger.internal.ScopeMetadata;
 import javax.annotation.processing.Generated;
@@ -18,11 +17,14 @@ import javax.annotation.processing.Generated;
     "unchecked",
     "rawtypes",
     "KotlinInternal",
-    "KotlinInternalInJava"
+    "KotlinInternalInJava",
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
-public final class GoalsViewModel_HiltModules_KeyModule_ProvideFactory implements Factory<String> {
+public final class GoalsViewModel_HiltModules_KeyModule_ProvideFactory implements Factory<Boolean> {
   @Override
-  public String get() {
+  public Boolean get() {
     return provide();
   }
 
@@ -30,11 +32,11 @@ public final class GoalsViewModel_HiltModules_KeyModule_ProvideFactory implement
     return InstanceHolder.INSTANCE;
   }
 
-  public static String provide() {
-    return Preconditions.checkNotNullFromProvides(GoalsViewModel_HiltModules.KeyModule.provide());
+  public static boolean provide() {
+    return GoalsViewModel_HiltModules.KeyModule.provide();
   }
 
   private static final class InstanceHolder {
-    private static final GoalsViewModel_HiltModules_KeyModule_ProvideFactory INSTANCE = new GoalsViewModel_HiltModules_KeyModule_ProvideFactory();
+    static final GoalsViewModel_HiltModules_KeyModule_ProvideFactory INSTANCE = new GoalsViewModel_HiltModules_KeyModule_ProvideFactory();
   }
 }

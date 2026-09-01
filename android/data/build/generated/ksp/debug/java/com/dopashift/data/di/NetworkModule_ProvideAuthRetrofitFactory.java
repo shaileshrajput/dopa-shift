@@ -4,10 +4,10 @@ import com.squareup.moshi.Moshi;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
 import dagger.internal.Preconditions;
+import dagger.internal.Provider;
 import dagger.internal.QualifierMetadata;
 import dagger.internal.ScopeMetadata;
 import javax.annotation.processing.Generated;
-import javax.inject.Provider;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 
@@ -22,14 +22,17 @@ import retrofit2.Retrofit;
     "unchecked",
     "rawtypes",
     "KotlinInternal",
-    "KotlinInternalInJava"
+    "KotlinInternalInJava",
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class NetworkModule_ProvideAuthRetrofitFactory implements Factory<Retrofit> {
   private final Provider<OkHttpClient> okHttpClientProvider;
 
   private final Provider<Moshi> moshiProvider;
 
-  public NetworkModule_ProvideAuthRetrofitFactory(Provider<OkHttpClient> okHttpClientProvider,
+  private NetworkModule_ProvideAuthRetrofitFactory(Provider<OkHttpClient> okHttpClientProvider,
       Provider<Moshi> moshiProvider) {
     this.okHttpClientProvider = okHttpClientProvider;
     this.moshiProvider = moshiProvider;

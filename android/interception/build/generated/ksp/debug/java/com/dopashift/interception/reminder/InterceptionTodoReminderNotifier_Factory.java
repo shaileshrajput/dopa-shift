@@ -4,10 +4,10 @@ import android.content.Context;
 import com.dopashift.domain.repository.DailyTodoRepository;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
+import dagger.internal.Provider;
 import dagger.internal.QualifierMetadata;
 import dagger.internal.ScopeMetadata;
 import javax.annotation.processing.Generated;
-import javax.inject.Provider;
 
 @ScopeMetadata("javax.inject.Singleton")
 @QualifierMetadata("dagger.hilt.android.qualifiers.ApplicationContext")
@@ -20,14 +20,17 @@ import javax.inject.Provider;
     "unchecked",
     "rawtypes",
     "KotlinInternal",
-    "KotlinInternalInJava"
+    "KotlinInternalInJava",
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class InterceptionTodoReminderNotifier_Factory implements Factory<InterceptionTodoReminderNotifier> {
   private final Provider<Context> contextProvider;
 
   private final Provider<DailyTodoRepository> dailyTodoRepositoryProvider;
 
-  public InterceptionTodoReminderNotifier_Factory(Provider<Context> contextProvider,
+  private InterceptionTodoReminderNotifier_Factory(Provider<Context> contextProvider,
       Provider<DailyTodoRepository> dailyTodoRepositoryProvider) {
     this.contextProvider = contextProvider;
     this.dailyTodoRepositoryProvider = dailyTodoRepositoryProvider;

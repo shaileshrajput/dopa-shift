@@ -4,10 +4,10 @@ import com.dopashift.data.remote.AuthInterceptor;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.Factory;
 import dagger.internal.Preconditions;
+import dagger.internal.Provider;
 import dagger.internal.QualifierMetadata;
 import dagger.internal.ScopeMetadata;
 import javax.annotation.processing.Generated;
-import javax.inject.Provider;
 import okhttp3.OkHttpClient;
 
 @ScopeMetadata("javax.inject.Singleton")
@@ -21,12 +21,15 @@ import okhttp3.OkHttpClient;
     "unchecked",
     "rawtypes",
     "KotlinInternal",
-    "KotlinInternalInJava"
+    "KotlinInternalInJava",
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class NetworkModule_ProvideOkHttpClientFactory implements Factory<OkHttpClient> {
   private final Provider<AuthInterceptor> authInterceptorProvider;
 
-  public NetworkModule_ProvideOkHttpClientFactory(
+  private NetworkModule_ProvideOkHttpClientFactory(
       Provider<AuthInterceptor> authInterceptorProvider) {
     this.authInterceptorProvider = authInterceptorProvider;
   }

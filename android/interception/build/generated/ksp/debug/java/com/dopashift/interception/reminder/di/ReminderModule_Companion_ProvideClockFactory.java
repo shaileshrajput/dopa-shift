@@ -19,7 +19,10 @@ import javax.annotation.processing.Generated;
     "unchecked",
     "rawtypes",
     "KotlinInternal",
-    "KotlinInternalInJava"
+    "KotlinInternalInJava",
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class ReminderModule_Companion_ProvideClockFactory implements Factory<Clock> {
   @Override
@@ -36,6 +39,6 @@ public final class ReminderModule_Companion_ProvideClockFactory implements Facto
   }
 
   private static final class InstanceHolder {
-    private static final ReminderModule_Companion_ProvideClockFactory INSTANCE = new ReminderModule_Companion_ProvideClockFactory();
+    static final ReminderModule_Companion_ProvideClockFactory INSTANCE = new ReminderModule_Companion_ProvideClockFactory();
   }
 }

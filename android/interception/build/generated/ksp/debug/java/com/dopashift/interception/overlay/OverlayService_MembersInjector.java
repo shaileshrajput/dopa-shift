@@ -5,9 +5,9 @@ import com.dopashift.domain.repository.HabitTrackRepository;
 import dagger.MembersInjector;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.InjectedFieldSignature;
+import dagger.internal.Provider;
 import dagger.internal.QualifierMetadata;
 import javax.annotation.processing.Generated;
-import javax.inject.Provider;
 
 @QualifierMetadata
 @DaggerGenerated
@@ -19,29 +19,32 @@ import javax.inject.Provider;
     "unchecked",
     "rawtypes",
     "KotlinInternal",
-    "KotlinInternalInJava"
+    "KotlinInternalInJava",
+    "cast",
+    "deprecation",
+    "nullness:initialization.field.uninitialized"
 })
 public final class OverlayService_MembersInjector implements MembersInjector<OverlayService> {
   private final Provider<DailyTodoRepository> dailyTodoRepositoryProvider;
 
   private final Provider<HabitTrackRepository> habitTrackRepositoryProvider;
 
-  public OverlayService_MembersInjector(Provider<DailyTodoRepository> dailyTodoRepositoryProvider,
+  private OverlayService_MembersInjector(Provider<DailyTodoRepository> dailyTodoRepositoryProvider,
       Provider<HabitTrackRepository> habitTrackRepositoryProvider) {
     this.dailyTodoRepositoryProvider = dailyTodoRepositoryProvider;
     this.habitTrackRepositoryProvider = habitTrackRepositoryProvider;
-  }
-
-  public static MembersInjector<OverlayService> create(
-      Provider<DailyTodoRepository> dailyTodoRepositoryProvider,
-      Provider<HabitTrackRepository> habitTrackRepositoryProvider) {
-    return new OverlayService_MembersInjector(dailyTodoRepositoryProvider, habitTrackRepositoryProvider);
   }
 
   @Override
   public void injectMembers(OverlayService instance) {
     injectDailyTodoRepository(instance, dailyTodoRepositoryProvider.get());
     injectHabitTrackRepository(instance, habitTrackRepositoryProvider.get());
+  }
+
+  public static MembersInjector<OverlayService> create(
+      Provider<DailyTodoRepository> dailyTodoRepositoryProvider,
+      Provider<HabitTrackRepository> habitTrackRepositoryProvider) {
+    return new OverlayService_MembersInjector(dailyTodoRepositoryProvider, habitTrackRepositoryProvider);
   }
 
   @InjectedFieldSignature("com.dopashift.interception.overlay.OverlayService.dailyTodoRepository")
