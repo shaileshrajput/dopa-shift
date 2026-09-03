@@ -116,3 +116,23 @@ freeline_project_description.json
 *.hprof
 output.json
 *.log
+
+
+# ========================
+# Android (Kotlin / Gradle)
+# ========================
+.gradle/
+**/build/
+**/debug/
+**/debugUnitTest/
+local.properties
+.idea/
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+output.json
+**/build/classes/kotlin/
+**/build/kotlin/
+
