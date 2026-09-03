@@ -10,6 +10,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,19 +22,28 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Rocket
 import androidx.compose.material.icons.filled.TrackChanges
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -107,7 +118,11 @@ fun OnboardingScreen(
         onFullNameChanged = viewModel::onFullNameChanged,
         onGoalNameChanged = viewModel::onGoalNameChanged,
         onGoalCategoryChanged = viewModel::onGoalCategoryChanged,
-        onGoalKeywordChanged = viewModel::onGoalKeywordChanged,
+        onGoalCategorySelected = viewModel::onGoalCategorySelected,
+        onGoalKeywordDraftChanged = viewModel::onGoalKeywordDraftChanged,
+        onAddGoalKeywordDraft = viewModel::onAddGoalKeywordDraft,
+        onAddSuggestedKeyword = viewModel::onAddSuggestedKeyword,
+        onRemoveGoalKeyword = viewModel::onRemoveGoalKeyword,
         onHabitDescriptionChanged = viewModel::onHabitDescriptionChanged,
         onNextStep = viewModel::nextStep,
         onPreviousStep = viewModel::previousStep,
@@ -128,7 +143,11 @@ private fun OnboardingScreenContent(
     onFullNameChanged: (String) -> Unit,
     onGoalNameChanged: (String) -> Unit,
     onGoalCategoryChanged: (String) -> Unit,
-    onGoalKeywordChanged: (String) -> Unit,
+    onGoalCategorySelected: (String) -> Unit,
+    onGoalKeywordDraftChanged: (String) -> Unit,
+    onAddGoalKeywordDraft: () -> Unit,
+    onAddSuggestedKeyword: (String) -> Unit,
+    onRemoveGoalKeyword: (String) -> Unit,
     onHabitDescriptionChanged: (String) -> Unit,
     onNextStep: () -> Unit,
     onPreviousStep: () -> Unit,
@@ -203,12 +222,19 @@ private fun OnboardingScreenContent(
                     OnboardingSteps.CREATE_GOAL -> CreateGoalPage(
                         goalName = uiState.goalName,
                         goalCategory = uiState.goalCategory,
-                        goalKeyword = uiState.goalKeyword,
+                        goalKeywordDraft = uiState.goalKeywordDraft,
+                        goalKeywords = uiState.goalKeywords,
+                        presetCategories = uiState.presetCategories,
+                        suggestedKeywords = uiState.suggestedKeywords,
                         error = uiState.goalError,
                         isLoading = uiState.isCreatingGoal,
                         onGoalNameChanged = onGoalNameChanged,
                         onGoalCategoryChanged = onGoalCategoryChanged,
-                        onGoalKeywordChanged = onGoalKeywordChanged,
+                        onGoalCategorySelected = onGoalCategorySelected,
+                        onGoalKeywordDraftChanged = onGoalKeywordDraftChanged,
+                        onAddGoalKeywordDraft = onAddGoalKeywordDraft,
+                        onAddSuggestedKeyword = onAddSuggestedKeyword,
+                        onRemoveGoalKeyword = onRemoveGoalKeyword,
                     )
                     OnboardingSteps.SETUP_HABIT -> SetupHabitPage(
                         habitDescription = uiState.habitDescription,
@@ -393,24 +419,41 @@ private fun ProfilePage(
     }
 }
 
+/**
+ * The onboarding "Create Your First Goal" step, redesigned to mirror the Dashboard's playful
+ * [com.dopashift.ui.quickcreate.GoalCreationSheet] (DQC-2). Rather than three bare text fields, the
+ * user picks a suggested category chip (or types their own), which surfaces bundled keyword
+ * suggestions they can tap to add, plus a working keyword list they can build and prune — the same
+ * fun, low-friction flow the main app uses, so first-run and everyday goal creation feel identical.
+ */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun CreateGoalPage(
     goalName: String,
     goalCategory: String,
-    goalKeyword: String,
+    goalKeywordDraft: String,
+    goalKeywords: List<String>,
+    presetCategories: List<String>,
+    suggestedKeywords: List<String>,
     error: String?,
     isLoading: Boolean,
     onGoalNameChanged: (String) -> Unit,
     onGoalCategoryChanged: (String) -> Unit,
-    onGoalKeywordChanged: (String) -> Unit,
+    onGoalCategorySelected: (String) -> Unit,
+    onGoalKeywordDraftChanged: (String) -> Unit,
+    onAddGoalKeywordDraft: () -> Unit,
+    onAddSuggestedKeyword: (String) -> Unit,
+    onRemoveGoalKeyword: (String) -> Unit,
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(horizontal = DopaShiftTheme.spacing.margin),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
     ) {
+        Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.margin))
+
         Icon(
             imageVector = Icons.Default.Flag,
             contentDescription = stringResource(R.string.onboarding_goal_icon_content_description),
@@ -418,7 +461,7 @@ private fun CreateGoalPage(
             tint = DopaShiftTheme.colors.productiveBlue,
         )
 
-        Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.margin))
+        Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.base))
 
         Text(
             text = stringResource(R.string.onboarding_goal_title),
@@ -437,6 +480,7 @@ private fun CreateGoalPage(
 
         Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.margin))
 
+        // ---- Goal name --------------------------------------------------------------
         OutlinedTextField(
             value = goalName,
             onValueChange = onGoalNameChanged,
@@ -448,8 +492,9 @@ private fun CreateGoalPage(
             modifier = Modifier.fillMaxWidth(),
         )
 
-        Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.stackSm))
+        Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.gutter))
 
+        // ---- Category: free text + suggested preset chips ---------------------------
         OutlinedTextField(
             value = goalCategory,
             onValueChange = onGoalCategoryChanged,
@@ -461,21 +506,113 @@ private fun CreateGoalPage(
             modifier = Modifier.fillMaxWidth(),
         )
 
-        Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.stackSm))
+        if (presetCategories.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.base))
+            Text(
+                text = stringResource(R.string.onboarding_goal_category_presets_title),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.compact))
+            FlowRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(DopaShiftTheme.spacing.base),
+                verticalArrangement = Arrangement.spacedBy(DopaShiftTheme.spacing.compact),
+            ) {
+                presetCategories.forEach { preset ->
+                    FilterChip(
+                        selected = goalCategory == preset,
+                        onClick = { onGoalCategorySelected(preset) },
+                        enabled = !isLoading,
+                        label = { Text(preset) },
+                    )
+                }
+            }
+        }
 
+        Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.gutter))
+
+        // ---- Keywords: input + suggested chips + working list -----------------------
         OutlinedTextField(
-            value = goalKeyword,
-            onValueChange = onGoalKeywordChanged,
+            value = goalKeywordDraft,
+            onValueChange = onGoalKeywordDraftChanged,
             label = { Text(stringResource(R.string.onboarding_goal_keyword_label)) },
             placeholder = { Text(stringResource(R.string.onboarding_goal_keyword_placeholder)) },
             singleLine = true,
             enabled = !isLoading,
-            supportingText = {
-                Text(stringResource(R.string.onboarding_goal_keyword_hint))
-            },
+            supportingText = { Text(stringResource(R.string.onboarding_goal_keyword_hint)) },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(onDone = { onAddGoalKeywordDraft() }),
+            trailingIcon = {
+                IconButton(
+                    onClick = onAddGoalKeywordDraft,
+                    enabled = !isLoading && goalKeywordDraft.isNotBlank(),
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = stringResource(R.string.onboarding_goal_keyword_add),
+                    )
+                }
+            },
             modifier = Modifier.fillMaxWidth(),
         )
+
+        // Bundled suggestions for the chosen category, individually addable (DQC-2.3).
+        val unusedSuggestions = suggestedKeywords.filter { suggestion ->
+            goalKeywords.none { it.equals(suggestion, ignoreCase = true) }
+        }
+        if (unusedSuggestions.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.base))
+            FlowRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(DopaShiftTheme.spacing.base),
+                verticalArrangement = Arrangement.spacedBy(DopaShiftTheme.spacing.compact),
+            ) {
+                unusedSuggestions.forEach { suggestion ->
+                    AssistChip(
+                        onClick = { onAddSuggestedKeyword(suggestion) },
+                        enabled = !isLoading,
+                        label = { Text(suggestion) },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp),
+                            )
+                        },
+                    )
+                }
+            }
+        }
+
+        // The working keyword list — tap the X to remove each one (DQC-2.3).
+        if (goalKeywords.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.base))
+            FlowRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(DopaShiftTheme.spacing.base),
+                verticalArrangement = Arrangement.spacedBy(DopaShiftTheme.spacing.compact),
+            ) {
+                goalKeywords.forEach { keyword ->
+                    InputChip(
+                        selected = false,
+                        onClick = { onRemoveGoalKeyword(keyword) },
+                        label = { Text(keyword) },
+                        trailingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = stringResource(
+                                    R.string.onboarding_goal_keyword_remove_content_description,
+                                    keyword,
+                                ),
+                                modifier = Modifier.size(16.dp),
+                            )
+                        },
+                    )
+                }
+            }
+        }
 
         // Error message — announced to screen readers as a polite live region (DUX-5.8).
         AnimatedVisibility(
@@ -489,10 +626,14 @@ private fun CreateGoalPage(
                     text = it,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.politeLiveRegion(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .politeLiveRegion(),
                 )
             }
         }
+
+        Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.margin))
     }
 }
 

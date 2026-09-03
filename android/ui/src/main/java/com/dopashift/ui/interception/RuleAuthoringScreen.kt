@@ -15,11 +15,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -67,7 +70,15 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dopashift.domain.entity.LimitType
 import com.dopashift.ui.R
 import com.dopashift.ui.theme.DopaShiftTheme
+import androidx.compose.ui.unit.Dp
 import java.util.UUID
+
+/**
+ * Max height of the installed-app selection list before it scrolls internally. Sized to show
+ * roughly three app rows (each an ~72dp card plus row spacing) so the search field stays pinned
+ * above and the existing-rules section below remains reachable without long outer scrolling.
+ */
+private val APP_LIST_MAX_HEIGHT: Dp = 240.dp
 
 /**
  * Rule_Authoring_Screen (task 18.2).
@@ -233,20 +244,36 @@ internal fun RuleAuthoringScreenContent(
                             EmptyResult()
                         }
                     } else {
-                        items(uiState.displayedApps, key = { it.packageName }) { app ->
-                            AppSelectionRow(
-                                app = app,
-                                selected = app.packageName in uiState.selectedPackages,
-                                showDailyLimit = uiState.limitType == LimitType.Once,
-                                limit = uiState.perAppLimits[app.packageName],
-                                limitError = uiState.limitError &&
-                                    uiState.limitErrorPackage == app.packageName,
-                                onToggle = { onToggleAppSelection(app.packageName) },
-                                onLimitChanged = { raw ->
-                                    onSetDailyLimit(app.packageName, raw)
-                                },
-                                onClearLimitError = onClearLimitError,
-                            )
+                        // Cap the installed-app list to ~3 rows in a self-scrolling region so the
+                        // search bar stays pinned above and the existing-rules section below stays
+                        // reachable. A nested LazyColumn inside a LazyColumn is disallowed, so the
+                        // inner list is a bounded verticalScroll Column of AppSelectionRow.
+                        item(key = "app_list") {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .heightIn(max = APP_LIST_MAX_HEIGHT)
+                                    .verticalScroll(rememberScrollState()),
+                                verticalArrangement = Arrangement.spacedBy(
+                                    DopaShiftTheme.spacing.base,
+                                ),
+                            ) {
+                                uiState.displayedApps.forEach { app ->
+                                    AppSelectionRow(
+                                        app = app,
+                                        selected = app.packageName in uiState.selectedPackages,
+                                        showDailyLimit = uiState.limitType == LimitType.Once,
+                                        limit = uiState.perAppLimits[app.packageName],
+                                        limitError = uiState.limitError &&
+                                            uiState.limitErrorPackage == app.packageName,
+                                        onToggle = { onToggleAppSelection(app.packageName) },
+                                        onLimitChanged = { raw ->
+                                            onSetDailyLimit(app.packageName, raw)
+                                        },
+                                        onClearLimitError = onClearLimitError,
+                                    )
+                                }
+                            }
                         }
                     }
 

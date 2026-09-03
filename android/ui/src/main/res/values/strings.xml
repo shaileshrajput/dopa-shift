@@ -32,7 +32,7 @@
 
     <!-- Step 1: Welcome -->
     <string name="onboarding_welcome_title">Welcome to DopaShift</string>
-    <string name="onboarding_welcome_description">Take control of your screen time and build positive habits. DopaShift helps you define life goals, intercept distracting apps, and track your progress with daily micro-habits.</string>
+    <string name="onboarding_welcome_description">Reclaim your focus and replace mindless scrolling with real progress. DopaShift blocks distracting apps, aligns your screen time with your goals, and builds daily micro-habits that stick.</string>
     <string name="onboarding_welcome_icon_content_description">Welcome</string>
 
     <!-- Step 2: Profile (full name) -->
@@ -53,6 +53,9 @@
     <string name="onboarding_goal_keyword_label">Keyword</string>
     <string name="onboarding_goal_keyword_placeholder">e.g., programming</string>
     <string name="onboarding_goal_keyword_hint">Used for content recommendations</string>
+    <string name="onboarding_goal_category_presets_title">Or pick a suggested category</string>
+    <string name="onboarding_goal_keyword_add">Add keyword</string>
+    <string name="onboarding_goal_keyword_remove_content_description">Remove keyword %1$s</string>
 
     <!-- Step 4: Setup Habit -->
     <string name="onboarding_habit_title">Set Up Your First Habit</string>
@@ -198,6 +201,8 @@
     <string name="dux_todays_focus_add_task">Add task</string>
     <string name="dux_todays_focus_empty">No tasks for today. Add one below!</string>
     <string name="dux_todays_focus_add_placeholder">Add new task…</string>
+    <string name="dux_todays_focus_show_all">Show all (%1$d)</string>
+    <string name="dux_todays_focus_show_less">Show less</string>
 
     <!-- Habit quick-action item (DashboardScreen.kt) -->
     <string name="dux_habit_day_label">Day %1$d</string>
@@ -457,6 +462,8 @@
     <string name="aui_dashboard_focus_add_placeholder">Add to Today\'s Focus</string>
     <string name="aui_dashboard_focus_add_content_description">Add to-do</string>
     <string name="aui_dashboard_focus_empty">No tasks for today. Add one above.</string>
+    <string name="aui_dashboard_focus_show_all">Show all (%1$d)</string>
+    <string name="aui_dashboard_focus_show_less">Show less</string>
 
     <!-- Active goals grid (AUI-1.6) -->
     <string name="aui_dashboard_goals_heading">Active Goals</string>

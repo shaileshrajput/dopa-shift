@@ -2,6 +2,8 @@ package com.dopashift.ui.onboarding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dopashift.domain.creation.CategoryKeywordProvider
+import com.dopashift.domain.creation.GoalValidator
 import com.dopashift.domain.entity.GoalProfile
 import com.dopashift.domain.entity.HabitTrack
 import com.dopashift.domain.repository.GoalRepository
@@ -34,6 +36,16 @@ object OnboardingSteps {
 
 /**
  * UI state for the onboarding flow.
+ *
+ * The goal step mirrors the Dashboard's [com.dopashift.ui.quickcreate.GoalCreationSheet]: the user
+ * picks a preset [presetCategories] (or types their own [goalCategory]), which surfaces bundled
+ * [suggestedKeywords] they can tap to add, alongside a working [goalKeywords] list they can build up
+ * and remove from. [goalKeywordDraft] backs the free-text keyword input.
+ *
+ * @property presetCategories bundled preset category names for the picker (also free-text entry).
+ * @property suggestedKeywords bundled keyword suggestions for the currently chosen category.
+ * @property goalKeywords the working keyword list the user has accepted/typed so far.
+ * @property goalKeywordDraft the in-progress free-text keyword input.
  */
 data class OnboardingUiState(
     val currentStep: Int = OnboardingSteps.WELCOME,
@@ -41,7 +53,10 @@ data class OnboardingUiState(
     val fullNameError: String? = null,
     val goalName: String = "",
     val goalCategory: String = "",
-    val goalKeyword: String = "",
+    val goalKeywordDraft: String = "",
+    val goalKeywords: List<String> = emptyList(),
+    val presetCategories: List<String> = emptyList(),
+    val suggestedKeywords: List<String> = emptyList(),
     val habitDescription: String = "",
     val isCreatingGoal: Boolean = false,
     val isCreatingHabit: Boolean = false,
@@ -67,9 +82,12 @@ class OnboardingViewModel @Inject constructor(
     private val goalRepository: GoalRepository,
     private val habitTrackRepository: HabitTrackRepository,
     private val userPreferencesRepository: UserPreferencesRepository,
+    private val categoryKeywordProvider: CategoryKeywordProvider,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(OnboardingUiState())
+    private val _uiState = MutableStateFlow(
+        OnboardingUiState(presetCategories = categoryKeywordProvider.presetCategories())
+    )
     val uiState: StateFlow<OnboardingUiState> = _uiState.asStateFlow()
 
     // A fixed userId for local-only onboarding (single-user device context).
@@ -84,12 +102,71 @@ class OnboardingViewModel @Inject constructor(
         _uiState.update { it.copy(goalName = name, goalError = null) }
     }
 
+    /**
+     * Updates the goal category and refreshes the bundled keyword suggestions for it (matching the
+     * Dashboard sheet's DQC-2.3 behavior). A blank or unmapped category clears the suggestions.
+     */
     fun onGoalCategoryChanged(category: String) {
-        _uiState.update { it.copy(goalCategory = category, goalError = null) }
+        val clamped = category.take(GoalValidator.CATEGORY_MAX)
+        _uiState.update {
+            it.copy(
+                goalCategory = clamped,
+                suggestedKeywords = if (clamped.isBlank()) {
+                    emptyList()
+                } else {
+                    categoryKeywordProvider.suggestedKeywords(clamped)
+                },
+                goalError = null,
+            )
+        }
     }
 
-    fun onGoalKeywordChanged(keyword: String) {
-        _uiState.update { it.copy(goalKeyword = keyword, goalError = null) }
+    /** Selects a preset category chip, which also refreshes suggested keywords. */
+    fun onGoalCategorySelected(category: String) = onGoalCategoryChanged(category)
+
+    /** Updates the in-progress free-text keyword input. */
+    fun onGoalKeywordDraftChanged(draft: String) {
+        _uiState.update {
+            it.copy(goalKeywordDraft = draft.take(GoalValidator.KEYWORD_MAX_LEN), goalError = null)
+        }
+    }
+
+    /** Commits the current keyword draft into the working keyword list, if valid and not a dupe. */
+    fun onAddGoalKeywordDraft() {
+        _uiState.update { state ->
+            val trimmed = state.goalKeywordDraft.trim()
+            if (trimmed.isEmpty() ||
+                trimmed.length > GoalValidator.KEYWORD_MAX_LEN ||
+                state.goalKeywords.size >= GoalValidator.KEYWORDS_MAX ||
+                state.goalKeywords.any { it.equals(trimmed, ignoreCase = true) }
+            ) {
+                state.copy(goalKeywordDraft = "")
+            } else {
+                state.copy(
+                    goalKeywords = state.goalKeywords + trimmed,
+                    goalKeywordDraft = "",
+                    goalError = null,
+                )
+            }
+        }
+    }
+
+    /** Adds a bundled suggested keyword to the working list (ignores dupes / over-limit). */
+    fun onAddSuggestedKeyword(keyword: String) {
+        _uiState.update { state ->
+            if (state.goalKeywords.size >= GoalValidator.KEYWORDS_MAX ||
+                state.goalKeywords.any { it.equals(keyword, ignoreCase = true) }
+            ) {
+                state
+            } else {
+                state.copy(goalKeywords = state.goalKeywords + keyword, goalError = null)
+            }
+        }
+    }
+
+    /** Removes a keyword from the working list. */
+    fun onRemoveGoalKeyword(keyword: String) {
+        _uiState.update { it.copy(goalKeywords = it.goalKeywords - keyword, goalError = null) }
     }
 
     fun onHabitDescriptionChanged(description: String) {
@@ -155,33 +232,25 @@ class OnboardingViewModel @Inject constructor(
     }
 
     private fun createGoalAndAdvance() {
+        // Fold any pending draft keyword into the working list so the user is never surprised by an
+        // unsaved chip, then validate everything through the shared validator the Dashboard uses.
+        onAddGoalKeywordDraft()
         val state = _uiState.value
         val name = state.goalName.trim()
         val category = state.goalCategory.trim()
-        val keyword = state.goalKeyword.trim()
+        val keywords = state.goalKeywords
 
-        if (name.isEmpty()) {
-            _uiState.update { it.copy(goalError = "Please enter a goal name") }
-            return
-        }
-        if (name.length > 100) {
-            _uiState.update { it.copy(goalError = "Goal name must be at most 100 characters") }
-            return
-        }
-        if (category.isEmpty()) {
-            _uiState.update { it.copy(goalError = "Please enter a category") }
-            return
-        }
-        if (category.length > 50) {
-            _uiState.update { it.copy(goalError = "Category must be at most 50 characters") }
-            return
-        }
-        if (keyword.isEmpty()) {
-            _uiState.update { it.copy(goalError = "Please enter at least one keyword") }
-            return
-        }
-        if (keyword.length > 50) {
-            _uiState.update { it.copy(goalError = "Keyword must be at most 50 characters") }
+        val errors = GoalValidator.validate(
+            name = name,
+            category = category,
+            keywords = keywords,
+            existingNamesLower = emptySet(),
+        )
+        if (errors.isNotEmpty()) {
+            val firstError = errors[GoalValidator.FIELD_NAME]
+                ?: errors[GoalValidator.FIELD_CATEGORY]
+                ?: errors[GoalValidator.FIELD_KEYWORDS]
+            _uiState.update { it.copy(goalError = firstError) }
             return
         }
 
@@ -205,7 +274,7 @@ class OnboardingViewModel @Inject constructor(
                     userId = localUserId,
                     name = name,
                     category = category,
-                    keywords = listOf(keyword),
+                    keywords = keywords,
                     createdAt = now,
                     updatedAt = now,
                     isActive = true,

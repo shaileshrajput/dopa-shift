@@ -30,6 +30,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -292,12 +293,38 @@ private fun AnchorHabitCard(anchor: AnchorHabitUi?, on: DashboardActions) {
  */
 @Composable
 private fun TodaysFocusCard(todos: List<TodoRowUi>, on: DashboardActions) {
+    // Keep the collapsed card focused on a few tasks; the rest are revealed in place via the
+    // "Show all" toggle so the user stays on the Dashboard (there is no separate to-dos route).
+    var expanded by rememberSaveable { mutableStateOf(false) }
+    val visibleTodos = if (expanded) todos else todos.take(MAX_COLLAPSED_FOCUS_TODOS)
+    val hasMoreTodos = todos.size > MAX_COLLAPSED_FOCUS_TODOS
+
     KineticCard(modifier = Modifier.fillMaxWidth()) {
-        Text(
-            text = stringResource(R.string.aui_dashboard_focus_title),
-            style = DopaShiftTokens.TextRoles.titleMedium,
-            color = DopaShiftTokens.Colors.textPrimary,
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = stringResource(R.string.aui_dashboard_focus_title),
+                style = DopaShiftTokens.TextRoles.titleMedium,
+                color = DopaShiftTokens.Colors.textPrimary,
+            )
+            // "Show all (N)" / "Show less" toggle — only when the list exceeds the collapsed cap.
+            if (hasMoreTodos) {
+                TextButton(onClick = { expanded = !expanded }) {
+                    Text(
+                        text = if (expanded) {
+                            stringResource(R.string.aui_dashboard_focus_show_less)
+                        } else {
+                            stringResource(R.string.aui_dashboard_focus_show_all, todos.size)
+                        },
+                        style = DopaShiftTokens.TextRoles.labelLarge,
+                        color = DopaShiftTokens.Colors.momentumTeal,
+                    )
+                }
+            }
+        }
         Spacer(modifier = Modifier.height(DopaShiftTokens.Spacing.space12))
 
         QuickAddRow(onAdd = on::onQuickAddTodo)
@@ -312,7 +339,7 @@ private fun TodaysFocusCard(todos: List<TodoRowUi>, on: DashboardActions) {
             )
         } else {
             Column(verticalArrangement = Arrangement.spacedBy(DopaShiftTokens.Spacing.space4)) {
-                todos.forEach { todo ->
+                visibleTodos.forEach { todo ->
                     FocusTodoRow(
                         todo = todo,
                         onToggled = { done -> on.onTodoToggled(todo.id, done) },
@@ -322,6 +349,12 @@ private fun TodaysFocusCard(todos: List<TodoRowUi>, on: DashboardActions) {
         }
     }
 }
+
+/**
+ * Max number of Today's Focus to-dos shown while [TodaysFocusCard] is collapsed. Additional items
+ * are revealed in place via the "Show all" toggle (AUI-1.4) — keeping the Dashboard uncluttered.
+ */
+private const val MAX_COLLAPSED_FOCUS_TODOS = 3
 
 /**
  * The inline quick-add row for Today's Focus (AUI-1.4): a 36dp-tall input with an Add control that

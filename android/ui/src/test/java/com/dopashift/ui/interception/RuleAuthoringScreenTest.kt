@@ -8,7 +8,8 @@ import android.provider.Settings
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.hasContentDescription
-import androidx.compose.ui.test.hasScrollAction
+import androidx.compose.ui.test.hasScrollToIndexAction
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -201,7 +202,7 @@ class RuleAuthoringScreenTest {
         // The existing-rule section sits below the limit-type selector and app
         // list in the LazyColumn, so scroll the list until the row's delete icon
         // is composed before interacting.
-        composeRule.onNode(hasScrollAction())
+        composeRule.onNode(hasScrollToIndexAction())
             .performScrollToNode(hasContentDescription(str(R.string.rule_authoring_delete)))
 
         // Tapping the row's delete icon requests (gates) deletion — it does not delete.
@@ -358,6 +359,50 @@ class RuleAuthoringScreenTest {
 
         // The field still surfaces the retained prior valid value ("30").
         composeRule.onNodeWithText(priorValidInterval.toString()).assertIsDisplayed()
+    }
+
+    // --- App-list height cap: search + rules stay reachable with many apps ---
+
+    /**
+     * With a long installed-app list, the app list is hosted in a bounded, self-scrolling region
+     * so the search field stays pinned above and the "Existing Rules" header stays reachable
+     * below. Assert the search field, a representative first and a later app row, and the
+     * existing-rules header are all present in the composition.
+     */
+    @Test
+    fun manyApps_searchAndExistingRulesRemainPresent_withAppRows() {
+        val apps = (1..12).map { sampleApp("com.example.app$it", "App $it") }
+        val ruleId = UUID.randomUUID()
+        val state = RuleAuthoringUiState(
+            allApps = apps,
+            displayedApps = apps,
+            isLoading = false,
+            existingRules = listOf(
+                ExistingRuleDisplay(
+                    id = ruleId,
+                    appPackageName = "com.example.app1",
+                    dailyLimitMinutes = 30,
+                    enabled = true,
+                    pausedForToday = false,
+                ),
+            ),
+        )
+
+        setContent(state)
+
+        // Search field placeholder is present (pinned above the bounded app list).
+        composeRule.onNodeWithText(str(R.string.rule_authoring_search_hint)).assertIsDisplayed()
+
+        // The app list is composed within its bounded scroll region: a first and a later app row
+        // both exist in the tree (the inner Column composes all children eagerly).
+        composeRule.onNodeWithText("App 1").assertExists()
+        composeRule.onNodeWithText("App 12").assertExists()
+
+        // The existing-rules header sits below the bounded app list and remains reachable via the
+        // outer LazyColumn scroll.
+        composeRule.onNode(hasScrollToIndexAction())
+            .performScrollToNode(hasText(str(R.string.rule_authoring_existing_header)))
+        composeRule.onNodeWithText(str(R.string.rule_authoring_existing_header)).assertIsDisplayed()
     }
 
     // --- (4) Permission-rationale-before-grant ordering (Requirement 4.3) ---

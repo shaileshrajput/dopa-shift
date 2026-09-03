@@ -53,6 +53,9 @@
     <string name="onboarding_goal_keyword_label">कीवर्ड</string>
     <string name="onboarding_goal_keyword_placeholder">जैसे, प्रोग्रामिंग</string>
     <string name="onboarding_goal_keyword_hint">सामग्री अनुशंसाओं के लिए उपयोग किया जाता है</string>
+    <string name="onboarding_goal_category_presets_title">या कोई सुझाई गई श्रेणी चुनें</string>
+    <string name="onboarding_goal_keyword_add">कीवर्ड जोड़ें</string>
+    <string name="onboarding_goal_keyword_remove_content_description">कीवर्ड %1$s हटाएं</string>
 
     <!-- Step 3: Setup Habit -->
     <string name="onboarding_habit_title">अपनी पहली आदत सेट करें</string>
@@ -198,6 +201,8 @@
     <string name="dux_todays_focus_add_task">कार्य जोड़ें</string>
     <string name="dux_todays_focus_empty">आज के लिए कोई कार्य नहीं। नीचे एक जोड़ें!</string>
     <string name="dux_todays_focus_add_placeholder">नया कार्य जोड़ें…</string>
+    <string name="dux_todays_focus_show_all">सभी दिखाएँ (%1$d)</string>
+    <string name="dux_todays_focus_show_less">कम दिखाएँ</string>
 
     <!-- Habit quick-action item (DashboardScreen.kt) -->
     <string name="dux_habit_day_label">दिन %1$d</string>
@@ -408,6 +413,8 @@
     <string name="aui_dashboard_focus_add_placeholder">आज के फोकस में जोड़ें</string>
     <string name="aui_dashboard_focus_add_content_description">कार्य जोड़ें</string>
     <string name="aui_dashboard_focus_empty">आज के लिए कोई कार्य नहीं। ऊपर एक जोड़ें।</string>
+    <string name="aui_dashboard_focus_show_all">सभी दिखाएँ (%1$d)</string>
+    <string name="aui_dashboard_focus_show_less">कम दिखाएँ</string>
 
     <!-- Active goals grid (AUI-1.6) -->
     <string name="aui_dashboard_goals_heading">सक्रिय लक्ष्य</string>

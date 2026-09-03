@@ -338,4 +338,14 @@ object DopaShiftTokens {
         /** Primary FAB size — 56dp (AUI-1.7). */
         val fabSize: Dp = 56.dp
     }
+
+    /** Bounded container sizes for internally-scrollable regions. */
+    object Sizes {
+        /**
+         * Maximum height of the App Limits installed-app list (AUI-3.2). Caps the list so a long
+         * set of installed apps scrolls within its own region instead of pushing the search bar,
+         * limit-type pill, Save control, and Active Rules off-screen (Issue 3).
+         */
+        val appListMaxHeight: Dp = 320.dp
+    }
 }

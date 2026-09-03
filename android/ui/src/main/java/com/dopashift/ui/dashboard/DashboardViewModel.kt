@@ -274,7 +274,7 @@ class DashboardViewModel @Inject constructor(
                 }
             }
             val nextDay = updatedCheckpoints
-                .filter { it.dayNumber > track.currentDay && it.status != CheckpointStatus.COMPLETED }
+                .filter { it.dayNumber > track.currentDay && it.status == CheckpointStatus.PENDING }
                 .minByOrNull { it.dayNumber }?.dayNumber
                 ?: (track.currentDay + 1).coerceAtMost(30)
             val isFinished = updatedCheckpoints.all {

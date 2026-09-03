@@ -200,17 +200,31 @@ fun AppLimitsScreen(
                 EmptyHint(text = stringResource(R.string.aui_limits_no_apps))
             }
         } else {
-            items(state.installedApps, key = { "app_${it.packageName}" }) { app ->
-                InstalledAppRow(
-                    app = app,
-                    onSelected = on.onAppSelected,
-                    // The per-app daily limit is only authored in Once mode; in Repetitive mode the
-                    // limit applies but the recurring interval is the primary control (AUI-3.2/3.4).
-                    showDailyLimit = app.selected && state.limitType == LimitType.ONCE,
-                    limitMinutes = state.perAppLimits[app.packageName],
-                    limitError = state.limitErrorPackage == app.packageName,
-                    onDailyLimitChange = { raw -> on.onDailyLimitChange(app.packageName, raw) },
-                )
+            // The installed-app list is bounded to its own internally-scrollable region so a long
+            // list can't push the limit-type pill, Save control, or Active Rules off-screen
+            // (Issue 3). The outer LazyColumn keeps search → apps → type → save → rules compact and
+            // reachable; only the apps region scrolls within its capped height.
+            item(key = "apps_list") {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(max = DopaShiftTokens.Sizes.appListMaxHeight),
+                    verticalArrangement = Arrangement.spacedBy(DopaShiftTokens.Spacing.space8),
+                ) {
+                    items(state.installedApps, key = { "app_${it.packageName}" }) { app ->
+                        InstalledAppRow(
+                            app = app,
+                            onSelected = on.onAppSelected,
+                            // The per-app daily limit is only authored in Once mode; in Repetitive
+                            // mode the limit applies but the recurring interval is the primary
+                            // control (AUI-3.2/3.4).
+                            showDailyLimit = app.selected && state.limitType == LimitType.ONCE,
+                            limitMinutes = state.perAppLimits[app.packageName],
+                            limitError = state.limitErrorPackage == app.packageName,
+                            onDailyLimitChange = { raw -> on.onDailyLimitChange(app.packageName, raw) },
+                        )
+                    }
+                }
             }
         }
 

@@ -41,6 +41,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -105,7 +106,7 @@ fun DashboardScreen(
 }
 
 @Composable
-private fun DashboardContent(
+internal fun DashboardContent(
     uiState: DashboardUiState,
     sectionData: DashboardSectionData,
     onTodoCheckedChange: (UUID, Boolean) -> Unit,
@@ -572,6 +573,12 @@ private fun GoalCard(summary: GoalProgressSummary) {
 // quick-add input at bottom
 // =====================================================================================
 
+/**
+ * Max number of Today's Focus to-dos shown while the card is collapsed. Additional items are
+ * revealed in place via the "Show all" toggle (kept on the Overview page — no separate route).
+ */
+private const val MAX_COLLAPSED_FOCUS_TODOS = 3
+
 @Composable
 private fun TodaysFocusCard(
     todos: List<DailyTodoItem>,
@@ -579,8 +586,14 @@ private fun TodaysFocusCard(
     onAddTodo: (String) -> Unit
 ) {
     var quickAddText by remember { mutableStateOf("") }
+    var expanded by rememberSaveable { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
     val focusCardDescription = stringResource(R.string.dux_todays_focus_content_description)
+
+    // Cap the collapsed list to the first few tasks; the rest are revealed in place via the
+    // "Show all" toggle so the user never leaves the Overview page (no dedicated to-dos route).
+    val visibleTodos = if (expanded) todos else todos.take(MAX_COLLAPSED_FOCUS_TODOS)
+    val hasMoreTodos = todos.size > MAX_COLLAPSED_FOCUS_TODOS
 
     Card(
         modifier = Modifier
@@ -604,24 +617,43 @@ private fun TodaysFocusCard(
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.SemiBold
                 )
-                IconButton(
-                    onClick = { /* focus the input */ },
-                    modifier = Modifier
-                        .size(32.dp)
-                        .border(
-                            width = 1.5.dp,
-                            color = DopaShiftTheme.colors.momentumTeal,
-                            shape = CircleShape
-                        ),
-                    colors = IconButtonDefaults.iconButtonColors(
-                        contentColor = DopaShiftTheme.colors.momentumTeal
-                    )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(DopaShiftTheme.spacing.base)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = stringResource(R.string.dux_todays_focus_add_task),
-                        modifier = Modifier.size(16.dp)
-                    )
+                    // "Show all (N)" / "Show less" toggle — only when the list exceeds the cap.
+                    if (hasMoreTodos) {
+                        TextButton(onClick = { expanded = !expanded }) {
+                            Text(
+                                text = if (expanded) {
+                                    stringResource(R.string.dux_todays_focus_show_less)
+                                } else {
+                                    stringResource(R.string.dux_todays_focus_show_all, todos.size)
+                                },
+                                style = MaterialTheme.typography.labelLarge,
+                                color = DopaShiftTheme.colors.momentumTeal
+                            )
+                        }
+                    }
+                    IconButton(
+                        onClick = { /* focus the input */ },
+                        modifier = Modifier
+                            .size(32.dp)
+                            .border(
+                                width = 1.5.dp,
+                                color = DopaShiftTheme.colors.momentumTeal,
+                                shape = CircleShape
+                            ),
+                        colors = IconButtonDefaults.iconButtonColors(
+                            contentColor = DopaShiftTheme.colors.momentumTeal
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = stringResource(R.string.dux_todays_focus_add_task),
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
                 }
             }
 
@@ -636,7 +668,7 @@ private fun TodaysFocusCard(
                     modifier = Modifier.padding(vertical = DopaShiftTheme.spacing.stackSm)
                 )
             } else {
-                todos.forEach { todo ->
+                visibleTodos.forEach { todo ->
                     TodoItem(
                         todo = todo,
                         onCheckedChange = { isCompleted ->
@@ -760,6 +792,7 @@ private fun HabitQuickActionItem(
 ) {
     val currentCheckpoint = track.checkpoints.find { it.dayNumber == track.currentDay }
     val isPending = currentCheckpoint?.status == com.dopashift.domain.entity.CheckpointStatus.PENDING
+    val isCompleted = currentCheckpoint?.status == com.dopashift.domain.entity.CheckpointStatus.COMPLETED
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -779,7 +812,7 @@ private fun HabitQuickActionItem(
             horizontalArrangement = Arrangement.spacedBy(DopaShiftTheme.spacing.stackSm)
         ) {
             Checkbox(
-                checked = !isPending,
+                checked = isCompleted,
                 onCheckedChange = { if (isPending) onComplete() },
                 enabled = isPending
             )
