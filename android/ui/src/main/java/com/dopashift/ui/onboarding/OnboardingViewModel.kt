@@ -11,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.Instant
@@ -23,11 +24,12 @@ import javax.inject.Inject
  */
 object OnboardingSteps {
     const val WELCOME = 0
-    const val CREATE_GOAL = 1
-    const val SETUP_HABIT = 2
-    const val PERMISSIONS = 3
-    const val DONE = 4
-    const val TOTAL = 5
+    const val PROFILE = 1
+    const val CREATE_GOAL = 2
+    const val SETUP_HABIT = 3
+    const val PERMISSIONS = 4
+    const val DONE = 5
+    const val TOTAL = 6
 }
 
 /**
@@ -35,6 +37,8 @@ object OnboardingSteps {
  */
 data class OnboardingUiState(
     val currentStep: Int = OnboardingSteps.WELCOME,
+    val fullName: String = "",
+    val fullNameError: String? = null,
     val goalName: String = "",
     val goalCategory: String = "",
     val goalKeyword: String = "",
@@ -72,6 +76,10 @@ class OnboardingViewModel @Inject constructor(
     // In production, this would come from the auth session.
     private val localUserId: UUID = UUID.fromString("00000000-0000-0000-0000-000000000000")
 
+    fun onFullNameChanged(name: String) {
+        _uiState.update { it.copy(fullName = name, fullNameError = null) }
+    }
+
     fun onGoalNameChanged(name: String) {
         _uiState.update { it.copy(goalName = name, goalError = null) }
     }
@@ -96,6 +104,7 @@ class OnboardingViewModel @Inject constructor(
     fun nextStep() {
         val state = _uiState.value
         when (state.currentStep) {
+            OnboardingSteps.PROFILE -> validateProfileAndAdvance()
             OnboardingSteps.CREATE_GOAL -> createGoalAndAdvance()
             OnboardingSteps.SETUP_HABIT -> createHabitAndAdvance()
             OnboardingSteps.DONE -> completeOnboarding()
@@ -125,6 +134,24 @@ class OnboardingViewModel @Inject constructor(
      */
     fun skipStep() {
         _uiState.update { it.copy(currentStep = it.currentStep + 1) }
+    }
+
+    /**
+     * Validates the full-name profile step (Requirement 17.4). The name is required, trimmed, and
+     * length-bounded before advancing. Persistence happens on completion so a back-navigation edit
+     * is not written prematurely.
+     */
+    private fun validateProfileAndAdvance() {
+        val name = _uiState.value.fullName.trim()
+        if (name.isEmpty()) {
+            _uiState.update { it.copy(fullNameError = "Please enter your full name") }
+            return
+        }
+        if (name.length > 100) {
+            _uiState.update { it.copy(fullNameError = "Name must be at most 100 characters") }
+            return
+        }
+        _uiState.update { it.copy(fullName = name, fullNameError = null, currentStep = it.currentStep + 1) }
     }
 
     private fun createGoalAndAdvance() {
@@ -266,6 +293,15 @@ class OnboardingViewModel @Inject constructor(
 
     private fun completeOnboarding() {
         viewModelScope.launch {
+            val fullName = _uiState.value.fullName.trim()
+            if (fullName.isNotEmpty()) {
+                userPreferencesRepository.setFullName(fullName)
+                // Seed the editable display name from the full name if the user has none yet, so the
+                // Settings profile is populated on first launch.
+                if (userPreferencesRepository.observeDisplayName().first().isBlank()) {
+                    userPreferencesRepository.setDisplayName(fullName)
+                }
+            }
             userPreferencesRepository.setOnboardingCompleted(true)
             _uiState.update { it.copy(isCompleted = true) }
         }

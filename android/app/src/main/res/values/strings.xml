@@ -173,6 +173,12 @@
     <string name="permission_overlay_unavailable">Overlay interception is unavailable on this device.</string>
     <string name="permission_revoked">Interception is disabled. Required permissions have been revoked.</string>
 
+    <!-- Required-permissions gate dialog (shown on every app open/focus when permissions are missing) -->
+    <string name="permission_gate_title">Permissions Required</string>
+    <string name="permission_gate_message">DopaShift needs the following permissions to monitor screen time and show the interception overlay. Tap Grant to open Settings for each.</string>
+    <string name="permission_gate_usage_granted">Usage Access granted</string>
+    <string name="permission_gate_overlay_granted">Overlay access granted</string>
+
     <!-- Error Messages -->
     <string name="error_generic">Something went wrong. Please try again.</string>
     <string name="error_network">Network error. Please check your connection.</string>
@@ -182,6 +188,19 @@
     <string name="error_storage_full">Device storage is full. Oldest data may be removed.</string>
     <string name="error_field_required">This field is required</string>
     <string name="error_invalid_input">Invalid input</string>
+
+    <!-- Kinetic navigation host bridge labels (app-module wiring, task 11.1) -->
+    <string name="kinetic_dashboard_greeting">Welcome back</string>
+    <string name="kinetic_dashboard_sub_caption">One small step at a time</string>
+    <string name="kinetic_pending_tasks_count">%1$d of %2$d tasks pending</string>
+    <string name="kinetic_roadmap_day_label">Day %1$d/30</string>
+    <string name="kinetic_roadmap_sub_caption">%1$d of 30 days completed</string>
+    <string name="kinetic_roadmap_status">Day %1$d/30</string>
+    <string name="kinetic_default_avatar_monogram">DS</string>
+    <string name="kinetic_rule_daily_limit">Daily limit</string>
+    <string name="kinetic_rule_repetitive">Repetitive interval</string>
+    <string name="kinetic_rule_save_success">Limits saved</string>
+    <string name="kinetic_rule_save_required">Select at least one app with a valid daily limit</string>
 
     <!-- Notifications -->
     <string name="notification_channel_reminders">Reminders</string>

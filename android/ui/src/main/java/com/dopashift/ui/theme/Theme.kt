@@ -39,10 +39,16 @@ val LocalDopaShiftColors = staticCompositionLocalOf { DopaShiftColors() }
  * Builds the DopaShift Kinetic [ColorScheme] for the given accent [seed] and [mode].
  *
  * The base scheme is the design-system dark or light palette (resolved from [mode] and, for
- * [ThemeMode.SYSTEM], the [darkOverride] flag). The [seed] then drives the Material 3 accent
- * roles — primary, primaryContainer, and surfaceTint — so buttons, toggles, progress indicators,
- * and navigation highlights all derive from the user's accent (DUX-4.6). A seed of
- * [DEFAULT_ACCENT_SEED] leaves the design-system primary untouched.
+ * [ThemeMode.SYSTEM], the [darkOverride] flag). The [seed] then drives BOTH the structural accent
+ * roles (primary, primaryContainer) AND the reward/highlight roles (secondary, tertiary and their
+ * containers, plus surfaceTint) so buttons, toggles, progress rings, completion checkmarks, and
+ * navigation highlights all derive from the user's accent (DUX-4.6, AUI-7.4).
+ *
+ * The reward roles must be re-tinted here because the accent-driven UI (efficiency/goal progress
+ * rings, completion checkmarks, goal cards) reads `secondary`/`tertiary`/`secondaryContainer`, not
+ * `primary`. Tinting only `primary` — as an earlier version did — left every visible reward element
+ * on the default Momentum Teal, so a Settings accent change had no visible effect. A seed of
+ * [DEFAULT_ACCENT_SEED] leaves the design-system palette untouched.
  *
  * @param seed accent seed as an ARGB color long.
  * @param mode selected [ThemeMode].
@@ -64,9 +70,21 @@ internal fun kineticScheme(
         base
     } else {
         val accent = Color(seed.toInt())
+        val onAccent = DopaShiftTokens.Colors.onMomentumTeal
         base.copy(
+            // Structural accent roles (primary actions, some icons).
             primary = accent,
             primaryContainer = accent,
+            // Reward/highlight roles — the ones the accent-driven UI actually reads
+            // (progress rings, checkmarks, active nav pills, accent card strokes).
+            secondary = accent,
+            onSecondary = onAccent,
+            secondaryContainer = accent.copy(alpha = 0.15f),
+            onSecondaryContainer = accent,
+            tertiary = accent,
+            onTertiary = onAccent,
+            tertiaryContainer = accent.copy(alpha = 0.15f),
+            onTertiaryContainer = accent,
             surfaceTint = accent,
         )
     }
@@ -129,6 +147,84 @@ fun DopaShiftTheme(
         accentSeed = userAccentColor?.let { it.toArgb().toLong() and 0xFFFFFFFFL } ?: DEFAULT_ACCENT_SEED,
         content = content,
     )
+}
+
+/**
+ * The reward/highlight accent applied across the DopaShift Kinetic surfaces (AUI-7.4).
+ *
+ * A Settings accent-swatch selection produces one of these; it re-tints the scheme's reward roles
+ * (`secondary`/`tertiary` and their containers, plus `surfaceTint`) so every subsequently composed
+ * screen — rings, checkboxes, active nav pills, accent card strokes — reads the same accent. The
+ * `primary` (Productive Blue) structural role is intentionally left untouched so primary actions
+ * stay stable while the reward accent personalizes (AUI-7.4).
+ *
+ * @property color the accent [Color]; defaults to [DopaShiftTokens.Colors.momentumTeal], the
+ *   Momentum Teal reward accent that is the system default when no swatch is chosen.
+ */
+@JvmInline
+value class AccentSeed(val color: Color = DopaShiftTokens.Colors.momentumTeal) {
+    companion object {
+        /** The system-default reward accent (Momentum Teal), used when Settings has no selection. */
+        val Default: AccentSeed = AccentSeed(DopaShiftTokens.Colors.momentumTeal)
+    }
+}
+
+/**
+ * Re-tints [base] so its reward/highlight roles derive from [accent] (AUI-7.4). Leaves `primary`
+ * and the structural surface/background roles intact — only the Momentum-Teal-family roles that the
+ * accent picker personalizes are recolored. A [seed] equal to the token default returns [base]
+ * unchanged.
+ */
+internal fun ColorScheme.withAccent(accent: AccentSeed): ColorScheme {
+    if (accent.color == DopaShiftTokens.Colors.momentumTeal) return this
+    val onAccent = DopaShiftTokens.Colors.onMomentumTeal
+    return copy(
+        secondary = accent.color,
+        onSecondary = onAccent,
+        secondaryContainer = accent.color.copy(alpha = 0.15f),
+        onSecondaryContainer = accent.color,
+        tertiary = accent.color,
+        onTertiary = onAccent,
+        tertiaryContainer = accent.color.copy(alpha = 0.15f),
+        onTertiaryContainer = accent.color,
+        surfaceTint = accent.color,
+    )
+}
+
+/**
+ * Accent-seed entry point for the DopaShift Kinetic design system (AUI-8.1, AUI-7.4).
+ *
+ * Wraps [MaterialTheme] with the token-derived dark [ColorScheme] ([DopaShiftKineticDarkColorScheme]
+ * built from [DopaShiftTokens.Colors]), the token typography ([DopaShiftTypography]), and the token
+ * shapes, then re-tints the reward roles from [accent] via [withAccent] so a Settings accent
+ * selection propagates app-wide. [accent] defaults to [AccentSeed.Default] (Momentum Teal).
+ *
+ * This overload always renders the dark, dark-first Kinetic surface (Assumption 5); it delegates to
+ * the reactive [ThemeMode]/[accentSeed] machinery so the extended color / spacing / shape tokens are
+ * still provided through the composition locals, keeping the DUX behavior intact.
+ *
+ * @param accent the reward accent seed; defaults to Momentum Teal (AUI-7.4).
+ * @param content the composable content tree to theme.
+ */
+@Composable
+fun DopaShiftTheme(
+    accent: AccentSeed,
+    content: @Composable () -> Unit,
+) {
+    val colorScheme = DopaShiftKineticDarkColorScheme.withAccent(accent)
+
+    CompositionLocalProvider(
+        LocalDopaShiftColors provides DopaShiftColors(),
+        LocalDopaShiftSpacing provides DopaShiftSpacing(),
+        LocalDopaShiftShapes provides ShapeTokens(),
+    ) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = DopaShiftTypography,
+            shapes = dopaShiftShapes(),
+            content = content,
+        )
+    }
 }
 
 /**

@@ -12,7 +12,7 @@ import androidx.core.content.ContextCompat
 import com.dopashift.interception.InterceptionPermissionHelper
 import com.dopashift.interception.InterceptionService
 import com.dopashift.interception.PermissionRevocationDetector
-import com.dopashift.ui.navigation.DopaShiftApp
+import com.dopashift.app.navigation.DopaShiftKineticApp
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.util.UUID
@@ -60,7 +60,11 @@ class MainActivity : ComponentActivity() {
         requestNotificationPermissionIfNeeded()
 
         setContent {
-            DopaShiftApp()
+            // Task 11.1: host the DopaShift Kinetic NavHost (four bottom-nav destinations + the
+            // pushed Goal Detail / App Limits screens), wired in the app module. The permission
+            // helper is passed through so RequiredPermissionsGate can re-check on every resume and
+            // present the permission dialog when usage-stats / overlay access is missing.
+            DopaShiftKineticApp(permissionHelper = permissionHelper)
         }
     }
 

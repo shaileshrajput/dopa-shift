@@ -208,7 +208,10 @@ class OverlayService : Service(), LifecycleOwner, ViewModelStoreOwner, SavedStat
             setViewTreeSavedStateRegistryOwner(this@OverlayService)
 
             setContent {
-                InterceptOverlayScreen(
+                // Host the DopaShift Kinetic overlay composable (spec android-ui-upgrade, task
+                // 11.2). It renders the state this service exposes via OverlayViewModel and runs
+                // no timer of its own — the cooldown is derived from the view-model's timer.
+                InterceptOverlayHost(
                     viewModel = vm,
                     onDismiss = { dismissOverlay() }
                 )

@@ -276,6 +276,50 @@ jobs:
         working-directory: android
         run: ./gradlew :data:testDebugUnitTest :sync:testDebugUnitTest
 
+      # -----------------------------------------------------------------------
+      # android-ui-upgrade (AUI) suite gates — task 13.1
+      #
+      # These steps gate the android-ui-upgrade feature explicitly so a regression
+      # in any of its suites fails CI (AUI-9.10): no criterion in that spec is
+      # marked complete on a red build. The broad `build testDebugUnitTest` above
+      # already compiles and runs every module's unit tests; the steps below make
+      # the AUI enforcement an explicit, named gate rather than an incidental side
+      # effect. None use continue-on-error, so any failing test fails the build.
+      #
+      # The AUI suites are pure-JVM / Robolectric unit tests and live entirely in
+      # the unit-test source sets, so they run in this CI job (no emulator needed):
+      #   :ui   — property (Kotest), Compose UI, and accessibility conformance suites
+      #   :interception — OverlayUiStateMapperTest (overlay cooldown-gating seam)
+      # Each test is tagged with its criterion id (AUI-N.M) for traceability
+      # (AUI-9.1).
+      #
+      # BLOCKING criticality — these criteria must never regress:
+      #   AUI-9.9 touch-target conformance
+      #           (Property8TouchTargetTest, Property9And10TouchTargetAndDescriptionTest)
+      #   AUI-9.4 Continue-to-app cooldown gating
+      #           (render.Property1ContinueGatingTest, screens.InterceptOverlayScreenTest,
+      #            interception.overlay.OverlayUiStateMapperTest)
+      #   AUI-9.7 daily-bar color → category mapping (render.Property4BarColorTest)
+      # -----------------------------------------------------------------------
+      - name: AUI blocking gate - touch target / cooldown gating / bar color (AUI-9.9, AUI-9.4, AUI-9.7)
+        working-directory: android
+        run: >-
+          ./gradlew
+          :ui:testDebugUnitTest
+          --tests "com.dopashift.ui.Property8TouchTargetTest"
+          --tests "com.dopashift.ui.theme.Property9And10TouchTargetAndDescriptionTest"
+          --tests "com.dopashift.ui.render.Property1ContinueGatingTest"
+          --tests "com.dopashift.ui.screens.InterceptOverlayScreenTest"
+          --tests "com.dopashift.ui.render.Property4BarColorTest"
+
+      - name: AUI overlay cooldown-gating seam gate (AUI-9.4)
+        working-directory: android
+        run: ./gradlew :interception:testDebugUnitTest --tests "com.dopashift.interception.overlay.OverlayUiStateMapperTest"
+
+      - name: AUI property + Compose UI + accessibility suite (AUI-9.1, AUI-9.10)
+        working-directory: android
+        run: ./gradlew :ui:testDebugUnitTest :interception:testDebugUnitTest
+
       - name: Check coverage gate (70% line coverage)
         working-directory: android
         run: ./gradlew jacocoTestReport

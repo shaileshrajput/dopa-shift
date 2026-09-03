@@ -35,7 +35,14 @@
     <string name="onboarding_welcome_description">Take control of your screen time and build positive habits. DopaShift helps you define life goals, intercept distracting apps, and track your progress with daily micro-habits.</string>
     <string name="onboarding_welcome_icon_content_description">Welcome</string>
 
-    <!-- Step 2: Create Goal -->
+    <!-- Step 2: Profile (full name) -->
+    <string name="onboarding_profile_title">What should we call you?</string>
+    <string name="onboarding_profile_description">Enter your full name. You can view and update it later in Settings.</string>
+    <string name="onboarding_profile_icon_content_description">Profile</string>
+    <string name="onboarding_profile_full_name_label">Full name</string>
+    <string name="onboarding_profile_full_name_placeholder">e.g., Alex Sharma</string>
+
+    <!-- Step 3: Create Goal -->
     <string name="onboarding_goal_title">Create Your First Goal</string>
     <string name="onboarding_goal_description">What do you want to achieve? Set a goal to get started.</string>
     <string name="onboarding_goal_icon_content_description">Goal</string>
@@ -47,7 +54,7 @@
     <string name="onboarding_goal_keyword_placeholder">e.g., programming</string>
     <string name="onboarding_goal_keyword_hint">Used for content recommendations</string>
 
-    <!-- Step 3: Setup Habit -->
+    <!-- Step 4: Setup Habit -->
     <string name="onboarding_habit_title">Set Up Your First Habit</string>
     <string name="onboarding_habit_description">Define a daily micro-habit to build over 30 days. It will appear in the intercept overlay when distracting apps are blocked.</string>
     <string name="onboarding_habit_icon_content_description">Habit</string>
@@ -55,7 +62,7 @@
     <string name="onboarding_habit_placeholder">e.g., Read for 10 minutes</string>
     <string name="onboarding_habit_char_count">%1$d/200</string>
 
-    <!-- Step 5: Done -->
+    <!-- Step 6: Done -->
     <string name="onboarding_done_title">You\'re All Set!</string>
     <string name="onboarding_done_description">Your goals and habits are ready. DopaShift will track your screen time, intercept distracting apps, and help you build better habits every day.\n\nTap \"Get Started\" to begin your journey.</string>
     <string name="onboarding_done_icon_content_description">All set</string>
@@ -366,6 +373,9 @@
     <!-- (DashboardBody) — DQC-5.1, 5.2, 5.3, 5.6, 5.9                          -->
     <!-- ===================================================================== -->
 
+    <!-- Top app bar back arrow (sub-page over Home) -->
+    <string name="qc_dashboard_back_content_description">Back</string>
+
     <!-- Whole-screen Zero_State: three contextual creation prompts (DQC-5.2) -->
     <string name="qc_dashboard_zero_title">Let\'s get you started</string>
     <string name="qc_dashboard_zero_subtitle">Pick a place to begin — you can add the rest anytime.</string>
@@ -399,4 +409,211 @@
     <string name="qc_discard_body">You have unsaved changes. Discard them?</string>
     <string name="qc_discard_confirm">Discard</string>
     <string name="qc_discard_cancel">Keep editing</string>
+
+    <!-- ===================================================================== -->
+    <!-- Intercept Overlay screen (android-ui-upgrade, AUI-2)                   -->
+    <!-- InterceptOverlayScreen.kt — full-screen intervention surface          -->
+    <!-- ===================================================================== -->
+
+    <!-- Header (AUI-2.2) -->
+    <string name="aui_overlay_scrim_content_description">Screen-time interception</string>
+    <string name="aui_overlay_intercept_pill">• DOPAMINE INTERCEPT</string>
+    <string name="aui_overlay_brain_glyph_content_description">Focus intervention</string>
+    <string name="aui_overlay_headline">Time to redirect</string>
+    <string name="aui_overlay_body">Your allowance for %1$s is used up. Take a productive moment before you continue.</string>
+
+    <!-- Cooldown badge (AUI-2.3) -->
+    <string name="aui_overlay_cooldown_badge">⏳ %1$ds cooldown until dismiss</string>
+    <string name="aui_overlay_cooldown_content_description">%1$d seconds cooldown remaining until dismiss</string>
+
+    <!-- Behavioral Rescue Card (AUI-2.4) -->
+    <string name="aui_overlay_rescue_label">Quick Micro-Habit (%1$s)</string>
+
+    <!-- Pending focus tasks (AUI-2.5) -->
+    <string name="aui_overlay_pending_title">Pending focus tasks</string>
+
+    <!-- Action buttons (AUI-2.6) -->
+    <string name="aui_overlay_switch">↗ Switch to DopaShift</string>
+    <string name="aui_overlay_continue">⊘ Continue to app (%1$ds)</string>
+    <string name="aui_overlay_continue_ready">⊘ Continue to app</string>
+
+    <!-- ===================================================================== -->
+    <!-- Home Dashboard screen (android-ui-upgrade, AUI-1)                     -->
+    <!-- DashboardScreen.kt — header, anchor, focus, goals grid, FAB, nav      -->
+    <!-- ===================================================================== -->
+
+    <!-- Header card (AUI-1.1) -->
+    <string name="aui_dashboard_streak_pill">%1$s %2$d DAYS STREAK</string>
+    <string name="aui_dashboard_streak_glyph">🔥</string>
+    <string name="aui_dashboard_efficiency_ring_content_description">Daily efficiency %1$d percent</string>
+
+    <!-- Primary Anchor Habit (AUI-1.2) -->
+    <string name="aui_dashboard_anchor_heading">Today\'s Anchor Habit</string>
+    <string name="aui_dashboard_anchor_empty_title">Start a habit</string>
+    <string name="aui_dashboard_anchor_empty_body">You have no anchor habit for today. Begin a 30-day micro-habit to build momentum.</string>
+
+    <!-- Today\'s Focus card (AUI-1.4) -->
+    <string name="aui_dashboard_focus_title">Today\'s Focus</string>
+    <string name="aui_dashboard_focus_add_placeholder">Add to Today\'s Focus</string>
+    <string name="aui_dashboard_focus_add_content_description">Add to-do</string>
+    <string name="aui_dashboard_focus_empty">No tasks for today. Add one above.</string>
+
+    <!-- Active goals grid (AUI-1.6) -->
+    <string name="aui_dashboard_goals_heading">Active Goals</string>
+    <string name="aui_dashboard_goal_ring_content_description">%1$s, %2$d percent complete</string>
+    <string name="aui_dashboard_goal_icon_content_description">%1$s goal</string>
+
+    <!-- Quick-create FAB (AUI-1.7) -->
+    <string name="aui_dashboard_quick_create_content_description">Quick create</string>
+
+    <!-- ===================================================================== -->
+    <!-- App Limits & Rules screen (android-ui-upgrade, AUI-3)                  -->
+    <!-- AppLimitsScreen.kt — search, selection, segmented pill, presets, rules -->
+    <!-- ===================================================================== -->
+
+    <!-- Top app bar (AUI-3) -->
+    <string name="aui_limits_back_content_description">Back</string>
+
+    <!-- Search bar (AUI-3.1) -->
+    <string name="aui_limits_screen_title">App Limits &amp; Rules</string>
+    <string name="aui_limits_search_placeholder">Search installed apps</string>
+    <string name="aui_limits_search_icon_content_description">Search</string>
+    <string name="aui_limits_search_clear_content_description">Clear search</string>
+    <string name="aui_limits_no_apps">No apps match your search</string>
+
+    <!-- Installed-app selection (AUI-3.2) -->
+    <string name="aui_limits_select_apps_header">Choose apps to limit</string>
+    <string name="aui_limits_daily_limit_label">Daily limit (minutes)</string>
+    <string name="aui_limits_daily_limit_range_message">Daily limit must be between 1 and 480 whole minutes</string>
+
+    <!-- Save control (AUI-3.2, Requirement 2.9) -->
+    <string name="aui_limits_save">Save</string>
+    <string name="aui_limits_save_success">Limits saved</string>
+    <string name="aui_limits_save_required">Select at least one app with a valid daily limit</string>
+
+    <!-- Limit-type segmented pill (AUI-3.3) -->
+    <string name="aui_limits_type_once">Once</string>
+    <string name="aui_limits_type_repetitive">Repetitive</string>
+
+    <!-- Interval presets + tip, shown only in Repetitive (AUI-3.4) -->
+    <string name="aui_limits_interval_header">Interval</string>
+    <string name="aui_limits_interval_custom_label">Custom interval (minutes)</string>
+    <string name="aui_limits_interval_range_message">Interval must be between 1 and 120 whole minutes</string>
+    <string name="aui_limits_interval_tip">Repetitive limits intercept the app on a recurring interval throughout the day, not just once.</string>
+
+    <!-- Active rules list (AUI-3.5) -->
+    <string name="aui_limits_active_rules_header">Active rules</string>
+    <string name="aui_limits_no_active_rules">You haven\'t set any limits yet</string>
+    <string name="aui_limits_rule_icon_content_description">App icon for %1$s</string>
+    <string name="aui_limits_rule_edit">Edit</string>
+    <string name="aui_limits_rule_edit_content_description">Edit rule for %1$s</string>
+    <string name="aui_limits_rule_pause">Pause today</string>
+    <string name="aui_limits_rule_pause_content_description">Pause rule for %1$s today</string>
+    <string name="aui_limits_rule_resume">Resume</string>
+    <string name="aui_limits_rule_resume_content_description">Resume rule for %1$s</string>
+    <string name="aui_limits_rule_delete">Delete</string>
+    <string name="aui_limits_rule_delete_content_description">Delete rule for %1$s</string>
+    <string name="aui_limits_rule_paused_badge">Paused today</string>
+
+    <!-- ===================================================================== -->
+    <!-- Goals &amp; Habits overview screen (android-ui-upgrade, AUI-4)         -->
+    <!-- GoalsHabitsScreen.kt — goal summary cards, streak dot-matrix, roadmap  -->
+    <!-- ===================================================================== -->
+
+    <!-- Goal summary card (AUI-4.1) -->
+    <string name="aui_goals_ring_content_description">%1$s, %2$d percent complete</string>
+    <string name="aui_goals_empty">You haven\'t created any goals yet. Tap the plus button to start one.</string>
+
+    <!-- Streak dot-matrix + roadmap status row (AUI-4.2) -->
+    <string name="aui_goals_streak_content_description">Streak: %1$d of %2$d days completed</string>
+
+    <!-- Quick-create FAB (AUI-4.3) -->
+    <string name="aui_goals_quick_create_content_description">Quick create</string>
+
+    <!-- ===================================================================== -->
+    <!-- Analytics &amp; Efficiency screen (android-ui-upgrade, AUI-6)          -->
+    <!-- AnalyticsScreen.kt — range filter, offline banner, summary grid,       -->
+    <!-- daily-scores bar chart + legend, category usage bars                   -->
+    <!-- ===================================================================== -->
+
+    <!-- Screen title -->
+    <string name="aui_analytics_screen_title">Analytics &amp; Efficiency</string>
+
+    <!-- Date-range segmented filter (AUI-6.1) -->
+    <string name="aui_analytics_range_last_7">Last 7 days</string>
+    <string name="aui_analytics_range_last_30">Last 30 days</string>
+    <string name="aui_analytics_range_last_90">Last 90 days</string>
+
+    <!-- Offline / partial-data warning banner (AUI-6.2) -->
+    <string name="aui_analytics_offline_banner_title">Some data is unavailable offline</string>
+    <string name="aui_analytics_offline_banner_body">You\'re offline or this range has incomplete data. The full history will resume once you reconnect.</string>
+    <string name="aui_analytics_offline_banner_content_description">Warning: some analytics data is unavailable offline and will resume on reconnect.</string>
+
+    <!-- Summary metric grid (AUI-6.3) -->
+    <string name="aui_analytics_summary_header">Summary</string>
+    <string name="aui_analytics_summary_average">Average</string>
+    <string name="aui_analytics_summary_highest">Highest</string>
+    <string name="aui_analytics_summary_lowest">Lowest</string>
+    <string name="aui_analytics_summary_days_tracked">Days tracked</string>
+    <string name="aui_analytics_metric_percent">%1$d%%</string>
+
+    <!-- Daily-scores bar chart + legend (AUI-6.4) -->
+    <string name="aui_analytics_daily_scores_header">Daily scores</string>
+    <string name="aui_analytics_daily_scores_empty">No daily scores for this range yet.</string>
+    <string name="aui_analytics_bar_content_description">%1$s: %2$d percent, %3$s</string>
+    <string name="aui_analytics_chart_content_description">Daily efficiency scores bar chart</string>
+    <string name="aui_analytics_legend_content_description">Chart legend</string>
+    <string name="aui_analytics_legend_productive">Productive</string>
+    <string name="aui_analytics_legend_distracting">Distracting</string>
+    <string name="aui_analytics_legend_no_data">No data</string>
+
+    <!-- Category usage bars (AUI-6.5) -->
+    <string name="aui_analytics_usage_header">Category breakdown</string>
+    <string name="aui_analytics_usage_empty">No category usage for this range yet.</string>
+
+    <!-- ===================================================================== -->
+    <!-- Goal Detail & 30-Day Roadmap (GoalDetailScreen.kt) — AUI-5            -->
+    <!-- ===================================================================== -->
+
+    <!-- Top app bar (AUI-5.1) -->
+    <string name="aui_goal_detail_back_content_description">Back</string>
+    <string name="aui_goal_detail_edit_content_description">Edit goal</string>
+    <string name="aui_goal_detail_delete_content_description">Delete goal</string>
+
+    <!-- Category + keyword chips (AUI-5.2) -->
+    <string name="aui_goal_detail_keywords_header">Category &amp; keywords</string>
+
+    <!-- Checklist (AUI-5.3, AUI-5.4) -->
+    <string name="aui_goal_detail_checklist_header">Task checklist</string>
+    <string name="aui_goal_detail_checklist_empty">No checklist items yet. Add your first below.</string>
+    <string name="aui_goal_detail_checklist_delete_content_description">Delete %1$s</string>
+    <string name="aui_goal_detail_add_item_placeholder">Add checklist item</string>
+    <string name="aui_goal_detail_add_item_content_description">Add checklist item</string>
+
+    <!-- Habit_Track progress card (AUI-5.5) -->
+    <string name="aui_goal_detail_roadmap_header">30-day roadmap</string>
+    <string name="aui_goal_detail_roadmap_active_badge">Active</string>
+    <string name="aui_goal_detail_roadmap_progress_content_description">%1$s: %2$s</string>
+
+    <!-- Settings &amp; Profile screen (AUI-7) -->
+    <string name="aui_settings_screen_title">Settings</string>
+    <string name="aui_settings_profile_header">Profile</string>
+    <string name="aui_settings_avatar_content_description">Profile photo</string>
+    <string name="aui_settings_upload_photo">Upload Photo</string>
+    <string name="aui_settings_upload_photo_hint">JPEG or PNG, up to 5MB</string>
+    <string name="aui_settings_full_name_label">Full name</string>
+    <string name="aui_settings_display_name_label">Display name</string>
+    <string name="aui_settings_save_display_name">Save</string>
+    <string name="aui_settings_manage_limits_title">Manage App Limits</string>
+    <string name="aui_settings_manage_limits_subtitle">Set daily allowances and interception rules for distracting apps.</string>
+    <string name="aui_settings_manage_limits_content_description">Manage App Limits. Opens app limits and rules.</string>
+    <string name="aui_settings_accent_header">Accent theme</string>
+    <string name="aui_settings_accent_active_label">Active theme: %1$s</string>
+    <string name="aui_settings_accent_swatch_content_description">%1$s accent</string>
+    <string name="aui_settings_security_header">Security</string>
+    <string name="aui_settings_security_keycloak_note">Password changes are managed securely through Keycloak. Enter your details below to continue.</string>
+    <string name="aui_settings_password_current_label">Current password</string>
+    <string name="aui_settings_password_new_label">New password</string>
+    <string name="aui_settings_password_confirm_label">Confirm new password</string>
+    <string name="aui_settings_change_password">Change password</string>
 </resources>

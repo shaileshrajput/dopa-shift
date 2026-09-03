@@ -35,6 +35,7 @@ class UserPreferencesRepositoryImpl @Inject constructor(
         val ACCENT_COLOR = stringPreferencesKey("accent_color")
         val ACCENT_SEED = longPreferencesKey("accent_seed")
         val LOCALE = stringPreferencesKey("locale")
+        val FULL_NAME = stringPreferencesKey("full_name")
         val DISPLAY_NAME = stringPreferencesKey("display_name")
         val EMAIL = stringPreferencesKey("email")
 
@@ -117,6 +118,20 @@ class UserPreferencesRepositoryImpl @Inject constructor(
     override suspend fun setLocale(localeCode: String) {
         context.userPrefsDataStore.edit { prefs ->
             prefs[LOCALE] = localeCode
+        }
+    }
+
+    // === Full Name ===
+
+    override fun observeFullName(): Flow<String> {
+        return context.userPrefsDataStore.data.map { prefs ->
+            prefs[FULL_NAME] ?: ""
+        }
+    }
+
+    override suspend fun setFullName(name: String) {
+        context.userPrefsDataStore.edit { prefs ->
+            prefs[FULL_NAME] = name
         }
     }
 

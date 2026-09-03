@@ -68,6 +68,20 @@ interface UserPreferencesRepository {
      */
     suspend fun setLocale(localeCode: String)
 
+    // === Full Name ===
+
+    /**
+     * Observes the user's full name, captured during onboarding (Requirement 17.4).
+     * Empty string when not yet provided.
+     */
+    fun observeFullName(): Flow<String>
+
+    /**
+     * Persists the user's full name (typically captured in the onboarding flow and shown on the
+     * Settings profile).
+     */
+    suspend fun setFullName(name: String)
+
     // === Display Name ===
 
     /**

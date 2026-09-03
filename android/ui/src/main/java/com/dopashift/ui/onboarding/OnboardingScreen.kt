@@ -27,6 +27,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Flag
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Rocket
 import androidx.compose.material.icons.filled.TrackChanges
 import androidx.compose.material3.Button
@@ -66,12 +67,13 @@ import com.dopashift.ui.theme.rememberReducedMotion
 /**
  * Onboarding screen implementing Requirement 17.4 / DUX-4.12.
  *
- * A guided, minimal-friction flow of no more than 5 screens, completable in under 2 minutes:
+ * A guided, minimal-friction flow completable in under 2 minutes:
  * 1. Welcome — app introduction
- * 2. Create Goal — first goal / keyword setup
- * 3. Setup Habit — first habit track
- * 4. Permissions — usage-stats and overlay handoff (reuses [PermissionSetupPage])
- * 5. Done — get started
+ * 2. Profile — capture the user's full name (shown later on the Settings profile)
+ * 3. Create Goal — first goal / keyword setup
+ * 4. Setup Habit — first habit track
+ * 5. Permissions — usage-stats and overlay handoff (reuses [PermissionSetupPage])
+ * 6. Done — get started
  *
  * The flow never lands the user on a blank dashboard on first launch (Requirement 17.4).
  * It applies the shared design system: [DopaShiftTheme] tokens for color/spacing/shape,
@@ -102,6 +104,7 @@ fun OnboardingScreen(
     OnboardingScreenContent(
         uiState = uiState,
         permissionState = permissionState,
+        onFullNameChanged = viewModel::onFullNameChanged,
         onGoalNameChanged = viewModel::onGoalNameChanged,
         onGoalCategoryChanged = viewModel::onGoalCategoryChanged,
         onGoalKeywordChanged = viewModel::onGoalKeywordChanged,
@@ -122,6 +125,7 @@ fun OnboardingScreen(
 private fun OnboardingScreenContent(
     uiState: OnboardingUiState,
     permissionState: PermissionSetupUiState,
+    onFullNameChanged: (String) -> Unit,
     onGoalNameChanged: (String) -> Unit,
     onGoalCategoryChanged: (String) -> Unit,
     onGoalKeywordChanged: (String) -> Unit,
@@ -191,6 +195,11 @@ private fun OnboardingScreenContent(
             ) { page ->
                 when (page) {
                     OnboardingSteps.WELCOME -> WelcomePage()
+                    OnboardingSteps.PROFILE -> ProfilePage(
+                        fullName = uiState.fullName,
+                        error = uiState.fullNameError,
+                        onFullNameChanged = onFullNameChanged,
+                    )
                     OnboardingSteps.CREATE_GOAL -> CreateGoalPage(
                         goalName = uiState.goalName,
                         goalCategory = uiState.goalCategory,
@@ -313,6 +322,75 @@ private fun WelcomePage() {
         title = stringResource(R.string.onboarding_welcome_title),
         description = stringResource(R.string.onboarding_welcome_description),
     )
+}
+
+@Composable
+private fun ProfilePage(
+    fullName: String,
+    error: String?,
+    onFullNameChanged: (String) -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = DopaShiftTheme.spacing.margin),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Icon(
+            imageVector = Icons.Default.Person,
+            contentDescription = stringResource(R.string.onboarding_profile_icon_content_description),
+            modifier = Modifier.size(48.dp),
+            tint = DopaShiftTheme.colors.productiveBlue,
+        )
+
+        Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.margin))
+
+        Text(
+            text = stringResource(R.string.onboarding_profile_title),
+            style = MaterialTheme.typography.headlineSmall,
+            textAlign = TextAlign.Center,
+        )
+
+        Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.base))
+
+        Text(
+            text = stringResource(R.string.onboarding_profile_description),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+        )
+
+        Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.margin))
+
+        OutlinedTextField(
+            value = fullName,
+            onValueChange = onFullNameChanged,
+            label = { Text(stringResource(R.string.onboarding_profile_full_name_label)) },
+            placeholder = { Text(stringResource(R.string.onboarding_profile_full_name_placeholder)) },
+            singleLine = true,
+            isError = error != null,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            modifier = Modifier.fillMaxWidth(),
+        )
+
+        // Error message — announced to screen readers as a polite live region (DUX-5.8).
+        AnimatedVisibility(
+            visible = error != null,
+            enter = fadeIn(),
+            exit = fadeOut(),
+        ) {
+            error?.let {
+                Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.base))
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.politeLiveRegion(),
+                )
+            }
+        }
+    }
 }
 
 @Composable

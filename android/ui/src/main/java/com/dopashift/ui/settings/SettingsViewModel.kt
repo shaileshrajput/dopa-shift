@@ -58,6 +58,7 @@ val PredefinedAccentColors: List<Long> = listOf(
  */
 data class SettingsUiState(
     // Profile
+    val fullName: String = "",
     val displayName: String = "",
     val email: String = "",
     val profilePhotoUrl: String? = null,
@@ -125,6 +126,7 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 // Load all persisted settings in parallel from local storage
+                val fullName = userPreferencesRepository.observeFullName().first()
                 val displayName = userPreferencesRepository.observeDisplayName().first()
                 val email = userPreferencesRepository.observeEmail().first()
                 val accentColor = userPreferencesRepository.observeAccentColor().first()
@@ -137,6 +139,7 @@ class SettingsViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
+                        fullName = fullName,
                         displayName = displayName,
                         email = email,
                         selectedAccentColor = accentColor,

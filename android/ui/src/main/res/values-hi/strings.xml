@@ -35,7 +35,14 @@
     <string name="onboarding_welcome_description">अपने स्क्रीन समय पर नियंत्रण रखें और सकारात्मक आदतें बनाएँ। DopaShift आपको जीवन के लक्ष्य तय करने, ध्यान भटकाने वाले ऐप्स को रोकने और दैनिक सूक्ष्म-आदतों के साथ अपनी प्रगति ट्रैक करने में मदद करता है।</string>
     <string name="onboarding_welcome_icon_content_description">स्वागत है</string>
 
-    <!-- Step 2: Create Goal -->
+    <!-- Step 2: Profile (full name) -->
+    <string name="onboarding_profile_title">हम आपको क्या कहकर बुलाएँ?</string>
+    <string name="onboarding_profile_description">अपना पूरा नाम दर्ज करें। आप इसे बाद में सेटिंग्स में देख और बदल सकते हैं।</string>
+    <string name="onboarding_profile_icon_content_description">प्रोफ़ाइल</string>
+    <string name="onboarding_profile_full_name_label">पूरा नाम</string>
+    <string name="onboarding_profile_full_name_placeholder">उदा., Alex Sharma</string>
+
+    <!-- Step 3: Create Goal -->
     <string name="onboarding_goal_title">अपना पहला लक्ष्य बनाएँ</string>
     <string name="onboarding_goal_description">आप क्या हासिल करना चाहते हैं? शुरू करने के लिए एक लक्ष्य निर्धारित करें।</string>
     <string name="onboarding_goal_icon_content_description">लक्ष्य</string>
@@ -324,6 +331,9 @@
     <string name="qc_todo_quick_add_daily_limit_reached">%1$d कार्यों की दैनिक सीमा पूरी हुई</string>
     <string name="qc_todo_offline_sync_pending">ऑफ़लाइन — फिर से कनेक्ट होने पर सिंक होगा</string>
 
+    <!-- Top app bar back arrow (sub-page over Home) -->
+    <string name="qc_dashboard_back_content_description">वापस</string>
+
     <!-- Zero/Partial state + onboarding resume (DQC-5) -->
     <string name="qc_dashboard_zero_title">चलिए शुरू करते हैं</string>
     <string name="qc_dashboard_zero_subtitle">शुरू करने के लिए एक जगह चुनें — बाकी आप कभी भी जोड़ सकते हैं।</string>
@@ -350,4 +360,209 @@
     <string name="qc_discard_body">आपके पास असहेजे गए परिवर्तन हैं। क्या उन्हें खारिज करें?</string>
     <string name="qc_discard_confirm">खारिज करें</string>
     <string name="qc_discard_cancel">संपादन जारी रखें</string>
+
+    <!-- ===================================================================== -->
+    <!-- Intercept Overlay screen (android-ui-upgrade, AUI-2)                   -->
+    <!-- InterceptOverlayScreen.kt — full-screen intervention surface          -->
+    <!-- ===================================================================== -->
+
+    <!-- Header (AUI-2.2) -->
+    <string name="aui_overlay_scrim_content_description">स्क्रीन-समय इंटरसेप्शन</string>
+    <string name="aui_overlay_intercept_pill">• डोपामिन इंटरसेप्ट</string>
+    <string name="aui_overlay_brain_glyph_content_description">फोकस हस्तक्षेप</string>
+    <string name="aui_overlay_headline">दिशा बदलने का समय</string>
+    <string name="aui_overlay_body">%1$s के लिए आपका आवंटन समाप्त हो गया है। जारी रखने से पहले एक उपयोगी पल लें।</string>
+
+    <!-- Cooldown badge (AUI-2.3) -->
+    <string name="aui_overlay_cooldown_badge">⏳ खारिज करने तक %1$dसे कूलडाउन</string>
+    <string name="aui_overlay_cooldown_content_description">खारिज करने तक %1$d सेकंड कूलडाउन शेष</string>
+
+    <!-- Behavioral Rescue Card (AUI-2.4) -->
+    <string name="aui_overlay_rescue_label">त्वरित सूक्ष्म-आदत (%1$s)</string>
+
+    <!-- Pending focus tasks (AUI-2.5) -->
+    <string name="aui_overlay_pending_title">लंबित फोकस कार्य</string>
+
+    <!-- Action buttons (AUI-2.6) -->
+    <string name="aui_overlay_switch">↗ DopaShift पर जाएँ</string>
+    <string name="aui_overlay_continue">⊘ ऐप पर जारी रखें (%1$dसे)</string>
+    <string name="aui_overlay_continue_ready">⊘ ऐप पर जारी रखें</string>
+
+    <!-- ===================================================================== -->
+    <!-- Home Dashboard screen (android-ui-upgrade, AUI-1)                     -->
+    <!-- DashboardScreen.kt — header, anchor, focus, goals grid, FAB, nav      -->
+    <!-- ===================================================================== -->
+
+    <!-- Header card (AUI-1.1) -->
+    <string name="aui_dashboard_streak_pill">%1$s %2$d दिन की लय</string>
+    <string name="aui_dashboard_streak_glyph">🔥</string>
+    <string name="aui_dashboard_efficiency_ring_content_description">दैनिक दक्षता %1$d प्रतिशत</string>
+
+    <!-- Primary Anchor Habit (AUI-1.2) -->
+    <string name="aui_dashboard_anchor_heading">आज की एंकर आदत</string>
+    <string name="aui_dashboard_anchor_empty_title">एक आदत शुरू करें</string>
+    <string name="aui_dashboard_anchor_empty_body">आज के लिए आपकी कोई एंकर आदत नहीं है। गति बनाने के लिए 30-दिन की सूक्ष्म-आदत शुरू करें।</string>
+
+    <!-- Today\'s Focus card (AUI-1.4) -->
+    <string name="aui_dashboard_focus_title">आज का फोकस</string>
+    <string name="aui_dashboard_focus_add_placeholder">आज के फोकस में जोड़ें</string>
+    <string name="aui_dashboard_focus_add_content_description">कार्य जोड़ें</string>
+    <string name="aui_dashboard_focus_empty">आज के लिए कोई कार्य नहीं। ऊपर एक जोड़ें।</string>
+
+    <!-- Active goals grid (AUI-1.6) -->
+    <string name="aui_dashboard_goals_heading">सक्रिय लक्ष्य</string>
+    <string name="aui_dashboard_goal_ring_content_description">%1$s, %2$d प्रतिशत पूर्ण</string>
+    <string name="aui_dashboard_goal_icon_content_description">%1$s लक्ष्य</string>
+
+    <!-- Quick-create FAB (AUI-1.7) -->
+    <string name="aui_dashboard_quick_create_content_description">त्वरित बनाएँ</string>
+
+    <!-- ===================================================================== -->
+    <!-- App Limits & Rules screen (android-ui-upgrade, AUI-3)                  -->
+    <!-- AppLimitsScreen.kt — search, selection, segmented pill, presets, rules -->
+    <!-- ===================================================================== -->
+
+    <!-- Top app bar (AUI-3) -->
+    <string name="aui_limits_back_content_description">वापस</string>
+
+    <!-- Search bar (AUI-3.1) -->
+    <string name="aui_limits_screen_title">ऐप सीमाएँ और नियम</string>
+    <string name="aui_limits_search_placeholder">इंस्टॉल किए गए ऐप्स खोजें</string>
+    <string name="aui_limits_search_icon_content_description">खोजें</string>
+    <string name="aui_limits_search_clear_content_description">खोज साफ़ करें</string>
+    <string name="aui_limits_no_apps">आपकी खोज से कोई ऐप मेल नहीं खाता</string>
+
+    <!-- Installed-app selection (AUI-3.2) -->
+    <string name="aui_limits_select_apps_header">सीमित करने के लिए ऐप्स चुनें</string>
+    <string name="aui_limits_daily_limit_label">दैनिक सीमा (मिनट)</string>
+    <string name="aui_limits_daily_limit_range_message">दैनिक सीमा 1 और 480 पूर्ण मिनट के बीच होनी चाहिए</string>
+
+    <!-- Save control (AUI-3.2, Requirement 2.9) -->
+    <string name="aui_limits_save">सहेजें</string>
+    <string name="aui_limits_save_success">सीमाएँ सहेजी गईं</string>
+    <string name="aui_limits_save_required">कम से कम एक ऐप को वैध दैनिक सीमा के साथ चुनें</string>
+
+    <!-- Limit-type segmented pill (AUI-3.3) -->
+    <string name="aui_limits_type_once">एक बार</string>
+    <string name="aui_limits_type_repetitive">बार-बार</string>
+
+    <!-- Interval presets + tip, shown only in Repetitive (AUI-3.4) -->
+    <string name="aui_limits_interval_header">अंतराल</string>
+    <string name="aui_limits_interval_custom_label">कस्टम अंतराल (मिनट)</string>
+    <string name="aui_limits_interval_range_message">अंतराल 1 और 120 पूर्ण मिनट के बीच होना चाहिए</string>
+    <string name="aui_limits_interval_tip">बार-बार वाली सीमाएँ ऐप को दिन भर एक आवर्ती अंतराल पर रोकती हैं, केवल एक बार नहीं।</string>
+
+    <!-- Active rules list (AUI-3.5) -->
+    <string name="aui_limits_active_rules_header">सक्रिय नियम</string>
+    <string name="aui_limits_no_active_rules">आपने अभी तक कोई सीमा निर्धारित नहीं की है</string>
+    <string name="aui_limits_rule_icon_content_description">%1$s के लिए ऐप आइकन</string>
+    <string name="aui_limits_rule_edit">संपादित करें</string>
+    <string name="aui_limits_rule_edit_content_description">%1$s के लिए नियम संपादित करें</string>
+    <string name="aui_limits_rule_pause">आज रोकें</string>
+    <string name="aui_limits_rule_pause_content_description">%1$s के लिए नियम आज रोकें</string>
+    <string name="aui_limits_rule_resume">फिर से शुरू करें</string>
+    <string name="aui_limits_rule_resume_content_description">%1$s के लिए नियम फिर से शुरू करें</string>
+    <string name="aui_limits_rule_delete">हटाएँ</string>
+    <string name="aui_limits_rule_delete_content_description">%1$s के लिए नियम हटाएँ</string>
+    <string name="aui_limits_rule_paused_badge">आज रोका गया</string>
+
+    <!-- ===================================================================== -->
+    <!-- Goals & Habits overview screen (android-ui-upgrade, AUI-4)             -->
+    <!-- GoalsHabitsScreen.kt — goal summary cards, streak dot-matrix, roadmap  -->
+    <!-- ===================================================================== -->
+
+    <!-- Goal summary card (AUI-4.1) -->
+    <string name="aui_goals_ring_content_description">%1$s, %2$d प्रतिशत पूर्ण</string>
+    <string name="aui_goals_empty">आपने अभी तक कोई लक्ष्य नहीं बनाया है। शुरू करने के लिए प्लस बटन पर टैप करें।</string>
+
+    <!-- Streak dot-matrix + roadmap status row (AUI-4.2) -->
+    <string name="aui_goals_streak_content_description">लय: %2$d में से %1$d दिन पूरे हुए</string>
+
+    <!-- Quick-create FAB (AUI-4.3) -->
+    <string name="aui_goals_quick_create_content_description">त्वरित बनाएँ</string>
+
+    <!-- ===================================================================== -->
+    <!-- Analytics & Efficiency screen (android-ui-upgrade, AUI-6)              -->
+    <!-- ===================================================================== -->
+
+    <!-- Screen title -->
+    <string name="aui_analytics_screen_title">विश्लेषण और दक्षता</string>
+
+    <!-- Date-range segmented filter (AUI-6.1) -->
+    <string name="aui_analytics_range_last_7">पिछले 7 दिन</string>
+    <string name="aui_analytics_range_last_30">पिछले 30 दिन</string>
+    <string name="aui_analytics_range_last_90">पिछले 90 दिन</string>
+
+    <!-- Offline / partial-data warning banner (AUI-6.2) -->
+    <string name="aui_analytics_offline_banner_title">कुछ डेटा ऑफ़लाइन उपलब्ध नहीं है</string>
+    <string name="aui_analytics_offline_banner_body">आप ऑफ़लाइन हैं या इस अवधि का डेटा अधूरा है। फिर से कनेक्ट होने पर पूरा इतिहास वापस आ जाएगा।</string>
+    <string name="aui_analytics_offline_banner_content_description">चेतावनी: कुछ विश्लेषण डेटा ऑफ़लाइन उपलब्ध नहीं है और फिर से कनेक्ट होने पर वापस आएगा।</string>
+
+    <!-- Summary metric grid (AUI-6.3) -->
+    <string name="aui_analytics_summary_header">सारांश</string>
+    <string name="aui_analytics_summary_average">औसत</string>
+    <string name="aui_analytics_summary_highest">सर्वाधिक</string>
+    <string name="aui_analytics_summary_lowest">न्यूनतम</string>
+    <string name="aui_analytics_summary_days_tracked">ट्रैक किए गए दिन</string>
+    <string name="aui_analytics_metric_percent">%1$d%%</string>
+
+    <!-- Daily-scores bar chart + legend (AUI-6.4) -->
+    <string name="aui_analytics_daily_scores_header">दैनिक स्कोर</string>
+    <string name="aui_analytics_daily_scores_empty">इस अवधि के लिए अभी तक कोई दैनिक स्कोर नहीं।</string>
+    <string name="aui_analytics_bar_content_description">%1$s: %2$d प्रतिशत, %3$s</string>
+    <string name="aui_analytics_chart_content_description">दैनिक दक्षता स्कोर बार चार्ट</string>
+    <string name="aui_analytics_legend_content_description">चार्ट लीजेंड</string>
+    <string name="aui_analytics_legend_productive">उपयोगी</string>
+    <string name="aui_analytics_legend_distracting">ध्यान भटकाने वाला</string>
+    <string name="aui_analytics_legend_no_data">कोई डेटा नहीं</string>
+
+    <!-- Category usage bars (AUI-6.5) -->
+    <string name="aui_analytics_usage_header">श्रेणी विवरण</string>
+    <string name="aui_analytics_usage_empty">इस अवधि के लिए अभी तक कोई श्रेणी उपयोग नहीं।</string>
+
+    <!-- ===================================================================== -->
+    <!-- Goal Detail & 30-Day Roadmap (GoalDetailScreen.kt) — AUI-5            -->
+    <!-- ===================================================================== -->
+
+    <!-- Top app bar (AUI-5.1) -->
+    <string name="aui_goal_detail_back_content_description">पीछे</string>
+    <string name="aui_goal_detail_edit_content_description">लक्ष्य संपादित करें</string>
+    <string name="aui_goal_detail_delete_content_description">लक्ष्य हटाएँ</string>
+
+    <!-- Category + keyword chips (AUI-5.2) -->
+    <string name="aui_goal_detail_keywords_header">श्रेणी और कीवर्ड</string>
+
+    <!-- Checklist (AUI-5.3, AUI-5.4) -->
+    <string name="aui_goal_detail_checklist_header">कार्य चेकलिस्ट</string>
+    <string name="aui_goal_detail_checklist_empty">अभी तक कोई चेकलिस्ट आइटम नहीं। नीचे अपना पहला जोड़ें।</string>
+    <string name="aui_goal_detail_checklist_delete_content_description">%1$s हटाएँ</string>
+    <string name="aui_goal_detail_add_item_placeholder">चेकलिस्ट आइटम जोड़ें</string>
+    <string name="aui_goal_detail_add_item_content_description">चेकलिस्ट आइटम जोड़ें</string>
+
+    <!-- Habit_Track progress card (AUI-5.5) -->
+    <string name="aui_goal_detail_roadmap_header">30-दिन का रोडमैप</string>
+    <string name="aui_goal_detail_roadmap_active_badge">सक्रिय</string>
+    <string name="aui_goal_detail_roadmap_progress_content_description">%1$s: %2$s</string>
+
+    <!-- Settings & Profile screen (AUI-7) -->
+    <string name="aui_settings_screen_title">सेटिंग्स</string>
+    <string name="aui_settings_profile_header">प्रोफ़ाइल</string>
+    <string name="aui_settings_avatar_content_description">प्रोफ़ाइल फोटो</string>
+    <string name="aui_settings_upload_photo">फोटो अपलोड करें</string>
+    <string name="aui_settings_upload_photo_hint">JPEG या PNG, 5MB तक</string>
+    <string name="aui_settings_full_name_label">पूरा नाम</string>
+    <string name="aui_settings_display_name_label">प्रदर्शन नाम</string>
+    <string name="aui_settings_save_display_name">सहेजें</string>
+    <string name="aui_settings_manage_limits_title">ऐप सीमाएँ प्रबंधित करें</string>
+    <string name="aui_settings_manage_limits_subtitle">ध्यान भटकाने वाले ऐप्स के लिए दैनिक आवंटन और इंटरसेप्शन नियम निर्धारित करें।</string>
+    <string name="aui_settings_manage_limits_content_description">ऐप सीमाएँ प्रबंधित करें। ऐप सीमाएँ और नियम खोलता है।</string>
+    <string name="aui_settings_accent_header">एक्सेंट थीम</string>
+    <string name="aui_settings_accent_active_label">सक्रिय थीम: %1$s</string>
+    <string name="aui_settings_accent_swatch_content_description">%1$s एक्सेंट</string>
+    <string name="aui_settings_security_header">सुरक्षा</string>
+    <string name="aui_settings_security_keycloak_note">पासवर्ड परिवर्तन Keycloak के माध्यम से सुरक्षित रूप से प्रबंधित किए जाते हैं। जारी रखने के लिए नीचे अपना विवरण दर्ज करें।</string>
+    <string name="aui_settings_password_current_label">वर्तमान पासवर्ड</string>
+    <string name="aui_settings_password_new_label">नया पासवर्ड</string>
+    <string name="aui_settings_password_confirm_label">नया पासवर्ड की पुष्टि करें</string>
+    <string name="aui_settings_change_password">पासवर्ड बदलें</string>
 </resources>

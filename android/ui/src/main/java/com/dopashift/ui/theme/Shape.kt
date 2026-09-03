@@ -64,3 +64,34 @@ internal fun dopaShiftShapes(tokens: ShapeTokens = ShapeTokens()): Shapes = Shap
     large = RoundedCornerShape(tokens.extraLarge),
     extraLarge = RoundedCornerShape(tokens.extraLarge),
 )
+
+/**
+ * Material 3 [Shapes] for the DopaShift Kinetic system, sourced *exclusively* from
+ * [DopaShiftTokens.Radii] (spec `android-ui-upgrade`, AUI-8.1 / AUI-8.2). Slot assignment follows
+ * the design's shape contract — 16dp cards, 12–14dp interactive controls, and full pills:
+ *
+ *  - [Shapes.extraSmall] = `Radii.small` (4dp) — compact intra-component rounding.
+ *  - [Shapes.small]      = `Radii.control` (12dp) — interactive controls (segmented pills, inputs,
+ *    list rows), the lower bound of the 12–14dp control range.
+ *  - [Shapes.medium]     = `Radii.card` (16dp) — cards & structural surfaces (`KineticCard`).
+ *  - [Shapes.large]      = `Radii.large` (24dp) — large containers / sheets.
+ *  - [Shapes.extraLarge] = `Radii.large` (24dp) — the largest structural surfaces.
+ *
+ * The 14dp button radius (`Radii.button`) and the full-pill radius (`Radii.pill`) sit outside the
+ * five M3 slots and are exposed directly as [DopaShiftButtonShape] and [DopaShiftPillShape] for the
+ * components that need them (buttons, chips, segmented pills). No raw `dp` literal appears here —
+ * every radius is read from the token object.
+ */
+val DopaShiftShapes: Shapes = Shapes(
+    extraSmall = RoundedCornerShape(DopaShiftTokens.Radii.small),
+    small = RoundedCornerShape(DopaShiftTokens.Radii.control),
+    medium = RoundedCornerShape(DopaShiftTokens.Radii.card),
+    large = RoundedCornerShape(DopaShiftTokens.Radii.large),
+    extraLarge = RoundedCornerShape(DopaShiftTokens.Radii.large),
+)
+
+/** 14dp control radius for primary/secondary buttons (`Radii.button`, AUI-8.2). */
+val DopaShiftButtonShape: RoundedCornerShape = RoundedCornerShape(DopaShiftTokens.Radii.button)
+
+/** Full-pill radius (`Radii.pill`) for status chips, category pills, and segmented pickers. */
+val DopaShiftPillShape: RoundedCornerShape = RoundedCornerShape(DopaShiftTokens.Radii.pill)

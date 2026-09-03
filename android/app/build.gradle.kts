@@ -88,6 +88,9 @@ dependencies {
     implementation(libs.core.ktx)
     implementation(libs.activity.compose)
     implementation(libs.lifecycle.runtime.ktx)
+    // collectAsStateWithLifecycle for the Kinetic nav-host bridges (task 11.1)
+    implementation(libs.lifecycle.runtime.compose)
+    implementation(libs.lifecycle.viewmodel.compose)
 
     // Compose
     implementation(platform(libs.compose.bom))

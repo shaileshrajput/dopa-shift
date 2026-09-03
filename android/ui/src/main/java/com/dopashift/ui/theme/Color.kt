@@ -193,6 +193,52 @@ internal val DopaShiftLightColorScheme = androidx.compose.material3.lightColorSc
 )
 
 /**
+ * DopaShift Kinetic dark [androidx.compose.material3.ColorScheme] built *entirely* from
+ * [DopaShiftTokens.Colors] (spec `android-ui-upgrade`, AUI-8.1 / AUI-8.2). This is the
+ * token-authoritative dark base the seven upgraded screens render against: the deep-slate canvas
+ * and surface tiers, the Productive Blue primary, the Momentum Teal reward accent (mapped to the
+ * `secondary`/`tertiary` roles so the Settings accent picker can re-tint them app-wide, AUI-7.4),
+ * the hairline `surfaceBorder` outline, and the Danger Coral error role.
+ *
+ * Only token references appear here — the raw `Color(0x...)` primitives live once in
+ * `DopaShiftTokens.kt`. Replaces the earlier hand-tuned dark brand palette as the dark base used by
+ * [kineticScheme] so every screen sourced from the tokens stays consistent (AUI-8.1).
+ */
+internal val DopaShiftKineticDarkColorScheme = androidx.compose.material3.darkColorScheme(
+    primary = DopaShiftTokens.Colors.primaryBlue,
+    onPrimary = DopaShiftTokens.Colors.onPrimaryBlue,
+    primaryContainer = DopaShiftTokens.Colors.primaryBlue,
+    onPrimaryContainer = DopaShiftTokens.Colors.textPrimary,
+    inversePrimary = DopaShiftTokens.Colors.clarityCyan,
+    secondary = DopaShiftTokens.Colors.momentumTeal,
+    onSecondary = DopaShiftTokens.Colors.onMomentumTeal,
+    secondaryContainer = DopaShiftTokens.Colors.momentumTealContainer,
+    onSecondaryContainer = DopaShiftTokens.Colors.momentumTeal,
+    tertiary = DopaShiftTokens.Colors.momentumTeal,
+    onTertiary = DopaShiftTokens.Colors.onMomentumTeal,
+    tertiaryContainer = DopaShiftTokens.Colors.momentumTealContainer,
+    onTertiaryContainer = DopaShiftTokens.Colors.momentumTeal,
+    error = DopaShiftTokens.Colors.dangerCoral,
+    onError = DopaShiftTokens.Colors.textPrimary,
+    errorContainer = DopaShiftTokens.Colors.dangerCoral,
+    onErrorContainer = DopaShiftTokens.Colors.textPrimary,
+    background = DopaShiftTokens.Colors.background,
+    onBackground = DopaShiftTokens.Colors.textPrimary,
+    surface = DopaShiftTokens.Colors.surface,
+    onSurface = DopaShiftTokens.Colors.textPrimary,
+    surfaceVariant = DopaShiftTokens.Colors.surfaceElevated,
+    onSurfaceVariant = DopaShiftTokens.Colors.textSecondary,
+    outline = DopaShiftTokens.Colors.surfaceBorder,
+    outlineVariant = DopaShiftTokens.Colors.surfaceBorder,
+    surfaceTint = DopaShiftTokens.Colors.primaryBlue,
+    surfaceContainerLowest = DopaShiftTokens.Colors.background,
+    surfaceContainerLow = DopaShiftTokens.Colors.surface,
+    surfaceContainer = DopaShiftTokens.Colors.surface,
+    surfaceContainerHigh = DopaShiftTokens.Colors.surfaceElevated,
+    surfaceContainerHighest = DopaShiftTokens.Colors.surfaceElevated,
+)
+
+/**
  * Extended DopaShift color tokens not covered by the M3 ColorScheme.
  * Access via [DopaShiftTheme.colors].
  */

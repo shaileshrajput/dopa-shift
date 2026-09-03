@@ -120,9 +120,12 @@ class DopaShiftThemeUiTest {
 
     @Test
     fun typography_mapsJetBrainsMonoToLabel() {
+        // AUI-8.4 decision: label roles use Inter; only metric/badge readouts use
+        // JetBrains Mono. `labelLarge` is a text label (Inter), while `labelMedium`
+        // and `labelSmall` carry the metric/badge readouts (JetBrains Mono).
         assertEquals(
-            "labelLarge must use JetBrains Mono",
-            JetBrainsMonoFamily,
+            "labelLarge must use Inter",
+            InterFamily,
             DopaShiftTypography.labelLarge.fontFamily,
         )
         assertEquals(
@@ -154,7 +157,8 @@ class DopaShiftThemeUiTest {
         composeRule.onNodeWithText("themed").assertExists()
         assertEquals(HankenGroteskFamily, displayFamily)
         assertEquals(InterFamily, bodyFamily)
-        assertEquals(JetBrainsMonoFamily, labelFamily)
+        // AUI-8.4: labelLarge is a text label and uses Inter (not JetBrains Mono).
+        assertEquals("labelLarge must use Inter", InterFamily, labelFamily)
     }
 
     // --- Shape slot mapping (DUX-4.4) --------------------------------------

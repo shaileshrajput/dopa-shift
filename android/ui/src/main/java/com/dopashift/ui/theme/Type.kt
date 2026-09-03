@@ -1,19 +1,24 @@
 package com.dopashift.ui.theme
 
 import androidx.compose.material3.Typography
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.googlefonts.Font
 import androidx.compose.ui.text.googlefonts.GoogleFont
-import androidx.compose.ui.unit.sp
 
 /**
  * DopaShift Kinetic Design System — Typography
  *
- * - Hanken Grotesk (Headlines): Sharp, professional grotesque for scores and goal titles
- * - Inter (Body): Gold standard for UI legibility, used for descriptions and task lists
- * - JetBrains Mono (Labels/Metadata): Precision feel for timestamps, metrics, and logs
+ * - Hanken Grotesk (display/headline/title): Sharp, professional grotesque for scores and goal titles
+ * - Inter (body/label): Gold standard for UI legibility, used for descriptions and task lists
+ * - JetBrains Mono (metric/counter/badge): Precision feel for timestamps, metrics, and logs
+ *
+ * The three families below are the bundled font resources for the app (registered here via the
+ * downloadable Google Fonts provider, the project's font-registration mechanism — see
+ * `font_certs.xml`). [DopaShiftTokens.TextRoles] builds its named [androidx.compose.ui.text.TextStyle]
+ * roles over these same families, and [DopaShiftTypography] maps those token roles onto the Material 3
+ * [Typography] slots so screens read type by M3 slot without inlining raw size/weight literals
+ * (AUI-8.1, AUI-8.4).
  */
 
 private val googleFontProvider = GoogleFont.Provider(
@@ -47,119 +52,41 @@ val JetBrainsMonoFamily = FontFamily(
 
 // === M3 Typography Scale ===
 
+/**
+ * Material 3 [Typography] for the DopaShift Kinetic system, assembled *entirely* from the named
+ * roles in [DopaShiftTokens.TextRoles] — no size / weight / line-height / letter-spacing literals
+ * live here (those are defined once in the token file, AUI-8.1).
+ *
+ * Slot assignment follows the design's role-to-family contract (AUI-8.4):
+ *  - **display / headline / title** slots → Hanken Grotesk roles (`displayLarge`, `headlineLarge`,
+ *    `headlineMedium`, `titleMedium`).
+ *  - **body / label** slots → Inter roles (`bodyLarge`, `bodyMedium`, `bodySmall`, `labelLarge`).
+ *  - **metric / badge readouts** → JetBrains Mono roles (`metricDisplay`, `metricCounter`,
+ *    `labelMono`), surfaced through the `label*` slots so numeric UI reads in the monospace family
+ *    and avoids layout jitter as values tick.
+ *
+ * The token set names 13 roles against 15 M3 slots; slots without a distinct token role reuse the
+ * closest-scale role so the whole M3 scale resolves to DopaShift type.
+ */
 val DopaShiftTypography = Typography(
-    // Display Large — Hanken Grotesk 57sp Bold
-    displayLarge = TextStyle(
-        fontFamily = HankenGroteskFamily,
-        fontWeight = FontWeight.Bold,
-        fontSize = 57.sp,
-        lineHeight = 64.sp,
-        letterSpacing = (-0.25).sp,
-    ),
-    // Display Medium — Hanken Grotesk 45sp Bold
-    displayMedium = TextStyle(
-        fontFamily = HankenGroteskFamily,
-        fontWeight = FontWeight.Bold,
-        fontSize = 45.sp,
-        lineHeight = 52.sp,
-    ),
-    // Display Small — Hanken Grotesk 36sp SemiBold
-    displaySmall = TextStyle(
-        fontFamily = HankenGroteskFamily,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 36.sp,
-        lineHeight = 44.sp,
-    ),
-    // Headline Large — Hanken Grotesk 32sp SemiBold
-    headlineLarge = TextStyle(
-        fontFamily = HankenGroteskFamily,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 32.sp,
-        lineHeight = 40.sp,
-    ),
-    // Headline Medium — Hanken Grotesk 28sp SemiBold
-    headlineMedium = TextStyle(
-        fontFamily = HankenGroteskFamily,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 28.sp,
-        lineHeight = 36.sp,
-    ),
-    // Headline Small — Hanken Grotesk 24sp SemiBold
-    headlineSmall = TextStyle(
-        fontFamily = HankenGroteskFamily,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 24.sp,
-        lineHeight = 32.sp,
-    ),
-    // Title Large — Hanken Grotesk 22sp Medium
-    titleLarge = TextStyle(
-        fontFamily = HankenGroteskFamily,
-        fontWeight = FontWeight.Medium,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
-    ),
-    // Title Medium — Inter 16sp Medium
-    titleMedium = TextStyle(
-        fontFamily = InterFamily,
-        fontWeight = FontWeight.Medium,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.15.sp,
-    ),
-    // Title Small — Inter 14sp Medium
-    titleSmall = TextStyle(
-        fontFamily = InterFamily,
-        fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
-        letterSpacing = 0.1.sp,
-    ),
-    // Body Large — Inter 16sp Regular
-    bodyLarge = TextStyle(
-        fontFamily = InterFamily,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp,
-    ),
-    // Body Medium — Inter 14sp Regular
-    bodyMedium = TextStyle(
-        fontFamily = InterFamily,
-        fontWeight = FontWeight.Normal,
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
-        letterSpacing = 0.25.sp,
-    ),
-    // Body Small — Inter 12sp Regular
-    bodySmall = TextStyle(
-        fontFamily = InterFamily,
-        fontWeight = FontWeight.Normal,
-        fontSize = 12.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.4.sp,
-    ),
-    // Label Large — JetBrains Mono 14sp Medium
-    labelLarge = TextStyle(
-        fontFamily = JetBrainsMonoFamily,
-        fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
-        letterSpacing = 0.1.sp,
-    ),
-    // Label Medium — JetBrains Mono 12sp Medium
-    labelMedium = TextStyle(
-        fontFamily = JetBrainsMonoFamily,
-        fontWeight = FontWeight.Medium,
-        fontSize = 12.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp,
-    ),
-    // Label Small — JetBrains Mono 11sp Medium
-    labelSmall = TextStyle(
-        fontFamily = JetBrainsMonoFamily,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp,
-    ),
+    // Display — Hanken Grotesk (display roles)
+    displayLarge = DopaShiftTokens.TextRoles.displayLarge,
+    displayMedium = DopaShiftTokens.TextRoles.displayLargeMobile,
+    displaySmall = DopaShiftTokens.TextRoles.headlineLarge,
+    // Headline — Hanken Grotesk (headline roles)
+    headlineLarge = DopaShiftTokens.TextRoles.headlineLarge,
+    headlineMedium = DopaShiftTokens.TextRoles.headlineMedium,
+    headlineSmall = DopaShiftTokens.TextRoles.headlineMedium,
+    // Title — Hanken Grotesk (title role)
+    titleLarge = DopaShiftTokens.TextRoles.headlineMedium,
+    titleMedium = DopaShiftTokens.TextRoles.titleMedium,
+    titleSmall = DopaShiftTokens.TextRoles.titleMedium,
+    // Body — Inter (body roles)
+    bodyLarge = DopaShiftTokens.TextRoles.bodyLarge,
+    bodyMedium = DopaShiftTokens.TextRoles.bodyMedium,
+    bodySmall = DopaShiftTokens.TextRoles.bodySmall,
+    // Label — Inter (label) + JetBrains Mono (metric/badge readout)
+    labelLarge = DopaShiftTokens.TextRoles.labelLarge,
+    labelMedium = DopaShiftTokens.TextRoles.metricCounter,
+    labelSmall = DopaShiftTokens.TextRoles.labelMono,
 )

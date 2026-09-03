@@ -173,6 +173,12 @@
     <string name="permission_overlay_unavailable">या डिव्हाइसवर ओव्हरले इंटरसेप्शन उपलब्ध नाही.</string>
     <string name="permission_revoked">इंटरसेप्शन अक्षम आहे. आवश्यक परवानग्या रद्द केल्या गेल्या आहेत.</string>
 
+    <!-- Required-permissions gate dialog -->
+    <string name="permission_gate_title">परवानग्या आवश्यक</string>
+    <string name="permission_gate_message">DopaShift ला स्क्रीन वेळेचे निरीक्षण करण्यासाठी आणि इंटरसेप्शन ओव्हरले दाखवण्यासाठी खालील परवानग्या आवश्यक आहेत. प्रत्येकासाठी सेटिंग्ज उघडण्यासाठी द्या वर टॅप करा.</string>
+    <string name="permission_gate_usage_granted">वापर ऍक्सेस दिला</string>
+    <string name="permission_gate_overlay_granted">ओव्हरले ऍक्सेस दिला</string>
+
     <!-- Error Messages -->
     <string name="error_generic">काहीतरी चूक झाली. कृपया पुन्हा प्रयत्न करा.</string>
     <string name="error_network">नेटवर्क त्रुटी. कृपया तुमचे कनेक्शन तपासा.</string>
