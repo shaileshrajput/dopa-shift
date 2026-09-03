@@ -53,14 +53,30 @@ data class SubmitEfficiencyScoreRequest(
 
 /**
  * Aggregated dashboard summary returned by GET /v1/dashboard/summary.
- * Requirements: 20.1, 20.2, 20.12
+ *
+ * The [activeGoalCount], [todayTodoCount], and [activeHabitCount] fields provide the
+ * per-entity-type counts required to distinguish Zero_State (all three zero) from
+ * Partial_State in a single response (DQC-5.3, Backend Delta 2). Note [todayTodoCount]
+ * is the TOTAL number of to-dos for today in the user's time zone — distinct from
+ * [pendingTodosCount], which counts only incomplete items — because a day of only
+ * completed to-dos is not Zero_State.
+ *
+ * The remaining fields ([pendingTodosCount], [activeGoalsCount], [activeHabitsCount],
+ * [todayEfficiencyScore], [efficiencyTrend]) are retained for existing consumers
+ * (parent Requirement 20); the additions are non-breaking.
+ *
+ * Requirements: 20.1, 20.2, 20.12, 5.3
  */
 data class DashboardSummaryResponse(
     val pendingTodosCount: Int,
     val activeGoalsCount: Int,
     val activeHabitsCount: Int,
     val todayEfficiencyScore: Int?,
-    val efficiencyTrend: EfficiencyTrend
+    val efficiencyTrend: EfficiencyTrend,
+    // DQC-5.3 per-entity-type counts sufficient to distinguish Zero_State from Partial_State.
+    val activeGoalCount: Int,
+    val todayTodoCount: Int,
+    val activeHabitCount: Int
 )
 
 /**

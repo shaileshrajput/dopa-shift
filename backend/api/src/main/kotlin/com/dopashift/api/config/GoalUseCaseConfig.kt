@@ -1,10 +1,12 @@
 package com.dopashift.api.config
 
+import com.dopashift.domain.port.TransactionRunner
 import com.dopashift.domain.repository.GoalChecklistItemRepository
 import com.dopashift.domain.repository.GoalRepository
 import com.dopashift.domain.repository.HabitTrackRepository
 import com.dopashift.domain.repository.InterceptionRuleRepository
 import com.dopashift.domain.usecase.goal.CreateGoalUseCase
+import com.dopashift.domain.usecase.goal.CreateGoalWithHabitUseCase
 import com.dopashift.domain.usecase.goal.DeleteGoalUseCase
 import com.dopashift.domain.usecase.goal.UpdateGoalUseCase
 import org.springframework.context.annotation.Bean
@@ -20,6 +22,19 @@ class GoalUseCaseConfig {
     @Bean
     fun createGoalUseCase(goalRepository: GoalRepository): CreateGoalUseCase {
         return CreateGoalUseCase(goalRepository)
+    }
+
+    @Bean
+    fun createGoalWithHabitUseCase(
+        goalRepository: GoalRepository,
+        habitTrackRepository: HabitTrackRepository,
+        transactionRunner: TransactionRunner
+    ): CreateGoalWithHabitUseCase {
+        return CreateGoalWithHabitUseCase(
+            goalRepository = goalRepository,
+            habitTrackRepository = habitTrackRepository,
+            transactionRunner = transactionRunner
+        )
     }
 
     @Bean

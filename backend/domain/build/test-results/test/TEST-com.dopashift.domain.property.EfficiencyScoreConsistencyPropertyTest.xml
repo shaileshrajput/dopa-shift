@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.dopashift.domain.property.EfficiencyScoreConsistencyPropertyTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-08-23T11:01:56" hostname="SHAILESH" time="0.318">
+<testsuite name="com.dopashift.domain.property.EfficiencyScoreConsistencyPropertyTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-09-02T08:40:54" hostname="SHAILESH" time="0.314">
   <properties/>
-  <testcase name="Property 10: Determinism - computing the score twice yields identical results" classname="com.dopashift.domain.property.EfficiencyScoreConsistencyPropertyTest" time="0.021"/>
-  <testcase name="Property 10: Formula verification - if total &gt;= 60 then score = round((productive/total)*100) clamped 0-100" classname="com.dopashift.domain.property.EfficiencyScoreConsistencyPropertyTest" time="0.244"/>
-  <testcase name="Property 10: Insufficient data - if total &lt; 60 then scorePercent is null" classname="com.dopashift.domain.property.EfficiencyScoreConsistencyPropertyTest" time="0.028"/>
-  <testcase name="Property 10: Cross-client consistency - independent instances produce identical scores" classname="com.dopashift.domain.property.EfficiencyScoreConsistencyPropertyTest" time="0.015"/>
+  <testcase name="Property 10: Determinism - computing the score twice yields identical results" classname="com.dopashift.domain.property.EfficiencyScoreConsistencyPropertyTest" time="0.024"/>
+  <testcase name="Property 10: Formula verification - if total &gt;= 60 then score = round((productive/total)*100) clamped 0-100" classname="com.dopashift.domain.property.EfficiencyScoreConsistencyPropertyTest" time="0.251"/>
+  <testcase name="Property 10: Insufficient data - if total &lt; 60 then scorePercent is null" classname="com.dopashift.domain.property.EfficiencyScoreConsistencyPropertyTest" time="0.021"/>
+  <testcase name="Property 10: Cross-client consistency - independent instances produce identical scores" classname="com.dopashift.domain.property.EfficiencyScoreConsistencyPropertyTest" time="0.01"/>
   <system-out><![CDATA[Error reading seed
 Error clearing seed
 Error clearing seed

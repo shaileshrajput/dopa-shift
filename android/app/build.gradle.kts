@@ -31,6 +31,22 @@ android {
                 "proguard-rules.pro"
             )
         }
+        // A release-like, profileable build type the :macrobenchmark module
+        // (task 19.1 — DUX-6.1/DUX-2.2/DUX-6.6) targets. Macrobenchmarks must
+        // run against non-debuggable, R8-optimized code to produce
+        // representative cold-start / frame-timing / power numbers, but the
+        // build must stay signable/installable, so it initializes from the
+        // release config and disables minification-driven obfuscation issues
+        // while remaining profileable.
+        create("benchmark") {
+            initWith(getByName("release"))
+            isMinifyEnabled = true
+            // Signed with debug keys so the benchmark APK is installable on the
+            // reference/emulator device without release signing config.
+            signingConfig = signingConfigs.getByName("debug")
+            matchingFallbacks += listOf("release")
+            isProfileable = true
+        }
     }
 
     compileOptions {

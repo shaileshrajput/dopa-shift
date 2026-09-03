@@ -2,6 +2,7 @@ package com.dopashift.api.contract
 
 import com.dopashift.api.config.AuthenticatedUser
 import com.dopashift.api.config.KeycloakAuthService
+import com.dopashift.application.dashboard.DashboardSummaryQueryService
 import com.dopashift.application.sync.SyncProcessor
 import com.dopashift.domain.port.EncryptionService
 import com.dopashift.domain.port.LlmAdapterFactory
@@ -19,7 +20,7 @@ import com.dopashift.domain.repository.ReminderRepository
 import com.dopashift.domain.repository.UserProfileRepository
 import com.dopashift.domain.usecase.ComputeEfficiencyScoreUseCase
 import com.dopashift.domain.usecase.VideoRecommendationUseCase
-import com.dopashift.domain.usecase.goal.CreateGoalUseCase
+import com.dopashift.domain.usecase.goal.CreateGoalWithHabitUseCase
 import com.dopashift.domain.usecase.goal.DeleteGoalUseCase
 import com.dopashift.domain.usecase.goal.UpdateGoalUseCase
 import com.dopashift.domain.usecase.habit.ActivateHabitTrackUseCase
@@ -88,9 +89,10 @@ class OpenApiContractTest {
     @MockBean private lateinit var userProfileRepository: UserProfileRepository
 
     // --- Use case mocks ---
+    @MockBean private lateinit var dashboardSummaryQueryService: DashboardSummaryQueryService
     @MockBean private lateinit var computeEfficiencyScoreUseCase: ComputeEfficiencyScoreUseCase
     @MockBean private lateinit var videoRecommendationUseCase: VideoRecommendationUseCase
-    @MockBean private lateinit var createGoalUseCase: CreateGoalUseCase
+    @MockBean private lateinit var createGoalWithHabitUseCase: CreateGoalWithHabitUseCase
     @MockBean private lateinit var updateGoalUseCase: UpdateGoalUseCase
     @MockBean private lateinit var deleteGoalUseCase: DeleteGoalUseCase
     @MockBean private lateinit var createTodoUseCase: CreateTodoUseCase

@@ -21,4 +21,16 @@ dependencies {
     // Testing
     testImplementation(libs.junit)
     testImplementation(libs.coroutines.test)
+
+    // Kotest property-based testing (runs on the JUnit 5 platform)
+    testImplementation(libs.kotest.runner.junit5)
+    testImplementation(libs.kotest.property)
+    testImplementation(libs.kotest.assertions.core)
+
+    // Vintage engine so existing JUnit 4 tests keep running on the JUnit Platform
+    testRuntimeOnly(libs.junit.vintage.engine)
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }

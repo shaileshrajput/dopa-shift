@@ -220,6 +220,62 @@ jobs:
         working-directory: android
         run: ./gradlew build testDebugUnitTest
 
+      # -----------------------------------------------------------------------
+      # dynamic-ui-experience (DUX) governance gates — task 20.2
+      #
+      # These steps gate the DUX feature explicitly so a regression in the
+      # accessibility / property suite or the design-token governance rule fails
+      # CI (DUX-7.4, DUX-7.5, DUX-7.8). The broad `build testDebugUnitTest` above
+      # already compiles everything; the steps below make the DUX enforcement an
+      # explicit, named gate rather than an incidental side effect.
+      #
+      # Coverage/exclusion checklist: this repo's Android modules do not use
+      # JaCoCo (backend=80% JaCoCo, web=70% Vitest are the coverage gates); the
+      # DUX coverage expectation and the property-based-test exclusion rationale
+      # are documented in and enforced via
+      # .github/dynamic-ui-experience-coverage-checklist.md — every DUX criterion
+      # maps to a tagged test there (DUX-7.1), and the tasks below run those
+      # tests as the enforcement.
+      # -----------------------------------------------------------------------
+      - name: DUX design-token governance gate (DUX-4.1 / DUX-2.1 / DUX-4.11)
+        working-directory: android
+        run: ./gradlew :ui:verifyDesignTokens
+
+      - name: DUX accessibility + property/UI + excluded-pattern suite (DUX-7.4, DUX-2.13, DUX-4.10)
+        working-directory: android
+        run: ./gradlew :domain:test :ui:testDebugUnitTest :data:testDebugUnitTest
+
+      - name: Verify DUX coverage/exclusion checklist is present (DUX-7.1)
+        run: test -f .github/dynamic-ui-experience-coverage-checklist.md
+
+      # -----------------------------------------------------------------------
+      # dashboard-quick-create (DQC) suite gates — task 19.1
+      #
+      # These steps gate the DQC feature explicitly so a regression in any of its
+      # suites fails CI (DQC-7.8): no criterion is marked complete on a red build.
+      # The broad `build testDebugUnitTest` above already compiles everything; the
+      # steps below make the DQC enforcement an explicit, named gate. None use
+      # continue-on-error, so any failing test fails the build.
+      #
+      # BLOCKING criticality — these criteria must never regress:
+      #   DQC-7.2 atomicity (Inline_Goal_Capture rollback / no-orphan — Properties 6, 7)
+      #   DQC-7.7 Change_Log ordering (goal before dependent — Property 8)
+      #   DQC-7.4 undo-deletion (Undo emits a deletion event, not a local rollback — Property 9)
+      #   DQC-7.5 offline-persistence (local write + Change_Log enqueue offline — Property 5)
+      #   DQC-7.6 boundary-value (validators / habit authoring bounds — Properties 2, 3, 4, 10)
+      # -----------------------------------------------------------------------
+      - name: DQC domain property + example suite (Properties 1-20, DQC-7.2/7.4/7.5/7.6/7.7)
+        working-directory: android
+        run: ./gradlew :domain:test
+
+      - name: DQC Compose UI + example + timing suite (DQC-7.3 and non-PBT UI criteria)
+        working-directory: android
+        run: ./gradlew :ui:testDebugUnitTest
+
+      - name: DQC data + sync integration suite (Properties 17-18, DQC-6.6/6.7)
+        working-directory: android
+        run: ./gradlew :data:testDebugUnitTest :sync:testDebugUnitTest
+
       - name: Check coverage gate (70% line coverage)
         working-directory: android
         run: ./gradlew jacocoTestReport

@@ -47,6 +47,8 @@ backend/dependency-check-report.*
 # ========================
 android/.gradle/
 android/**/build/
+android/**/debug/
+android/**/debugUnitTest/
 android/local.properties
 android/.idea/
 android/captures/
@@ -55,6 +57,8 @@ android/.cxx/
 android/*.apk
 android/*.aab
 android/output.json
+android/**/build/classes/kotlin/
+android/**/build/kotlin/
 
 # ========================
 # Web (React / TypeScript / Vite)

@@ -5,9 +5,11 @@ import com.dopashift.api.dto.CreateGoalRequest
 import com.dopashift.api.dto.GoalListResponse
 import com.dopashift.api.dto.GoalResponse
 import com.dopashift.api.dto.UpdateGoalRequest
+import com.dopashift.api.dto.HabitTrackDetailResponse
 import com.dopashift.domain.entity.GoalProfile
-import com.dopashift.domain.usecase.goal.CreateGoalCommand
-import com.dopashift.domain.usecase.goal.CreateGoalUseCase
+import com.dopashift.domain.usecase.goal.CreateGoalWithHabitCommand
+import com.dopashift.domain.usecase.goal.CreateGoalWithHabitUseCase
+import com.dopashift.domain.usecase.goal.NestedHabitTrack
 import com.dopashift.domain.usecase.goal.DeleteGoalAction
 import com.dopashift.domain.usecase.goal.DeleteGoalCommand
 import com.dopashift.domain.usecase.goal.DeleteGoalUseCase
@@ -40,7 +42,7 @@ import java.util.UUID
 @RestController
 @RequestMapping("/v1/goals")
 class GoalController(
-    private val createGoalUseCase: CreateGoalUseCase,
+    private val createGoalWithHabitUseCase: CreateGoalWithHabitUseCase,
     private val updateGoalUseCase: UpdateGoalUseCase,
     private val deleteGoalUseCase: DeleteGoalUseCase,
     private val goalRepository: GoalRepository,
@@ -62,15 +64,24 @@ class GoalController(
     ): ResponseEntity<GoalResponse> {
         val userId = authenticatedUser.getUserId()
 
-        val command = CreateGoalCommand(
+        val command = CreateGoalWithHabitCommand(
             userId = userId,
             name = request.name,
             category = request.category,
-            keywords = request.keywords
+            keywords = request.keywords,
+            habitTrack = request.habitTrack?.let {
+                NestedHabitTrack(
+                    startDate = it.startDate,
+                    descriptions = it.descriptions
+                )
+            }
         )
 
-        val goal = createGoalUseCase.execute(command)
-        return ResponseEntity.status(HttpStatus.CREATED).body(goal.toResponse())
+        val result = createGoalWithHabitUseCase.execute(command)
+        val response = result.goal.toResponse().copy(
+            habitTrack = result.habitTrack?.let { HabitTrackDetailResponse.from(it) }
+        )
+        return ResponseEntity.status(HttpStatus.CREATED).body(response)
     }
 
     /**

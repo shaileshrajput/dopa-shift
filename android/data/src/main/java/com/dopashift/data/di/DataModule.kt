@@ -3,12 +3,17 @@ package com.dopashift.data.di
 import android.content.Context
 import androidx.room.Room
 import com.dopashift.data.local.DopaShiftDatabase
+import com.dopashift.data.local.MIGRATION_1_2
+import com.dopashift.data.local.MIGRATION_2_3
+import com.dopashift.data.local.MIGRATION_3_4
 import com.dopashift.data.local.dao.ChangeLogDao
 import com.dopashift.data.local.dao.DailyTodoDao
+import com.dopashift.data.local.dao.DiagnosticEventDao
 import com.dopashift.data.local.dao.EfficiencyScoreDao
 import com.dopashift.data.local.dao.GoalChecklistDao
 import com.dopashift.data.local.dao.GoalDao
 import com.dopashift.data.local.dao.HabitTrackDao
+import com.dopashift.data.local.dao.InterceptActionAuditDao
 import com.dopashift.data.local.dao.InterceptionRuleDao
 import com.dopashift.data.local.dao.ReminderDao
 import com.dopashift.data.local.dao.SyncStateDao
@@ -31,7 +36,9 @@ object DataModule {
             context,
             DopaShiftDatabase::class.java,
             "dopashift.db"
-        ).build()
+        )
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
+            .build()
     }
 
     @Provides
@@ -63,4 +70,11 @@ object DataModule {
 
     @Provides
     fun provideGoalChecklistDao(db: DopaShiftDatabase): GoalChecklistDao = db.goalChecklistDao()
+
+    @Provides
+    fun provideDiagnosticEventDao(db: DopaShiftDatabase): DiagnosticEventDao = db.diagnosticEventDao()
+
+    @Provides
+    fun provideInterceptActionAuditDao(db: DopaShiftDatabase): InterceptActionAuditDao =
+        db.interceptActionAuditDao()
 }

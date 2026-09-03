@@ -6,6 +6,7 @@ import android.content.Context
 import androidx.core.app.NotificationCompat
 import com.dopashift.domain.entity.DailyTodoItem
 import com.dopashift.domain.repository.DailyTodoRepository
+import com.dopashift.ui.R
 import timber.log.Timber
 import java.time.LocalDate
 import java.util.UUID
@@ -74,8 +75,12 @@ class InterceptionTodoReminderNotifier @Inject constructor(
         triggeringApp: String
     ): android.app.Notification {
         val totalPending = todos.size
-        val title = "You have $totalPending pending task${if (totalPending > 1) "s" else ""}"
-        val summary = "Time's up on your app — tackle these instead"
+        val title = context.resources.getQuantityString(
+            R.plurals.interception_todo_reminder_title,
+            totalPending,
+            totalPending
+        )
+        val summary = context.getString(R.string.interception_todo_reminder_summary)
 
         val inboxStyle = NotificationCompat.InboxStyle()
             .setBigContentTitle(title)

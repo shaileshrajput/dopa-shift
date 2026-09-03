@@ -54,6 +54,12 @@ class HabitTrackRepositoryImpl @Inject constructor(
         return track
     }
 
+    override suspend fun delete(id: UUID) {
+        // Remove the checkpoints first, then the track, so no orphan checkpoints remain.
+        habitTrackDao.deleteCheckpointsForTrack(id.toString())
+        habitTrackDao.deleteTrack(id.toString())
+    }
+
     override fun observeActiveByUserId(userId: UUID): Flow<List<HabitTrack>> {
         return habitTrackDao.observeActiveByUserId(userId.toString())
             .map { locals ->

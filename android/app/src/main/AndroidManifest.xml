@@ -5,6 +5,21 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <!--
+        Package visibility (Android 11+ / API 30+): without this <queries> block,
+        PackageManager.queryIntentActivities returns only a filtered subset of
+        installed apps, so common apps (YouTube, Gmail, etc.) go missing from the
+        Rule_Authoring_Screen ("Manage app limits"). Declaring the launcher
+        intent makes all launchable apps visible, which is exactly the candidate
+        set InstalledAppsProvider enumerates for screen-time interception.
+    -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+    </queries>
+
     <application
         android:name=".DopaShiftApplication"
         android:allowBackup="true"

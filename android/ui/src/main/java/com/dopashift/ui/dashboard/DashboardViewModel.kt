@@ -8,19 +8,27 @@ import com.dopashift.domain.entity.DailyTodoItem
 import com.dopashift.domain.entity.EfficiencyScore
 import com.dopashift.domain.entity.GoalChecklistItem
 import com.dopashift.domain.entity.GoalProfile
-import com.dopashift.domain.entity.HabitCheckpoint
 import com.dopashift.domain.entity.HabitTrack
+import com.dopashift.domain.presentation.DashboardSectionInput
+import com.dopashift.domain.presentation.DashboardSectionOrderer
+import com.dopashift.domain.presentation.DashboardSectionType
+import com.dopashift.domain.presentation.OrderedSection
 import com.dopashift.domain.repository.ChangeLogRepository
 import com.dopashift.domain.repository.DailyTodoRepository
 import com.dopashift.domain.repository.EfficiencyScoreRepository
 import com.dopashift.domain.repository.GoalChecklistItemRepository
 import com.dopashift.domain.repository.GoalRepository
 import com.dopashift.domain.repository.HabitTrackRepository
+import com.dopashift.domain.repository.SyncStatusProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -30,70 +38,23 @@ import java.util.UUID
 import javax.inject.Inject
 
 /**
- * Represents the trend direction for the efficiency score.
- * Requirement 20.3: improving, declining, or stable.
- */
-enum class EfficiencyTrend {
-    IMPROVING, DECLINING, STABLE, NOT_ENOUGH_DATA
-}
-
-/**
- * Progress summary for a single goal, showing completed vs total checklist items.
- * Requirement 20.2c: number of completed vs. total GoalChecklistItems per active goal.
- */
-data class GoalProgressSummary(
-    val goal: GoalProfile,
-    val completedItems: Int,
-    val totalItems: Int,
-    val streakDays: Int = 0
-) {
-    val progressPercent: Int
-        get() = if (totalItems == 0) 0 else ((completedItems.toFloat() / totalItems) * 100).toInt()
-}
-
-/**
- * A single entry in the activity feed.
- * Requirement 20.6: action type, entity name, and relative timestamp.
- */
-data class ActivityFeedEntry(
-    val id: UUID,
-    val actionType: String,
-    val entityName: String,
-    val timestamp: Instant
-)
-
-/**
- * UI state aggregating all dashboard-relevant data.
- * Each field is populated reactively from Room via Flow.
- */
-data class DashboardUiState(
-    val goals: List<GoalProfile> = emptyList(),
-    val todayTodos: List<DailyTodoItem> = emptyList(),
-    val activeHabitTracks: List<HabitTrack> = emptyList(),
-    val goalProgressSummaries: List<GoalProgressSummary> = emptyList(),
-    val todayScore: Int? = null,
-    val efficiencyTrend: EfficiencyTrend = EfficiencyTrend.NOT_ENOUGH_DATA,
-    val previousDayScore: Int? = null,
-    val activityFeed: List<ActivityFeedEntry> = emptyList(),
-    val activityFeedHasMore: Boolean = false,
-    val pendingTodoCount: Int = 0,
-    val completedHabitCount: Int = 0,
-    val pendingHabitCount: Int = 0,
-    val missedHabitCount: Int = 0,
-    val isLoading: Boolean = true,
-    val isEmpty: Boolean = false
-)
-
-/**
- * ViewModel for the Dashboard screen.
+ * ViewModel for the Dashboard screen (DUX-3).
  *
- * Aggregates multiple reactive Room-backed data sources into a single
- * [DashboardUiState] using [combine]. When any underlying table changes,
- * Room's invalidation tracker triggers a re-emission, the combine operator
- * rebuilds the state, and the UI recomposes automatically.
+ * Renders strictly from the local store: it subscribes only to local repository [Flow]s
+ * (Room-backed) and never performs a network request on the synchronous render path
+ * (DUX-3 AC10). Section ordering is delegated to the pure, deterministic
+ * [DashboardSectionOrderer.order] in `domain` (DUX-3 AC1, AC2). Because Room re-emits on
+ * any relevant change, an affected section updates well within the 2-second budget without
+ * polling (DUX-3 AC4).
  *
- * No polling is required — Room provides sub-second propagation, well
- * within the 2-second requirement defined in Requirement 14.4 / 20.7.
+ * State is split into two reactive streams so the ordering contract stays small:
+ *  - [uiState] — the sealed [DashboardUiState] (skeleton [DashboardUiState.Loading] first,
+ *    then [DashboardUiState.Content] carrying the ordered sections + header/indicators).
+ *  - [sectionData] — the per-section item data the section bodies render.
+ *
+ * One-shot effects (e.g. an optimistic-update revert) are delivered exactly once via
+ * [events]. The optimistic-update + revert transition itself is implemented in task 10.3;
+ * this ViewModel exposes the [events] channel and the [emitEvent] hook it builds on.
  */
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
@@ -102,132 +63,169 @@ class DashboardViewModel @Inject constructor(
     private val habitTrackRepository: HabitTrackRepository,
     private val efficiencyScoreRepository: EfficiencyScoreRepository,
     private val changeLogRepository: ChangeLogRepository,
-    private val goalChecklistItemRepository: GoalChecklistItemRepository
+    private val goalChecklistItemRepository: GoalChecklistItemRepository,
+    private val syncStatusProvider: SyncStatusProvider
 ) : ViewModel() {
 
-    // TODO: Replace with actual user ID from auth/session layer
+    // TODO: Replace with the authenticated user id from the auth/session layer.
     private val userId: UUID = UUID.fromString("00000000-0000-0000-0000-000000000000")
 
     private val today: LocalDate = LocalDate.now()
     private val activityPageSize = 20
 
     private val _activityPage = MutableStateFlow(0)
+    private val _activityFeedState = MutableStateFlow<List<ActivityFeedEntry>>(emptyList())
+    private val _isRefreshing = MutableStateFlow(false)
+
+    /** Tracks the current activity-feed collection so load-more can replace it cleanly. */
+    private var activityFeedJob: Job? = null
+
+    /** One-shot effects delivered exactly once (consumed as non-blocking snackbars). */
+    private val _events = Channel<UiEvent>(Channel.BUFFERED)
+    val events: Flow<UiEvent> = _events.receiveAsFlow()
 
     /**
-     * Combined UI state from multiple reactive Room queries.
-     *
-     * [combine] merges latest emissions from each Flow: whenever goals,
-     * to-dos, habit tracks, efficiency scores, or activity feed change in
-     * Room, this StateFlow updates and the subscribed Compose UI recomposes.
+     * Per-section item data, combined reactively from local repository Flows. The section
+     * bodies subscribe to this; the ordered-section contract in [uiState] stays independent.
      */
-    val uiState: StateFlow<DashboardUiState> = combine(
+    val sectionData: StateFlow<DashboardSectionData> = combine(
         goalRepository.observeByUserId(userId),
         dailyTodoRepository.observeByUserIdAndDate(userId, today),
         habitTrackRepository.observeActiveByUserId(userId),
-        efficiencyScoreRepository.observeByUserIdAndDateRange(
-            userId,
-            today.minusDays(8),
-            today
-        ),
+        efficiencyScoreRepository.observeByUserIdAndDateRange(userId, today.minusDays(8), today),
         goalChecklistItemRepository.observeByUserId(userId)
     ) { goals, todos, habitTracks, scores, checklistItems ->
-        buildDashboardState(goals, todos, habitTracks, scores, checklistItems)
+        buildSectionData(goals, todos, habitTracks, scores, checklistItems)
+    }.combine(_activityFeedState) { data, feed ->
+        data.copy(
+            activityFeed = feed,
+            // More pages remain when the current page came back completely full (a partial
+            // page means we've reached the end of the change log).
+            activityFeedHasMore = feed.size >= (_activityPage.value + 1) * activityPageSize
+        )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
-        initialValue = DashboardUiState()
+        initialValue = DashboardSectionData()
+    )
+
+    /**
+     * The sealed Dashboard render state. Emits [DashboardUiState.Loading] until the first
+     * local snapshot arrives, then [DashboardUiState.Content] with the deterministically
+     * ordered sections and the header/indicator fields.
+     */
+    val uiState: StateFlow<DashboardUiState> = combine(
+        sectionData,
+        syncStatusProvider.observeSyncPending(),
+        _isRefreshing
+    ) { data, syncPending, refreshing ->
+        DashboardUiState.Content(
+            sections = orderSections(data),
+            efficiencyScore = data.efficiencyScore,
+            isSyncPending = syncPending,
+            isRefreshing = refreshing
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
+        initialValue = DashboardUiState.Loading
     )
 
     init {
-        // Load initial activity feed page
         loadActivityFeed()
     }
 
-    private val _activityFeedState = MutableStateFlow<List<ActivityFeedEntry>>(emptyList())
+    // ---- Section ordering (delegates to the pure domain rule) ------------------------
 
-    private fun buildDashboardState(
+    /**
+     * Maps the current [DashboardSectionData] to the six [DashboardSectionInput] counts and
+     * delegates ordering to the pure [DashboardSectionOrderer.order] (DUX-3 AC1, AC2).
+     */
+    private fun orderSections(data: DashboardSectionData): List<OrderedSection> {
+        val habitCheckpointsDue = data.activeHabitTracks.count { track ->
+            track.checkpoints.any {
+                it.dayNumber == track.currentDay && it.status == CheckpointStatus.PENDING
+            }
+        }
+        val inputs = listOf(
+            DashboardSectionInput(DashboardSectionType.HABIT_CHECKPOINT_DUE, habitCheckpointsDue),
+            DashboardSectionInput(DashboardSectionType.OVERDUE_TODOS, data.overdueTodos.size),
+            DashboardSectionInput(
+                DashboardSectionType.TODAY_TODOS,
+                data.todayTodos.count { !it.isCompleted }
+            ),
+            DashboardSectionInput(DashboardSectionType.ACTIVE_GOALS, data.goalProgressSummaries.size),
+            DashboardSectionInput(
+                DashboardSectionType.EFFICIENCY_TREND,
+                if (data.efficiencyScore != null) 1 else 0
+            ),
+            DashboardSectionInput(DashboardSectionType.ACTIVITY_FEED, data.activityFeed.size)
+        )
+        return DashboardSectionOrderer.order(inputs)
+    }
+
+    // ---- Section data assembly -------------------------------------------------------
+
+    private fun buildSectionData(
         goals: List<GoalProfile>,
         todos: List<DailyTodoItem>,
         habitTracks: List<HabitTrack>,
         scores: List<EfficiencyScore>,
         checklistItems: List<GoalChecklistItem>
-    ): DashboardUiState {
+    ): DashboardSectionData {
         val activeGoals = goals.filter { it.isActive }
+        val now = Instant.now()
 
-        // Req 20.2d: today's efficiency score or "No data"
         val todayScore = scores.find { it.date == today }?.scorePercent
         val previousDayScore = scores.find { it.date == today.minusDays(1) }?.scorePercent
 
-        // Req 20.3: trend — compare current (or most recent) score to average of preceding 7 days
-        val efficiencyTrend = computeTrend(scores)
-
-        // Req 20.2c: goal progress summaries
         val goalProgressSummaries = activeGoals.map { goal ->
             val goalItems = checklistItems.filter { it.goalId == goal.id }
-            val completed = goalItems.count { it.isCompleted }
             GoalProgressSummary(
                 goal = goal,
-                completedItems = completed,
+                completedItems = goalItems.count { it.isCompleted },
                 totalItems = goalItems.size
             )
         }
 
-        // Req 20.2a: pending todo count
-        val pendingTodoCount = todos.count { !it.isCompleted }
+        // (b) overdue vs (c) today's remaining: a to-do is overdue when it has a past due
+        // instant and is not yet completed; everything else incomplete counts as today's.
+        val (overdue, todaysRemaining) = todos
+            .filter { !it.isCompleted }
+            .partition { todo ->
+                val due = todo.dueDateTime
+                due != null && due.isBefore(now)
+            }
 
-        // Req 20.2b: active habit tracks status
-        val allCheckpoints = habitTracks.flatMap { it.checkpoints }
-        val todayCheckpoints = habitTracks.mapNotNull { track ->
-            track.checkpoints.find { it.dayNumber == track.currentDay }
-        }
-        val completedHabitCount = todayCheckpoints.count { it.status == CheckpointStatus.COMPLETED }
-        val pendingHabitCount = todayCheckpoints.count { it.status == CheckpointStatus.PENDING }
-        val missedHabitCount = todayCheckpoints.count { it.status == CheckpointStatus.MISSED }
-
-        // Req 20.11: empty state detection
-        val isEmpty = activeGoals.isEmpty() && todos.isEmpty() && habitTracks.isEmpty()
-
-        return DashboardUiState(
-            goals = activeGoals,
-            todayTodos = todos,
+        return DashboardSectionData(
+            todayTodos = todaysRemaining,
+            overdueTodos = overdue,
             activeHabitTracks = habitTracks,
             goalProgressSummaries = goalProgressSummaries,
-            todayScore = todayScore,
-            efficiencyTrend = efficiencyTrend,
+            efficiencyScore = todayScore,
             previousDayScore = previousDayScore,
-            activityFeed = _activityFeedState.value,
-            activityFeedHasMore = _activityFeedState.value.size >= (_activityPage.value + 1) * activityPageSize,
-            pendingTodoCount = pendingTodoCount,
-            completedHabitCount = completedHabitCount,
-            pendingHabitCount = pendingHabitCount,
-            missedHabitCount = missedHabitCount,
-            isLoading = false,
-            isEmpty = isEmpty
+            efficiencyTrend = computeTrend(scores)
+            // activityFeed / activityFeedHasMore are filled by the outer combine below.
         )
     }
 
     /**
-     * Req 20.3: Compute trend by comparing the current day's score
-     * (or most recent available) against the average of the preceding 7 days.
-     * If fewer than 2 days of data exist, return NOT_ENOUGH_DATA.
+     * Compares the most recent available score against the average of the preceding days;
+     * returns [EfficiencyTrend.NOT_ENOUGH_DATA] when fewer than two days are available.
      */
     private fun computeTrend(scores: List<EfficiencyScore>): EfficiencyTrend {
-        val availableScores = scores.filter { it.scorePercent != null }
-        if (availableScores.size < 2) return EfficiencyTrend.NOT_ENOUGH_DATA
+        val available = scores.filter { it.scorePercent != null }
+        if (available.size < 2) return EfficiencyTrend.NOT_ENOUGH_DATA
 
-        val currentScore = availableScores
-            .sortedByDescending { it.date }
-            .firstOrNull()?.scorePercent ?: return EfficiencyTrend.NOT_ENOUGH_DATA
+        val mostRecent = available.maxByOrNull { it.date } ?: return EfficiencyTrend.NOT_ENOUGH_DATA
+        val current = mostRecent.scorePercent ?: return EfficiencyTrend.NOT_ENOUGH_DATA
 
-        val precedingScores = availableScores
-            .filter { it.date != availableScores.maxByOrNull { s -> s.date }?.date }
+        val preceding = available
+            .filter { it.date != mostRecent.date }
             .mapNotNull { it.scorePercent }
+        if (preceding.isEmpty()) return EfficiencyTrend.NOT_ENOUGH_DATA
 
-        if (precedingScores.isEmpty()) return EfficiencyTrend.NOT_ENOUGH_DATA
-
-        val precedingAverage = precedingScores.average()
-        val diff = currentScore - precedingAverage
-
+        val diff = current - preceding.average()
         return when {
             diff > 2.0 -> EfficiencyTrend.IMPROVING
             diff < -2.0 -> EfficiencyTrend.DECLINING
@@ -235,10 +233,9 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Req 20.14: Quick-add a new DailyTodoItem from the "Today's Focus" inline input.
-     * Writes locally first (offline-first), Room invalidation propagates to UI immediately.
-     */
+    // ---- Quick actions (offline-first: local write, Room re-emits reactively) --------
+
+    /** Quick-add a new to-do from the inline "Today's Focus" input. */
     fun addTodo(text: String) {
         viewModelScope.launch {
             val newTodo = DailyTodoItem(
@@ -255,115 +252,114 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Req 20.4a: Mark a DailyTodoItem as complete directly from the dashboard.
-     * Optimistic UI update within 200ms (Req 20.5).
-     */
-    fun markTodoComplete(todoId: UUID) {
+    /** Toggle a to-do's completion directly from the Dashboard. */
+    fun setTodoCompleted(todoId: UUID, completed: Boolean) {
         viewModelScope.launch {
             val todo = dailyTodoRepository.findById(todoId) ?: return@launch
-            val updated = todo.copy(
-                isCompleted = true,
-                updatedAt = Instant.now()
-            )
-            dailyTodoRepository.save(updated)
+            dailyTodoRepository.save(todo.copy(isCompleted = completed, updatedAt = Instant.now()))
         }
     }
 
-    /**
-     * Req 20.4a: Un-mark a DailyTodoItem (revert completion) from the dashboard.
-     */
-    fun markTodoIncomplete(todoId: UUID) {
-        viewModelScope.launch {
-            val todo = dailyTodoRepository.findById(todoId) ?: return@launch
-            val updated = todo.copy(
-                isCompleted = false,
-                updatedAt = Instant.now()
-            )
-            dailyTodoRepository.save(updated)
-        }
-    }
-
-    /**
-     * Req 20.4b: Check off today's Habit_Track micro-habit from the dashboard.
-     * Optimistic UI update within 200ms (Req 20.5).
-     */
+    /** Check off today's micro-habit checkpoint from the Dashboard. */
     fun completeHabitCheckpoint(trackId: UUID) {
         viewModelScope.launch {
             val track = habitTrackRepository.findById(trackId) ?: return@launch
             val updatedCheckpoints = track.checkpoints.map { checkpoint ->
-                if (checkpoint.dayNumber == track.currentDay && checkpoint.status == CheckpointStatus.PENDING) {
-                    checkpoint.copy(
-                        status = CheckpointStatus.COMPLETED,
-                        completedAt = Instant.now()
-                    )
+                if (checkpoint.dayNumber == track.currentDay &&
+                    checkpoint.status == CheckpointStatus.PENDING
+                ) {
+                    checkpoint.copy(status = CheckpointStatus.COMPLETED, completedAt = Instant.now())
                 } else {
                     checkpoint
                 }
             }
-            // Advance current day pointer to next uncompleted day (Req 6.3)
             val nextDay = updatedCheckpoints
                 .filter { it.dayNumber > track.currentDay && it.status != CheckpointStatus.COMPLETED }
-                .minByOrNull { it.dayNumber }?.dayNumber ?: (track.currentDay + 1).coerceAtMost(30)
-
+                .minByOrNull { it.dayNumber }?.dayNumber
+                ?: (track.currentDay + 1).coerceAtMost(30)
             val isFinished = updatedCheckpoints.all {
                 it.status == CheckpointStatus.COMPLETED || it.status == CheckpointStatus.MISSED
             }
-
-            val updatedTrack = track.copy(
-                currentDay = if (isFinished) track.currentDay else nextDay,
-                isFinished = isFinished,
-                checkpoints = updatedCheckpoints
+            habitTrackRepository.save(
+                track.copy(
+                    currentDay = if (isFinished) track.currentDay else nextDay,
+                    isFinished = isFinished,
+                    checkpoints = updatedCheckpoints
+                )
             )
-            habitTrackRepository.save(updatedTrack)
         }
     }
 
+    // ---- Pull-to-refresh & activity feed ---------------------------------------------
+
     /**
-     * Req 20.10: Load the next page of activity feed entries.
-     * Pages of 20 items.
+     * Marks the refresh indicator active for a pull-to-refresh (DUX-3 AC8). The actual
+     * Sync_Engine pull is wired by the sync integration; this ViewModel only surfaces the
+     * in-flight indicator and clears it via [endRefresh].
      */
+    fun startRefresh() {
+        _isRefreshing.value = true
+    }
+
+    /** Clears the pull-to-refresh indicator once the sync pull completes. */
+    fun endRefresh() {
+        _isRefreshing.value = false
+    }
+
+    /** Load the next page of activity feed entries (pages of 20), on demand. */
     fun loadMoreActivityFeed() {
         _activityPage.update { it + 1 }
         loadActivityFeed()
     }
 
+    /**
+     * Subscribe to the recent activity feed up to and including the current page. Loading is
+     * lazy: only [loadMoreActivityFeed] (a user-driven "load more") advances the page and
+     * widens the window, so no extra rows are fetched until the user asks for them. Each call
+     * cancels the previous subscription so exactly one collector is active at a time.
+     */
     private fun loadActivityFeed() {
-        viewModelScope.launch {
-            changeLogRepository.observeRecent(
-                userId = userId,
-                limit = activityPageSize,
-                offset = 0
-            ).collect { entries ->
-                // Combine with existing pages — for simplicity, refresh full list
-                val allEntries = buildActivityEntries(entries)
-                _activityFeedState.value = allEntries
-            }
+        activityFeedJob?.cancel()
+        activityFeedJob = viewModelScope.launch {
+            val limit = (_activityPage.value + 1) * activityPageSize
+            changeLogRepository.observeRecent(userId = userId, limit = limit, offset = 0)
+                .collect { entries -> _activityFeedState.value = buildActivityEntries(entries) }
         }
     }
 
-    private fun buildActivityEntries(entries: List<ChangeLogEntry>): List<ActivityFeedEntry> {
-        return entries.map { entry ->
+    private fun buildActivityEntries(entries: List<ChangeLogEntry>): List<ActivityFeedEntry> =
+        entries.map { entry ->
             ActivityFeedEntry(
                 id = entry.id,
-                actionType = formatActionType(entry.entityType, entry.field),
+                actionType = classifyActionType(entry.entityType, entry.field),
                 entityName = entry.value ?: entry.entityType,
-                timestamp = entry.timestamp
+                timestamp = entry.timestamp,
+                genericEntityType = entry.entityType,
+                genericField = entry.field,
             )
         }
+
+    /**
+     * Classify a change-log entry into a stable [ActivityActionType]. The human-readable,
+     * localized label is resolved from string resources in the Composable layer (DUX-4.11) — the
+     * ViewModel deliberately emits no user-facing English text here.
+     */
+    private fun classifyActionType(entityType: String, field: String): ActivityActionType = when {
+        entityType == "DailyTodoItem" && field == "isCompleted" -> ActivityActionType.TASK_COMPLETED
+        entityType == "DailyTodoItem" && field == "text" -> ActivityActionType.TASK_UPDATED
+        entityType == "DailyTodoItem" && field == "DELETE" -> ActivityActionType.TASK_DELETED
+        entityType == "GoalChecklistItem" && field == "isCompleted" -> ActivityActionType.GOAL_TASK_COMPLETED
+        entityType == "GoalChecklistItem" -> ActivityActionType.GOAL_TASK_UPDATED
+        entityType == "HabitCheckpoint" && field == "status" -> ActivityActionType.HABIT_COMPLETED
+        entityType == "GoalProfile" && field == "DELETE" -> ActivityActionType.GOAL_DELETED
+        entityType == "GoalProfile" -> ActivityActionType.GOAL_CREATED
+        else -> ActivityActionType.GENERIC
     }
 
-    private fun formatActionType(entityType: String, field: String): String {
-        return when {
-            entityType == "DailyTodoItem" && field == "isCompleted" -> "Task completed"
-            entityType == "DailyTodoItem" && field == "text" -> "Task updated"
-            entityType == "DailyTodoItem" && field == "DELETE" -> "Task deleted"
-            entityType == "GoalChecklistItem" && field == "isCompleted" -> "Goal task completed"
-            entityType == "GoalChecklistItem" -> "Goal task updated"
-            entityType == "HabitCheckpoint" && field == "status" -> "Habit completed"
-            entityType == "GoalProfile" && field == "DELETE" -> "Goal deleted"
-            entityType == "GoalProfile" -> "Goal created"
-            else -> "$entityType $field"
-        }
+    // ---- One-shot effect hooks (used by the optimistic-revert transition, task 10.3) --
+
+    /** Emit a one-shot [UiEvent] (delivered exactly once via [events]). */
+    internal fun emitEvent(event: UiEvent) {
+        viewModelScope.launch { _events.send(event) }
     }
 }

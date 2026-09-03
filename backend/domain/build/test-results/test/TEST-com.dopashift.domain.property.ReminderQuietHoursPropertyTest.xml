@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.dopashift.domain.property.ReminderQuietHoursPropertyTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-08-23T11:01:58" hostname="SHAILESH" time="0.088">
+<testsuite name="com.dopashift.domain.property.ReminderQuietHoursPropertyTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-09-02T08:40:56" hostname="SHAILESH" time="0.063">
   <properties/>
-  <testcase name="Property 11: Reminder during quiet hours is delayed to window end" classname="com.dopashift.domain.property.ReminderQuietHoursPropertyTest" time="0.028"/>
+  <testcase name="Property 11: Reminder during quiet hours is delayed to window end" classname="com.dopashift.domain.property.ReminderQuietHoursPropertyTest" time="0.029"/>
   <testcase name="Property 11: Reminder outside quiet hours fires normally" classname="com.dopashift.domain.property.ReminderQuietHoursPropertyTest" time="0.02"/>
-  <testcase name="Property 11: Delivery time always equals the quiet-hours end time (never fires mid-window)" classname="com.dopashift.domain.property.ReminderQuietHoursPropertyTest" time="0.032"/>
+  <testcase name="Property 11: Delivery time always equals the quiet-hours end time (never fires mid-window)" classname="com.dopashift.domain.property.ReminderQuietHoursPropertyTest" time="0.01"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.dopashift.domain.property.GoalDeletionLeavesNoOrphansPropertyTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-08-23T11:01:57" hostname="SHAILESH" time="0.247">
+<testsuite name="com.dopashift.domain.property.GoalDeletionLeavesNoOrphansPropertyTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-09-02T08:40:55" hostname="SHAILESH" time="0.087">
   <properties/>
-  <testcase name="DELETE_ALL: after deletion, no items reference the deleted goal's ID" classname="com.dopashift.domain.property.GoalDeletionLeavesNoOrphansPropertyTest" time="0.129"/>
-  <testcase name="REASSIGN: after deletion, no items reference the deleted goal's ID and all reference target" classname="com.dopashift.domain.property.GoalDeletionLeavesNoOrphansPropertyTest" time="0.115"/>
+  <testcase name="DELETE_ALL: after deletion, no items reference the deleted goal's ID" classname="com.dopashift.domain.property.GoalDeletionLeavesNoOrphansPropertyTest" time="0.05"/>
+  <testcase name="REASSIGN: after deletion, no items reference the deleted goal's ID and all reference target" classname="com.dopashift.domain.property.GoalDeletionLeavesNoOrphansPropertyTest" time="0.036"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

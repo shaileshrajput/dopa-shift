@@ -1,6 +1,7 @@
 package com.dopashift.ui.onboarding
 
 import android.app.AppOpsManager
+import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -78,6 +79,17 @@ class PermissionSetupViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Checks PACKAGE_USAGE_STATS grant. The AppOps mode is primary, but several OEM ROMs
+     * (notably Vivo Funtouch/OriginOS, Xiaomi MIUI, Oppo ColorOS) return
+     * [AppOpsManager.MODE_DEFAULT] even when Usage Access is toggled ON — which would falsely show
+     * this permission as ungranted on the onboarding page. In that ambiguous case we probe
+     * [UsageStatsManager] directly: if it hands back data, access is effectively granted.
+     *
+     * Kept in sync with `InterceptionPermissionHelper.hasUsageStatsPermission`; the two live in
+     * separate modules (ui cannot depend on interception, which depends on ui) so the logic is
+     * intentionally duplicated.
+     */
     private fun checkUsageStatsPermission(): Boolean {
         val appOps = appContext.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
         val mode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -94,10 +106,40 @@ class PermissionSetupViewModel @Inject constructor(
                 appContext.packageName
             )
         }
-        return mode == AppOpsManager.MODE_ALLOWED
+        return when (mode) {
+            AppOpsManager.MODE_ALLOWED -> true
+            AppOpsManager.MODE_DEFAULT -> canQueryUsageStats()
+            else -> false
+        }
+    }
+
+    /**
+     * Disambiguates [AppOpsManager.MODE_DEFAULT] by querying the last hour of usage stats.
+     * A non-empty result (and no [SecurityException]) means Usage Access is granted.
+     */
+    private fun canQueryUsageStats(): Boolean {
+        return try {
+            val usageStatsManager =
+                appContext.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+            val now = System.currentTimeMillis()
+            val stats = usageStatsManager.queryUsageStats(
+                UsageStatsManager.INTERVAL_DAILY,
+                now - ONE_HOUR_MS,
+                now
+            )
+            !stats.isNullOrEmpty()
+        } catch (e: SecurityException) {
+            false
+        } catch (e: Exception) {
+            false
+        }
     }
 
     private fun checkOverlayPermission(): Boolean {
         return Settings.canDrawOverlays(appContext)
+    }
+
+    private companion object {
+        private const val ONE_HOUR_MS = 60L * 60L * 1000L
     }
 }

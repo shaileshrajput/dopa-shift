@@ -103,6 +103,14 @@ class JdbcHabitTrackRepository(
         )
     }
 
+    override suspend fun countActiveByUserId(userId: UUID): Int = withContext(Dispatchers.IO) {
+        jdbcTemplate.queryForObject(
+            "SELECT COUNT(*) FROM habit_tracks WHERE user_id = ? AND is_finished = false",
+            Int::class.java,
+            userId
+        ) ?: 0
+    }
+
     private fun attachCheckpoints(track: HabitTrack): HabitTrack {
         val checkpoints = jdbcTemplate.query(
             "SELECT * FROM habit_checkpoints WHERE habit_track_id = ? ORDER BY day_number",

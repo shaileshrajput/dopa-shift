@@ -139,7 +139,10 @@ data class LocalInterceptionRule(
     val siteDomain: String?,
     val dailyAllowanceMinutes: Int,
     val isActive: Boolean = true,
-    val createdAt: Long
+    val createdAt: Long,
+    val pausedForDate: String? = null, // ISO LocalDate; non-null => paused for that calendar day
+    val limitType: String = "ONCE", // ONCE | REPETITIVE
+    val repetitiveIntervalMinutes: Int? = null // whole minutes 1..120 when REPETITIVE; null for ONCE
 )
 
 @Entity(tableName = "telemetry_events")
@@ -155,4 +158,41 @@ data class LocalTelemetryEvent(
 data class LocalSyncState(
     @PrimaryKey val key: String,
     val lastSyncTimestamp: Long
+)
+
+/**
+ * Local diagnostic events for Dashboard quick-create flows.
+ *
+ * LOCAL ONLY — raw records are never synced (DQC-6.4/6.5). Only aggregated per-type
+ * counts leave the device via the diagnostics aggregator.
+ */
+@Entity(
+    tableName = "quick_create_diagnostics",
+    indices = [Index("correlationId"), Index("eventType")]
+)
+data class LocalDiagnosticEvent(
+    @PrimaryKey val id: String,
+    val eventType: String,   // QUICK_CREATE_OPENED | ENTITY_CREATED | CREATION_ABANDONED | UNDO_INVOKED
+    val correlationId: String,
+    val entityType: String?, // GOAL | HABIT | TODO, when applicable
+    val occurredAt: Long     // epoch millis
+)
+
+/**
+ * Local intercept-action audit entries for the repetitive app-limit interception feature.
+ *
+ * LOCAL ONLY — individual intercept-interaction records are never synced (Req 3.4, 3.5).
+ * There is no DTO and no sync-path reference for this entity; it is structurally prevented
+ * from leaving the device, like [LocalDiagnosticEvent].
+ */
+@Entity(
+    tableName = "intercept_action_audit",
+    indices = [Index("userId")]
+)
+data class LocalInterceptActionAudit(
+    @PrimaryKey val id: String,
+    val userId: String,
+    val appPackageName: String,
+    val actionType: String, // CONTINUE | SWITCH_TO_DOPASHIFT
+    val recordedAt: Long     // epoch millis
 )

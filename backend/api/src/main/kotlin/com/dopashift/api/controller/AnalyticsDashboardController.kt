@@ -12,6 +12,7 @@ import com.dopashift.domain.repository.DailyTodoRepository
 import com.dopashift.domain.repository.EfficiencyScoreRepository
 import com.dopashift.domain.repository.GoalRepository
 import com.dopashift.domain.repository.HabitTrackRepository
+import com.dopashift.application.dashboard.DashboardSummaryQueryService
 import com.dopashift.domain.usecase.ComputeEfficiencyScoreUseCase
 import jakarta.validation.Valid
 import org.springframework.format.annotation.DateTimeFormat
@@ -41,6 +42,7 @@ class AnalyticsDashboardController(
     private val goalRepository: GoalRepository,
     private val habitTrackRepository: HabitTrackRepository,
     private val changeLogRepository: ChangeLogRepository,
+    private val dashboardSummaryQueryService: DashboardSummaryQueryService,
     private val clock: Clock
 ) {
 
@@ -101,26 +103,30 @@ class AnalyticsDashboardController(
 
     /**
      * GET /v1/dashboard/summary
-     * Returns aggregated dashboard data: pending todos count, active goals,
-     * active habits, today's efficiency score, and trend indicator.
+     * Returns aggregated dashboard data in a single call: per-entity-type counts
+     * (active goals, today's total to-dos, active habits) sufficient to distinguish
+     * Zero_State from Partial_State (DQC-5.3), plus the parent-spec fields (pending
+     * todos, today's efficiency score, and trend indicator).
      *
-     * Requirements: 20.1, 20.2, 20.3, 20.12
+     * All counts are scoped to the authenticated user_id; "today" is resolved in the
+     * user's configured time zone.
+     *
+     * Requirements: 20.1, 20.2, 20.3, 20.12, 5.3
      */
     @GetMapping("/v1/dashboard/summary")
     suspend fun getDashboardSummary(): ResponseEntity<DashboardSummaryResponse> {
         val userId = authenticatedUser.getUserId()
-        val today = LocalDate.now(clock)
 
-        // Pending todos count for today
+        // Per-entity-type counts for Zero_State / Partial_State resolution (DQC-5.3),
+        // computed by the application query service scoped to the authenticated user
+        // with "today" in the user's configured time zone.
+        val counts = dashboardSummaryQueryService.getSummary(userId)
+
+        // Retained parent-spec fields. Pending todos uses today in the server clock's
+        // zone as before; the DQC-5.3 counts above are the authoritative Zero/Partial signal.
+        val today = LocalDate.now(clock)
         val todayTodos = dailyTodoRepository.findByUserIdAndDate(userId, today)
         val pendingTodosCount = todayTodos.count { !it.isCompleted }
-
-        // Active goals count
-        val activeGoalsCount = goalRepository.countActiveByUserId(userId)
-
-        // Active habits count
-        val activeHabits = habitTrackRepository.findActiveByUserId(userId)
-        val activeHabitsCount = activeHabits.size
 
         // Today's efficiency score
         val todayScores = efficiencyScoreRepository.findByUserIdAndDateRange(userId, today, today)
@@ -132,10 +138,13 @@ class AnalyticsDashboardController(
         return ResponseEntity.ok(
             DashboardSummaryResponse(
                 pendingTodosCount = pendingTodosCount,
-                activeGoalsCount = activeGoalsCount,
-                activeHabitsCount = activeHabitsCount,
+                activeGoalsCount = counts.activeGoalCount,
+                activeHabitsCount = counts.activeHabitCount,
                 todayEfficiencyScore = todayScore,
-                efficiencyTrend = trend
+                efficiencyTrend = trend,
+                activeGoalCount = counts.activeGoalCount,
+                todayTodoCount = counts.todayTodoCount,
+                activeHabitCount = counts.activeHabitCount
             )
         )
     }

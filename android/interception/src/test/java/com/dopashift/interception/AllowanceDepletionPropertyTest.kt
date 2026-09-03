@@ -1,7 +1,7 @@
 package com.dopashift.interception
 
-import com.dopashift.data.local.entity.LocalInterceptionRule
 import com.dopashift.data.repository.LocalTelemetryRepository
+import com.dopashift.domain.entity.InterceptionRule
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -29,13 +29,14 @@ import kotlin.random.Random
  */
 class AllowanceDepletionPropertyTest {
 
-    private lateinit var fakeRuleDao: FakeInterceptionRuleDao
+    private lateinit var fakeRuleRepository: FakeInterceptionRuleRepository
     private lateinit var fakeTelemetryDao: FakeTelemetryDao
     private lateinit var telemetryRepository: LocalTelemetryRepository
     private lateinit var tracker: AllowanceTracker
     private lateinit var fixedClock: Clock
 
     private val testZone = ZoneId.of("America/New_York")
+    private val testUserId = testUuid("user-1")
 
     @Before
     fun setup() {
@@ -43,11 +44,21 @@ class AllowanceDepletionPropertyTest {
             Instant.parse("2024-06-15T14:00:00Z"),
             ZoneOffset.UTC
         )
-        fakeRuleDao = FakeInterceptionRuleDao()
+        fakeRuleRepository = FakeInterceptionRuleRepository()
         fakeTelemetryDao = FakeTelemetryDao()
         telemetryRepository = LocalTelemetryRepository(fakeTelemetryDao)
-        tracker = AllowanceTracker(fakeRuleDao, telemetryRepository, fixedClock)
+        tracker = AllowanceTracker(fakeRuleRepository, telemetryRepository, fixedClock)
         tracker.userTimeZone = testZone
+        tracker.userId = testUserId
+    }
+
+    private fun newTracker(): Pair<FakeInterceptionRuleRepository, AllowanceTracker> {
+        val repo = FakeInterceptionRuleRepository()
+        val telemetryRepo = LocalTelemetryRepository(FakeTelemetryDao())
+        val t = AllowanceTracker(repo, telemetryRepo, fixedClock)
+        t.userTimeZone = testZone
+        t.userId = testUserId
+        return repo to t
     }
 
     /**
@@ -60,29 +71,14 @@ class AllowanceDepletionPropertyTest {
 
         repeat(100) { iteration ->
             // Reset state for each iteration
-            val localFakeRuleDao = FakeInterceptionRuleDao()
-            val localFakeTelemetryDao = FakeTelemetryDao()
-            val localTelemetryRepo = LocalTelemetryRepository(localFakeTelemetryDao)
-            val localTracker = AllowanceTracker(localFakeRuleDao, localTelemetryRepo, fixedClock)
-            localTracker.userTimeZone = testZone
+            val (localRepo, localTracker) = newTracker()
 
             // Random allowance between 1 and 480 minutes
             val allowanceMinutes = random.nextInt(1, 481)
             val allowanceSeconds = allowanceMinutes.toLong() * 60L
             val packageName = "com.test.app.$iteration"
 
-            localFakeRuleDao.addRule(
-                LocalInterceptionRule(
-                    id = "rule-$iteration",
-                    userId = "user-1",
-                    goalId = null,
-                    appPackageName = packageName,
-                    siteDomain = null,
-                    dailyAllowanceMinutes = allowanceMinutes,
-                    isActive = true,
-                    createdAt = System.currentTimeMillis()
-                )
-            )
+            localRepo.addRule(domainRule(testUserId, packageName, allowanceMinutes))
 
             // Accumulate exactly at the threshold (sum of random chunks)
             var accumulated = 0L
@@ -117,27 +113,12 @@ class AllowanceDepletionPropertyTest {
         val random = Random(seed = 123)
 
         repeat(50) { iteration ->
-            val localFakeRuleDao = FakeInterceptionRuleDao()
-            val localFakeTelemetryDao = FakeTelemetryDao()
-            val localTelemetryRepo = LocalTelemetryRepository(localFakeTelemetryDao)
-            val localTracker = AllowanceTracker(localFakeRuleDao, localTelemetryRepo, fixedClock)
-            localTracker.userTimeZone = testZone
+            val (localRepo, localTracker) = newTracker()
 
             val allowanceMinutes = random.nextInt(1, 120)
             val packageName = "com.callback.app.$iteration"
 
-            localFakeRuleDao.addRule(
-                LocalInterceptionRule(
-                    id = "rule-cb-$iteration",
-                    userId = "user-1",
-                    goalId = null,
-                    appPackageName = packageName,
-                    siteDomain = null,
-                    dailyAllowanceMinutes = allowanceMinutes,
-                    isActive = true,
-                    createdAt = System.currentTimeMillis()
-                )
-            )
+            localRepo.addRule(domainRule(testUserId, packageName, allowanceMinutes))
 
             var callbackCount = 0
             localTracker.setOnAllowanceDepletedListener { _, _ -> callbackCount++ }
@@ -170,28 +151,13 @@ class AllowanceDepletionPropertyTest {
         val random = Random(seed = 77)
 
         repeat(100) { iteration ->
-            val localFakeRuleDao = FakeInterceptionRuleDao()
-            val localFakeTelemetryDao = FakeTelemetryDao()
-            val localTelemetryRepo = LocalTelemetryRepository(localFakeTelemetryDao)
-            val localTracker = AllowanceTracker(localFakeRuleDao, localTelemetryRepo, fixedClock)
-            localTracker.userTimeZone = testZone
+            val (localRepo, localTracker) = newTracker()
 
             val allowanceMinutes = random.nextInt(1, 480)
             val allowanceSeconds = allowanceMinutes.toLong() * 60L
             val packageName = "com.precise.app.$iteration"
 
-            localFakeRuleDao.addRule(
-                LocalInterceptionRule(
-                    id = "rule-p-$iteration",
-                    userId = "user-1",
-                    goalId = null,
-                    appPackageName = packageName,
-                    siteDomain = null,
-                    dailyAllowanceMinutes = allowanceMinutes,
-                    isActive = true,
-                    createdAt = System.currentTimeMillis()
-                )
-            )
+            localRepo.addRule(domainRule(testUserId, packageName, allowanceMinutes))
 
             // Accumulate exactly 1 second less than the threshold
             val almostThere = allowanceSeconds - 1
@@ -223,30 +189,14 @@ class AllowanceDepletionPropertyTest {
         val random = Random(seed = 999)
 
         repeat(100) { iteration ->
-            val localFakeRuleDao = FakeInterceptionRuleDao()
-            val localFakeTelemetryDao = FakeTelemetryDao()
-            val localTelemetryRepo = LocalTelemetryRepository(localFakeTelemetryDao)
-            val localTracker = AllowanceTracker(localFakeRuleDao, localTelemetryRepo, fixedClock)
-            localTracker.userTimeZone = testZone
+            val (localRepo, localTracker) = newTracker()
 
             val allowanceMinutes = random.nextInt(1, 240)
             val allowanceSeconds = allowanceMinutes.toLong() * 60L
             val packageName = "com.immediate.app.$iteration"
 
-            localFakeRuleDao.addRule(
-                LocalInterceptionRule(
-                    id = "rule-imm-$iteration",
-                    userId = "user-1",
-                    goalId = null,
-                    appPackageName = packageName,
-                    siteDomain = null,
-                    dailyAllowanceMinutes = allowanceMinutes,
-                    isActive = true,
-                    createdAt = System.currentTimeMillis()
-                )
-            )
+            localRepo.addRule(domainRule(testUserId, packageName, allowanceMinutes))
 
-            var depletedAtPoll = -1
             localTracker.setOnAllowanceDepletedListener { _, _ -> }
 
             // Pre-accumulate some random amount below threshold

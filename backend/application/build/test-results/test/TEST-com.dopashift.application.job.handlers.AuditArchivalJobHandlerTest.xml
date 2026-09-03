@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.dopashift.application.job.handlers.AuditArchivalJobHandlerTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-08-23T11:01:50" hostname="SHAILESH" time="0.123">
+<testsuite name="com.dopashift.application.job.handlers.AuditArchivalJobHandlerTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-09-02T08:40:46" hostname="SHAILESH" time="0.277">
   <properties/>
-  <testcase name="parses payload with both retention values()" classname="com.dopashift.application.job.handlers.AuditArchivalJobHandlerTest" time="0.031"/>
-  <testcase name="handle with custom retention values uses those values()" classname="com.dopashift.application.job.handlers.AuditArchivalJobHandlerTest" time="0.009"/>
-  <testcase name="handle with empty payload uses defaults()" classname="com.dopashift.application.job.handlers.AuditArchivalJobHandlerTest" time="0.005"/>
-  <testcase name="rejects zero auditRetentionDays()" classname="com.dopashift.application.job.handlers.AuditArchivalJobHandlerTest" time="0.002"/>
-  <testcase name="handle purges audit entries older than 1 year()" classname="com.dopashift.application.job.handlers.AuditArchivalJobHandlerTest" time="0.015"/>
-  <testcase name="rejects zero appLogRetentionDays()" classname="com.dopashift.application.job.handlers.AuditArchivalJobHandlerTest" time="0.003"/>
-  <testcase name="jobType is AUDIT_ARCHIVAL()" classname="com.dopashift.application.job.handlers.AuditArchivalJobHandlerTest" time="0.001"/>
-  <testcase name="uses default values when payload fields are missing()" classname="com.dopashift.application.job.handlers.AuditArchivalJobHandlerTest" time="0.001"/>
-  <testcase name="handle propagates exception on repository failure()" classname="com.dopashift.application.job.handlers.AuditArchivalJobHandlerTest" time="0.02"/>
-  <testcase name="handle purges app logs older than 30 days()" classname="com.dopashift.application.job.handlers.AuditArchivalJobHandlerTest" time="0.014"/>
+  <testcase name="parses payload with both retention values()" classname="com.dopashift.application.job.handlers.AuditArchivalJobHandlerTest" time="0.094"/>
+  <testcase name="handle with custom retention values uses those values()" classname="com.dopashift.application.job.handlers.AuditArchivalJobHandlerTest" time="0.019"/>
+  <testcase name="handle with empty payload uses defaults()" classname="com.dopashift.application.job.handlers.AuditArchivalJobHandlerTest" time="0.017"/>
+  <testcase name="rejects zero auditRetentionDays()" classname="com.dopashift.application.job.handlers.AuditArchivalJobHandlerTest" time="0.02"/>
+  <testcase name="handle purges audit entries older than 1 year()" classname="com.dopashift.application.job.handlers.AuditArchivalJobHandlerTest" time="0.033"/>
+  <testcase name="rejects zero appLogRetentionDays()" classname="com.dopashift.application.job.handlers.AuditArchivalJobHandlerTest" time="0.002"/>
+  <testcase name="jobType is AUDIT_ARCHIVAL()" classname="com.dopashift.application.job.handlers.AuditArchivalJobHandlerTest" time="0.002"/>
+  <testcase name="uses default values when payload fields are missing()" classname="com.dopashift.application.job.handlers.AuditArchivalJobHandlerTest" time="0.006"/>
+  <testcase name="handle propagates exception on repository failure()" classname="com.dopashift.application.job.handlers.AuditArchivalJobHandlerTest" time="0.017"/>
+  <testcase name="handle purges app logs older than 30 days()" classname="com.dopashift.application.job.handlers.AuditArchivalJobHandlerTest" time="0.02"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

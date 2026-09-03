@@ -17,6 +17,8 @@ import java.util.UUID
  * @property canDismiss Whether the user has satisfied the minimum engagement requirement.
  * @property isLoading Whether data is still being loaded.
  * @property triggeringPackageName The package name of the app that triggered this overlay.
+ * @property hasZeroGoals Whether the intercepted user has zero active [com.dopashift.domain.entity.GoalProfile]s.
+ *   When true the overlay offers Inline_Goal_Capture instead of dead-ending (DQC-5.10).
  */
 data class OverlayUiState(
     val pendingTodos: List<DailyTodoItem> = emptyList(),
@@ -27,7 +29,8 @@ data class OverlayUiState(
     val elapsedSeconds: Int = 0,
     val canDismiss: Boolean = false,
     val isLoading: Boolean = true,
-    val triggeringPackageName: String = ""
+    val triggeringPackageName: String = "",
+    val hasZeroGoals: Boolean = false
 ) {
     companion object {
         /** Minimum seconds before the overlay can be dismissed (Requirement 2.5). */

@@ -1,7 +1,7 @@
 package com.dopashift.interception
 
-import com.dopashift.data.local.entity.LocalInterceptionRule
 import com.dopashift.data.repository.LocalTelemetryRepository
+import com.dopashift.domain.entity.InterceptionRule
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -14,16 +14,18 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZoneOffset
+import java.util.UUID
 
 class AllowanceTrackerTest {
 
-    private lateinit var fakeRuleDao: FakeInterceptionRuleDao
+    private lateinit var fakeRuleRepository: FakeInterceptionRuleRepository
     private lateinit var fakeTelemetryDao: FakeTelemetryDao
     private lateinit var telemetryRepository: LocalTelemetryRepository
     private lateinit var tracker: AllowanceTracker
     private lateinit var fixedClock: Clock
 
     private val testZone = ZoneId.of("America/New_York")
+    private val testUserId = testUuid("user-1")
 
     @Before
     fun setup() {
@@ -32,11 +34,12 @@ class AllowanceTrackerTest {
             Instant.parse("2024-06-15T14:00:00Z"),
             ZoneOffset.UTC
         )
-        fakeRuleDao = FakeInterceptionRuleDao()
+        fakeRuleRepository = FakeInterceptionRuleRepository()
         fakeTelemetryDao = FakeTelemetryDao()
         telemetryRepository = LocalTelemetryRepository(fakeTelemetryDao)
-        tracker = AllowanceTracker(fakeRuleDao, telemetryRepository, fixedClock)
+        tracker = AllowanceTracker(fakeRuleRepository, telemetryRepository, fixedClock)
         tracker.userTimeZone = testZone
+        tracker.userId = testUserId
     }
 
     @Test
@@ -47,7 +50,7 @@ class AllowanceTrackerTest {
 
     @Test
     fun `accumulates foreground seconds and returns WITHIN_ALLOWANCE`() = runTest {
-        fakeRuleDao.addRule(createRule("com.social.app", allowanceMinutes = 30))
+        fakeRuleRepository.addRule(createRule("com.social.app", allowanceMinutes = 30))
 
         val status = tracker.onForegroundDetected("com.social.app", 5L)
         assertEquals(AllowanceStatus.WITHIN_ALLOWANCE, status)
@@ -59,20 +62,22 @@ class AllowanceTrackerTest {
 
     @Test
     fun `accumulates multiple poll cycles correctly`() = runTest {
-        fakeRuleDao.addRule(createRule("com.social.app", allowanceMinutes = 1))
+        fakeRuleRepository.addRule(createRule("com.social.app", allowanceMinutes = 1))
 
         tracker.onForegroundDetected("com.social.app", 10L)
         tracker.onForegroundDetected("com.social.app", 15L)
         tracker.onForegroundDetected("com.social.app", 20L)
 
-        val accumulated = telemetryRepository.getAccumulatedSeconds("com.social.app", LocalDate.of(2024, 6, 15))
-        assertEquals(45L, accumulated)
+        // Accumulation is buffered in memory and flushed on a >=60s cadence, so the
+        // tracker's total accounting (persisted + pending) is observed via the
+        // remaining allowance: 60s allowance - 45s accumulated = 15s remaining.
+        assertEquals(15L, tracker.getRemainingSeconds("com.social.app"))
     }
 
     @Test
     fun `triggers DEPLETED when allowance is met`() = runTest {
         // 1 minute allowance = 60 seconds
-        fakeRuleDao.addRule(createRule("com.social.app", allowanceMinutes = 1))
+        fakeRuleRepository.addRule(createRule("com.social.app", allowanceMinutes = 1))
 
         // Accumulate 55 seconds
         tracker.onForegroundDetected("com.social.app", 55L)
@@ -88,7 +93,7 @@ class AllowanceTrackerTest {
 
     @Test
     fun `triggers DEPLETED when allowance is exceeded`() = runTest {
-        fakeRuleDao.addRule(createRule("com.social.app", allowanceMinutes = 1))
+        fakeRuleRepository.addRule(createRule("com.social.app", allowanceMinutes = 1))
 
         // Single poll that exceeds 60 seconds
         val status = tracker.onForegroundDetected("com.social.app", 65L)
@@ -97,7 +102,7 @@ class AllowanceTrackerTest {
 
     @Test
     fun `fires depletion listener on first depletion only`() = runTest {
-        fakeRuleDao.addRule(createRule("com.social.app", allowanceMinutes = 1))
+        fakeRuleRepository.addRule(createRule("com.social.app", allowanceMinutes = 1))
 
         var depletionCount = 0
         var depletedPackage: String? = null
@@ -118,7 +123,7 @@ class AllowanceTrackerTest {
 
     @Test
     fun `isAllowanceDepleted returns true after depletion`() = runTest {
-        fakeRuleDao.addRule(createRule("com.social.app", allowanceMinutes = 1))
+        fakeRuleRepository.addRule(createRule("com.social.app", allowanceMinutes = 1))
 
         assertFalse(tracker.isAllowanceDepleted("com.social.app"))
 
@@ -134,7 +139,7 @@ class AllowanceTrackerTest {
 
     @Test
     fun `getRemainingSeconds returns remaining time`() = runTest {
-        fakeRuleDao.addRule(createRule("com.social.app", allowanceMinutes = 5))
+        fakeRuleRepository.addRule(createRule("com.social.app", allowanceMinutes = 5))
 
         // 5 minutes = 300 seconds
         assertEquals(300L, tracker.getRemainingSeconds("com.social.app"))
@@ -145,7 +150,7 @@ class AllowanceTrackerTest {
 
     @Test
     fun `getRemainingSeconds returns zero when depleted`() = runTest {
-        fakeRuleDao.addRule(createRule("com.social.app", allowanceMinutes = 1))
+        fakeRuleRepository.addRule(createRule("com.social.app", allowanceMinutes = 1))
 
         tracker.onForegroundDetected("com.social.app", 120L) // Way past 60s
         assertEquals(0L, tracker.getRemainingSeconds("com.social.app"))
@@ -158,7 +163,7 @@ class AllowanceTrackerTest {
 
     @Test
     fun `resets depletion set at midnight crossing`() = runTest {
-        fakeRuleDao.addRule(createRule("com.social.app", allowanceMinutes = 1))
+        fakeRuleRepository.addRule(createRule("com.social.app", allowanceMinutes = 1))
 
         var depletionCount = 0
         tracker.setOnAllowanceDepletedListener { _, _ -> depletionCount++ }
@@ -172,8 +177,9 @@ class AllowanceTrackerTest {
             Instant.parse("2024-06-16T14:00:00Z"),
             ZoneOffset.UTC
         )
-        val newTracker = AllowanceTracker(fakeRuleDao, telemetryRepository, nextDayClock)
+        val newTracker = AllowanceTracker(fakeRuleRepository, telemetryRepository, nextDayClock)
         newTracker.userTimeZone = testZone
+        newTracker.userId = testUserId
         newTracker.setOnAllowanceDepletedListener { _, _ -> depletionCount++ }
 
         // New day — accumulated time starts fresh (new date in repo), depletion fires again
@@ -191,10 +197,11 @@ class AllowanceTrackerTest {
         )
 
         val istZone = ZoneId.of("Asia/Kolkata") // UTC+5:30
-        val istTracker = AllowanceTracker(fakeRuleDao, telemetryRepository, clockNearMidnight)
+        val istTracker = AllowanceTracker(fakeRuleRepository, telemetryRepository, clockNearMidnight)
         istTracker.userTimeZone = istZone
+        istTracker.userId = testUserId
 
-        fakeRuleDao.addRule(createRule("com.social.app", allowanceMinutes = 1))
+        fakeRuleRepository.addRule(createRule("com.social.app", allowanceMinutes = 1))
 
         // In IST, the date is 2024-06-16 (next day), so this should use June 16
         istTracker.onForegroundDetected("com.social.app", 5L)
@@ -207,8 +214,8 @@ class AllowanceTrackerTest {
 
     @Test
     fun `tracks multiple apps independently`() = runTest {
-        fakeRuleDao.addRule(createRule("com.app.one", allowanceMinutes = 1))
-        fakeRuleDao.addRule(createRule("com.app.two", allowanceMinutes = 2))
+        fakeRuleRepository.addRule(createRule("com.app.one", allowanceMinutes = 1))
+        fakeRuleRepository.addRule(createRule("com.app.two", allowanceMinutes = 2))
 
         tracker.onForegroundDetected("com.app.one", 30L)
         tracker.onForegroundDetected("com.app.two", 30L)
@@ -233,16 +240,12 @@ class AllowanceTrackerTest {
     private fun createRule(
         packageName: String,
         allowanceMinutes: Int,
-        id: String = "rule-$packageName"
-    ): LocalInterceptionRule = LocalInterceptionRule(
-        id = id,
-        userId = "user-1",
-        goalId = null,
-        appPackageName = packageName,
-        siteDomain = null,
-        dailyAllowanceMinutes = allowanceMinutes,
-        isActive = true,
-        createdAt = System.currentTimeMillis()
+        id: UUID = testUuid("rule-$packageName")
+    ): InterceptionRule = domainRule(
+        userId = testUserId,
+        packageName = packageName,
+        dailyLimitMinutes = allowanceMinutes,
+        id = id
     )
 }
 

@@ -126,6 +126,9 @@ class GoalDeletionLeavesNoOrphansPropertyTest : FunSpec({
                 if (track.goalId == fromGoalId) track.copy(goalId = toGoalId) else track
             }
         }
+
+        override suspend fun countActiveByUserId(userId: UUID): Int =
+            store.values.count { it.userId == userId && !it.isFinished }
     }
 
     class InMemoryInterceptionRuleRepository : InterceptionRuleRepository {

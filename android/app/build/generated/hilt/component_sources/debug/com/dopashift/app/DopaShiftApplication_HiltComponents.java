@@ -1,6 +1,8 @@
 package com.dopashift.app;
 
 import androidx.hilt.work.HiltWrapper_WorkerFactoryModule;
+import com.dopashift.app.di.QuickCreateRepositoryModule;
+import com.dopashift.app.di.QuickCreateUseCaseModule;
 import com.dopashift.data.di.DataModule;
 import com.dopashift.data.di.NetworkModule;
 import com.dopashift.data.di.RepositoryModule;
@@ -11,17 +13,22 @@ import com.dopashift.interception.overlay.OverlayViewModel_HiltModules;
 import com.dopashift.interception.reminder.ReminderEvaluationWorker_HiltModule;
 import com.dopashift.interception.reminder.di.ReminderModule;
 import com.dopashift.sync.SyncWorker_HiltModule;
+import com.dopashift.sync.di.SyncBindingModule;
 import com.dopashift.sync.di.SyncModule;
 import com.dopashift.ui.analytics.AnalyticsViewModel_HiltModules;
 import com.dopashift.ui.dashboard.DashboardViewModel_HiltModules;
 import com.dopashift.ui.goals.GoalsViewModel_HiltModules;
 import com.dopashift.ui.habits.HabitRoadmapViewModel_HiltModules;
+import com.dopashift.ui.interception.RuleAuthoringViewModel_HiltModules;
 import com.dopashift.ui.navigation.DopaShiftAppViewModel_HiltModules;
 import com.dopashift.ui.onboarding.OnboardingViewModel_HiltModules;
 import com.dopashift.ui.onboarding.PermissionSetupViewModel_HiltModules;
+import com.dopashift.ui.quickcreate.QuickCreateViewModel_HiltModules;
 import com.dopashift.ui.reminders.RemindersViewModel_HiltModules;
+import com.dopashift.ui.settings.AccentPickerViewModel_HiltModules;
 import com.dopashift.ui.settings.SettingsViewModel_HiltModules;
 import com.dopashift.ui.tasks.DailyTasksViewModel_HiltModules;
+import com.dopashift.ui.theme.ThemeStateViewModel_HiltModules;
 import dagger.Binds;
 import dagger.Component;
 import dagger.Module;
@@ -154,9 +161,12 @@ public final class DopaShiftApplication_HiltComponents {
           HiltWrapper_WorkerFactoryModule.class,
           InterceptionModule.class,
           NetworkModule.class,
+          QuickCreateRepositoryModule.class,
+          QuickCreateUseCaseModule.class,
           ReminderEvaluationWorker_HiltModule.class,
           ReminderModule.class,
           RepositoryModule.class,
+          SyncBindingModule.class,
           SyncModule.class,
           SyncWorker_HiltModule.class
       }
@@ -184,6 +194,7 @@ public final class DopaShiftApplication_HiltComponents {
 
   @Subcomponent(
       modules = {
+          AccentPickerViewModel_HiltModules.KeyModule.class,
           AnalyticsViewModel_HiltModules.KeyModule.class,
           DailyTasksViewModel_HiltModules.KeyModule.class,
           DashboardViewModel_HiltModules.KeyModule.class,
@@ -197,8 +208,11 @@ public final class DopaShiftApplication_HiltComponents {
           OnboardingViewModel_HiltModules.KeyModule.class,
           OverlayViewModel_HiltModules.KeyModule.class,
           PermissionSetupViewModel_HiltModules.KeyModule.class,
+          QuickCreateViewModel_HiltModules.KeyModule.class,
           RemindersViewModel_HiltModules.KeyModule.class,
-          SettingsViewModel_HiltModules.KeyModule.class
+          RuleAuthoringViewModel_HiltModules.KeyModule.class,
+          SettingsViewModel_HiltModules.KeyModule.class,
+          ThemeStateViewModel_HiltModules.KeyModule.class
       }
   )
   @ActivityRetainedScoped
@@ -234,6 +248,7 @@ public final class DopaShiftApplication_HiltComponents {
 
   @Subcomponent(
       modules = {
+          AccentPickerViewModel_HiltModules.BindsModule.class,
           AnalyticsViewModel_HiltModules.BindsModule.class,
           DailyTasksViewModel_HiltModules.BindsModule.class,
           DashboardViewModel_HiltModules.BindsModule.class,
@@ -244,8 +259,11 @@ public final class DopaShiftApplication_HiltComponents {
           OnboardingViewModel_HiltModules.BindsModule.class,
           OverlayViewModel_HiltModules.BindsModule.class,
           PermissionSetupViewModel_HiltModules.BindsModule.class,
+          QuickCreateViewModel_HiltModules.BindsModule.class,
           RemindersViewModel_HiltModules.BindsModule.class,
-          SettingsViewModel_HiltModules.BindsModule.class
+          RuleAuthoringViewModel_HiltModules.BindsModule.class,
+          SettingsViewModel_HiltModules.BindsModule.class,
+          ThemeStateViewModel_HiltModules.BindsModule.class
       }
   )
   @ViewModelScoped

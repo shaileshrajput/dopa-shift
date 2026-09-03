@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.dopashift.domain.property.SyncPushRetryBackoffPropertyTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-08-23T11:01:59" hostname="SHAILESH" time="0.225">
+<testsuite name="com.dopashift.domain.property.SyncPushRetryBackoffPropertyTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-09-02T08:40:56" hostname="SHAILESH" time="0.203">
   <properties/>
   <testcase name="Property 19: For any attempt number N (1-5), backoff delay is exactly INITIAL_BACKOFF * 2^(N-1)" classname="com.dopashift.domain.property.SyncPushRetryBackoffPropertyTest" time="0.085"/>
-  <testcase name="Property 19: Backoff values match exact sequence 1000, 2000, 4000, 8000, 16000 ms" classname="com.dopashift.domain.property.SyncPushRetryBackoffPropertyTest" time="0.014"/>
-  <testcase name="Property 19: After 5 failed attempts, the system does NOT retry further" classname="com.dopashift.domain.property.SyncPushRetryBackoffPropertyTest" time="0.048"/>
+  <testcase name="Property 19: Backoff values match exact sequence 1000, 2000, 4000, 8000, 16000 ms" classname="com.dopashift.domain.property.SyncPushRetryBackoffPropertyTest" time="0.015"/>
+  <testcase name="Property 19: After 5 failed attempts, the system does NOT retry further" classname="com.dopashift.domain.property.SyncPushRetryBackoffPropertyTest" time="0.037"/>
   <testcase name="Property 19: Queued changes remain in local store after all retries are exhausted" classname="com.dopashift.domain.property.SyncPushRetryBackoffPropertyTest" time="0.039"/>
-  <testcase name="Property 19: For random failure counts (1-5), correct backoff timing is applied before each retry" classname="com.dopashift.domain.property.SyncPushRetryBackoffPropertyTest" time="0.028"/>
+  <testcase name="Property 19: For random failure counts (1-5), correct backoff timing is applied before each retry" classname="com.dopashift.domain.property.SyncPushRetryBackoffPropertyTest" time="0.02"/>
   <system-out><![CDATA[Error reading seed
 Error clearing seed
 Error clearing seed

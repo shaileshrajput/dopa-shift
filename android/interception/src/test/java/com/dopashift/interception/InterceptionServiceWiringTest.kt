@@ -1,7 +1,7 @@
 package com.dopashift.interception
 
-import com.dopashift.data.local.entity.LocalInterceptionRule
 import com.dopashift.data.repository.LocalTelemetryRepository
+import com.dopashift.domain.entity.InterceptionRule
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -12,6 +12,7 @@ import java.time.Clock
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZoneOffset
+import java.util.UUID
 
 /**
  * Tests the wiring between AllowanceTracker and the InterceptionService's
@@ -28,7 +29,7 @@ import java.time.ZoneOffset
  */
 class InterceptionServiceWiringTest {
 
-    private lateinit var fakeRuleDao: FakeInterceptionRuleDao
+    private lateinit var fakeRuleRepository: FakeInterceptionRuleRepository
     private lateinit var fakeTelemetryDao: FakeTelemetryDao
     private lateinit var telemetryRepository: LocalTelemetryRepository
     private lateinit var tracker: AllowanceTracker
@@ -36,8 +37,8 @@ class InterceptionServiceWiringTest {
 
     private val testZone = ZoneId.of("America/New_York")
     private val testPackage = "com.social.distracting"
-    private val testRuleId = "rule-001"
-    private val testUserId = "user-001"
+    private val testRuleId = UUID.fromString("00000000-0000-0000-0000-0000000000a1")
+    private val testUserId = UUID.fromString("00000000-0000-0000-0000-000000000001")
 
     @Before
     fun setup() {
@@ -45,27 +46,27 @@ class InterceptionServiceWiringTest {
             Instant.parse("2024-06-15T14:00:00Z"),
             ZoneOffset.UTC
         )
-        fakeRuleDao = FakeInterceptionRuleDao()
+        fakeRuleRepository = FakeInterceptionRuleRepository()
         fakeTelemetryDao = FakeTelemetryDao()
         telemetryRepository = LocalTelemetryRepository(fakeTelemetryDao)
-        tracker = AllowanceTracker(fakeRuleDao, telemetryRepository, fixedClock)
+        tracker = AllowanceTracker(fakeRuleRepository, telemetryRepository, fixedClock)
         tracker.userTimeZone = testZone
+        tracker.userId = testUserId
     }
 
     private fun createRule(
         packageName: String,
         allowanceMinutes: Int,
-        id: String = testRuleId
-    ): LocalInterceptionRule {
-        return LocalInterceptionRule(
+        id: UUID = testRuleId
+    ): InterceptionRule {
+        return InterceptionRule(
             id = id,
             userId = testUserId,
-            goalId = "goal-001",
             appPackageName = packageName,
-            siteDomain = null,
-            dailyAllowanceMinutes = allowanceMinutes,
-            isActive = true,
-            createdAt = System.currentTimeMillis()
+            dailyLimitMinutes = allowanceMinutes,
+            enabled = true,
+            pausedForDate = null,
+            createdAt = Instant.ofEpochMilli(System.currentTimeMillis())
         )
     }
 
@@ -74,24 +75,25 @@ class InterceptionServiceWiringTest {
     @Test
     fun `handleForegroundApp accumulates time via AllowanceTracker`() = runTest {
         val rule = createRule(testPackage, allowanceMinutes = 5) // 300 seconds
-        fakeRuleDao.addRule(rule)
+        fakeRuleRepository.addRule(rule)
 
-        // Simulate 3 poll cycles of 5 seconds each = 15 seconds accumulated
+        // Simulate 3 poll cycles of 5 seconds each = 15 seconds accumulated.
+        // Accumulation is now buffered in memory and flushed on a >=60s cadence,
+        // so we assert the tracker's total accounting (persisted + pending) via
+        // remaining allowance rather than the persisted store alone.
         repeat(3) {
             tracker.onForegroundDetected(testPackage, 5L)
         }
 
-        val accumulated = telemetryRepository.getAccumulatedSeconds(
-            testPackage,
-            java.time.LocalDate.now(fixedClock.withZone(testZone))
-        )
-        assertEquals(15L, accumulated)
+        // 300s allowance - 15s accumulated = 285s remaining.
+        val remaining = tracker.getRemainingSeconds(testPackage)
+        assertEquals(285L, remaining)
     }
 
     @Test
     fun `handleForegroundApp returns WITHIN_ALLOWANCE when under limit`() = runTest {
         val rule = createRule(testPackage, allowanceMinutes = 5)
-        fakeRuleDao.addRule(rule)
+        fakeRuleRepository.addRule(rule)
 
         val status = tracker.onForegroundDetected(testPackage, 5L)
         assertEquals(AllowanceStatus.WITHIN_ALLOWANCE, status)
@@ -109,10 +111,10 @@ class InterceptionServiceWiringTest {
     @Test
     fun `depletion callback fires when allowance is fully consumed`() = runTest {
         val rule = createRule(testPackage, allowanceMinutes = 1) // 60 seconds
-        fakeRuleDao.addRule(rule)
+        fakeRuleRepository.addRule(rule)
 
         var depletedPackage: String? = null
-        var depletedRule: LocalInterceptionRule? = null
+        var depletedRule: InterceptionRule? = null
         tracker.setOnAllowanceDepletedListener { pkg, r ->
             depletedPackage = pkg
             depletedRule = r
@@ -130,7 +132,7 @@ class InterceptionServiceWiringTest {
     @Test
     fun `depletion returns DEPLETED status`() = runTest {
         val rule = createRule(testPackage, allowanceMinutes = 1)
-        fakeRuleDao.addRule(rule)
+        fakeRuleRepository.addRule(rule)
 
         // Accumulate exactly to the limit
         repeat(11) {
@@ -144,7 +146,7 @@ class InterceptionServiceWiringTest {
     @Test
     fun `depletion callback fires only once per app per day`() = runTest {
         val rule = createRule(testPackage, allowanceMinutes = 1)
-        fakeRuleDao.addRule(rule)
+        fakeRuleRepository.addRule(rule)
 
         var callbackCount = 0
         tracker.setOnAllowanceDepletedListener { _, _ -> callbackCount++ }
@@ -167,7 +169,7 @@ class InterceptionServiceWiringTest {
     @Test
     fun `depletion callback provides correct package for notification`() = runTest {
         val rule = createRule(testPackage, allowanceMinutes = 1)
-        fakeRuleDao.addRule(rule)
+        fakeRuleRepository.addRule(rule)
 
         val depletedPackages = mutableListOf<String>()
         tracker.setOnAllowanceDepletedListener { pkg, _ -> depletedPackages.add(pkg) }
@@ -186,8 +188,12 @@ class InterceptionServiceWiringTest {
     fun `multiple tracked apps accumulate independently`() = runTest {
         val app1 = "com.social.one"
         val app2 = "com.social.two"
-        fakeRuleDao.addRule(createRule(app1, allowanceMinutes = 1, id = "rule-a"))
-        fakeRuleDao.addRule(createRule(app2, allowanceMinutes = 2, id = "rule-b"))
+        fakeRuleRepository.addRule(
+            createRule(app1, allowanceMinutes = 1, id = UUID.fromString("00000000-0000-0000-0000-00000000000a"))
+        )
+        fakeRuleRepository.addRule(
+            createRule(app2, allowanceMinutes = 2, id = UUID.fromString("00000000-0000-0000-0000-00000000000b"))
+        )
 
         val depletedApps = mutableListOf<String>()
         tracker.setOnAllowanceDepletedListener { pkg, _ -> depletedApps.add(pkg) }
@@ -210,7 +216,7 @@ class InterceptionServiceWiringTest {
     @Test
     fun `isAllowanceDepleted returns true after depletion`() = runTest {
         val rule = createRule(testPackage, allowanceMinutes = 1)
-        fakeRuleDao.addRule(rule)
+        fakeRuleRepository.addRule(rule)
 
         repeat(12) {
             tracker.onForegroundDetected(testPackage, 5L)
@@ -222,7 +228,7 @@ class InterceptionServiceWiringTest {
     @Test
     fun `isAllowanceDepleted returns false when under limit`() = runTest {
         val rule = createRule(testPackage, allowanceMinutes = 5)
-        fakeRuleDao.addRule(rule)
+        fakeRuleRepository.addRule(rule)
 
         tracker.onForegroundDetected(testPackage, 5L)
         assertFalse(tracker.isAllowanceDepleted(testPackage))
@@ -233,7 +239,7 @@ class InterceptionServiceWiringTest {
     @Test
     fun `zero-second poll does not accumulate time`() = runTest {
         val rule = createRule(testPackage, allowanceMinutes = 1)
-        fakeRuleDao.addRule(rule)
+        fakeRuleRepository.addRule(rule)
 
         tracker.onForegroundDetected(testPackage, 0L)
 
@@ -248,7 +254,7 @@ class InterceptionServiceWiringTest {
     @Test
     fun `depletion on exact boundary triggers correctly`() = runTest {
         val rule = createRule(testPackage, allowanceMinutes = 1) // 60 seconds
-        fakeRuleDao.addRule(rule)
+        fakeRuleRepository.addRule(rule)
 
         var triggered = false
         tracker.setOnAllowanceDepletedListener { _, _ -> triggered = true }
@@ -261,7 +267,7 @@ class InterceptionServiceWiringTest {
     @Test
     fun `getRemainingSeconds returns correct value`() = runTest {
         val rule = createRule(testPackage, allowanceMinutes = 2) // 120 seconds
-        fakeRuleDao.addRule(rule)
+        fakeRuleRepository.addRule(rule)
 
         tracker.onForegroundDetected(testPackage, 30L)
 
@@ -278,7 +284,7 @@ class InterceptionServiceWiringTest {
     @Test
     fun `getRemainingSeconds returns zero when fully depleted`() = runTest {
         val rule = createRule(testPackage, allowanceMinutes = 1)
-        fakeRuleDao.addRule(rule)
+        fakeRuleRepository.addRule(rule)
 
         tracker.onForegroundDetected(testPackage, 100L) // Over the limit
         val remaining = tracker.getRemainingSeconds(testPackage)

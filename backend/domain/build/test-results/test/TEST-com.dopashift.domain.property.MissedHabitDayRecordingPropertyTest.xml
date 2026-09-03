@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.dopashift.domain.property.MissedHabitDayRecordingPropertyTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-08-23T11:01:58" hostname="SHAILESH" time="0.118">
+<testsuite name="com.dopashift.domain.property.MissedHabitDayRecordingPropertyTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-09-02T08:40:55" hostname="SHAILESH" time="0.15">
   <properties/>
-  <testcase name="PENDING checkpoints are marked as MISSED, never silently skipped" classname="com.dopashift.domain.property.MissedHabitDayRecordingPropertyTest" time="0.042"/>
-  <testcase name="calling RecordMissedDayUseCase on an already-MISSED checkpoint throws IllegalStateException" classname="com.dopashift.domain.property.MissedHabitDayRecordingPropertyTest" time="0.034"/>
-  <testcase name="COMPLETED checkpoints cannot be overwritten to MISSED" classname="com.dopashift.domain.property.MissedHabitDayRecordingPropertyTest" time="0.036"/>
+  <testcase name="PENDING checkpoints are marked as MISSED, never silently skipped" classname="com.dopashift.domain.property.MissedHabitDayRecordingPropertyTest" time="0.078"/>
+  <testcase name="calling RecordMissedDayUseCase on an already-MISSED checkpoint throws IllegalStateException" classname="com.dopashift.domain.property.MissedHabitDayRecordingPropertyTest" time="0.04"/>
+  <testcase name="COMPLETED checkpoints cannot be overwritten to MISSED" classname="com.dopashift.domain.property.MissedHabitDayRecordingPropertyTest" time="0.025"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

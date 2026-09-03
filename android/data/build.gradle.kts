@@ -15,6 +15,11 @@ android {
         consumerProguardFiles("consumer-rules.pro")
     }
 
+    // Expose the exported Room schema JSONs to instrumented tests (used by the migration test).
+    sourceSets {
+        getByName("androidTest").assets.srcDir("$projectDir/schemas")
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -30,12 +35,30 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
+    testOptions {
+        unitTests {
+            // Required for Robolectric-based unit tests (e.g. Context-backed DataStore).
+            isIncludeAndroidResources = true
+        }
+    }
+
 }
 
 kotlin {
     compilerOptions {
         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
     }
+}
+
+// Run unit tests on the JUnit Platform so Kotest (JUnit 5) property tests run;
+// the vintage engine keeps the existing JUnit 4 / Robolectric tests running.
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
+
+ksp {
+    // Export Room schemas (matches @Database exportSchema = true) so migrations are testable.
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 dependencies {
@@ -74,4 +97,23 @@ dependencies {
     // Testing
     testImplementation(libs.junit)
     testImplementation(libs.coroutines.test)
+    // Kotest property-based testing (runs on the JUnit 5 platform).
+    testImplementation(libs.kotest.runner.junit5)
+    testImplementation(libs.kotest.property)
+    testImplementation(libs.kotest.assertions.core)
+    // Vintage engine so the JUnit 4 / Robolectric property tests keep running on
+    // the JUnit Platform alongside the Kotest (JUnit 5) property tests.
+    testRuntimeOnly(libs.junit.vintage.engine)
+    // Robolectric enables JVM unit tests that need an Android Context
+    // (e.g. the Context-backed DataStore used by AggregatedCounterSync and
+    // QuickCreatePreferencesStore).
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.test.core)
+    testImplementation(libs.junit.ext)
+
+    // Instrumented testing (Room migration tests)
+    androidTestImplementation(libs.junit.ext)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.test.core)
+    androidTestImplementation(libs.room.testing)
 }

@@ -29,4 +29,7 @@ interface GoalDao {
 
     @Query("SELECT COUNT(*) FROM goals WHERE userId = :userId AND isActive = 1")
     suspend fun countActiveByUserId(userId: String): Int
+
+    @Query("SELECT COUNT(*) FROM goals WHERE userId = :userId AND isActive = 1")
+    fun observeActiveCountByUserId(userId: String): Flow<Int>
 }

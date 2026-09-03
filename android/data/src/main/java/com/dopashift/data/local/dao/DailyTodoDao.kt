@@ -21,6 +21,9 @@ interface DailyTodoDao {
     @Query("SELECT COUNT(*) FROM daily_todo_items WHERE userId = :userId AND dayDate = :date")
     suspend fun countByUserIdAndDate(userId: String, date: String): Int
 
+    @Query("SELECT COUNT(*) FROM daily_todo_items WHERE userId = :userId AND dayDate = :date")
+    fun observeCountByUserIdAndDate(userId: String, date: String): Flow<Int>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(item: LocalDailyTodo)
 

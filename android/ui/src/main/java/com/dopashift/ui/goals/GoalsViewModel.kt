@@ -47,7 +47,6 @@ data class GoalsUiState(
     val selectedGoalChecklist: List<GoalChecklistItem> = emptyList(),
     val selectedGoalHabitTracks: List<HabitTrack> = emptyList(),
     val isLoading: Boolean = true,
-    val showCreateDialog: Boolean = false,
     val showEditDialog: Boolean = false,
     val showDeleteDialog: Boolean = false,
     val deleteDialogDependents: DeleteDependents? = null,
@@ -212,7 +211,6 @@ class GoalsViewModel @Inject constructor(
             selectedGoalChecklist = checklist,
             selectedGoalHabitTracks = filteredHabitTracks,
             isLoading = false,
-            showCreateDialog = dialogs.showCreate,
             showEditDialog = dialogs.showEdit,
             showDeleteDialog = dialogs.showDelete,
             deleteDialogDependents = dialogs.deleteDependents,
@@ -235,14 +233,6 @@ class GoalsViewModel @Inject constructor(
     }
 
     // === Dialog Management ===
-
-    fun showCreateDialog() {
-        _dialogState.update { it.copy(showCreate = true) }
-    }
-
-    fun dismissCreateDialog() {
-        _dialogState.update { it.copy(showCreate = false) }
-    }
 
     fun showEditDialog() {
         _dialogState.update { it.copy(showEdit = true) }
@@ -285,33 +275,6 @@ class GoalsViewModel @Inject constructor(
     }
 
     // === CRUD Operations ===
-
-    /**
-     * Create a new goal with name uniqueness validation (Requirement 1.7).
-     */
-    fun createGoal(name: String, category: String, keywords: List<String>) {
-        viewModelScope.launch {
-            // Check name uniqueness per Requirement 1.7
-            val existing = goalRepository.findByUserIdAndName(userId, name)
-            if (existing != null) {
-                _errorMessage.value = "A goal with this name already exists"
-                return@launch
-            }
-
-            val now = Instant.now()
-            val goal = GoalProfile(
-                id = UUID.randomUUID(),
-                userId = userId,
-                name = name,
-                category = category,
-                keywords = keywords,
-                createdAt = now,
-                updatedAt = now
-            )
-            goalRepository.save(goal)
-            _dialogState.update { it.copy(showCreate = false) }
-        }
-    }
 
     /**
      * Update the selected goal.
@@ -431,7 +394,6 @@ class GoalsViewModel @Inject constructor(
  * Internal state for dialog visibility.
  */
 private data class DialogState(
-    val showCreate: Boolean = false,
     val showEdit: Boolean = false,
     val showDelete: Boolean = false,
     val deleteDependents: DeleteDependents? = null

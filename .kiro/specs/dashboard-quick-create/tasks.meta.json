@@ -1,0 +1,1192 @@
+{
+  "pbtResults": {
+    "2.5 Write property test for daily to-do cap": {
+      "status": "passed",
+      "lastRunTimestamp": 1788321023566
+    },
+    "3.3 Write property test for Dashboard state resolution from counts": {
+      "status": "passed",
+      "lastRunTimestamp": 1788321062175
+    },
+    "2.3 Write property test for goal field validation and case-insensitive uniqueness": {
+      "status": "passed",
+      "lastRunTimestamp": 1788321145611
+    },
+    "2.4 Write property test for to-do validity invariants": {
+      "status": "passed",
+      "lastRunTimestamp": 1788321240868
+    },
+    "6.3 Write property test for one origin Correlation_ID and correct event type": {
+      "status": "passed",
+      "lastRunTimestamp": 1788324180176
+    },
+    "6.4 Write property test for aggregated, bounded diagnostics sync": {
+      "status": "passed",
+      "lastRunTimestamp": 1788324686923
+    },
+    "9.3 Write property test for habit authoring resolving to 30 valid checkpoints": {
+      "status": "passed",
+      "lastRunTimestamp": 1788330954290
+    },
+    "9.5 Write property test for LLM fallback without losing input": {
+      "status": "passed",
+      "lastRunTimestamp": 1788331505543
+    },
+    "10.5 Write property test for default habit goal selection": {
+      "status": "passed",
+      "lastRunTimestamp": 1788332212704
+    },
+    "11.3 Write property test for undo emitting a Change_Log deletion event": {
+      "status": "passed",
+      "lastRunTimestamp": 1788333583161
+    }
+  },
+  "executionHistory": {
+    "1.1 Define shared domain value types and enums": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319617349
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319633902
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788320078608
+      }
+    ],
+    "1.2 Define creation commands, `HabitAuthoring`, and `CreationResult`": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319618323
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788320088390
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788320259968
+      }
+    ],
+    "1.3 Write unit tests for command/result construction and defaults": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319618427
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788320264126
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788320467525
+      }
+    ],
+    "2.1 Implement `GoalValidator`": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319618527
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788320473127
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788320768995
+      }
+    ],
+    "2.2 Implement `TodoValidator`": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319618685
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788320473997
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788320769933
+      }
+    ],
+    "2.3 Write property test for goal field validation and case-insensitive uniqueness": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319618815
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788320785000
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788321264466
+      }
+    ],
+    "2.4 Write property test for to-do validity invariants": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319618901
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788320786145
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788321265497
+      }
+    ],
+    "2.5 Write property test for daily to-do cap": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319618985
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788320787103
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788321266450
+      }
+    ],
+    "3.1 Declare new domain ports": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319619067
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788320475490
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788320771111
+      }
+    ],
+    "3.2 Define `DashboardSummary` and section-state resolution": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319619141
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788320475931
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788320772227
+      }
+    ],
+    "3.3 Write property test for Dashboard state resolution from counts": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319619215
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788320788340
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788321267633
+      }
+    ],
+    "4. Checkpoint - Ensure all domain-contract and validator tests pass": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319619294
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788340102994
+      }
+    ],
+    "5.1 Add `LocalDiagnosticEvent` Room entity and DAO": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319619379
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788320789161
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788321269059
+      }
+    ],
+    "5.2 Implement `RoomTransactionRunner`": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319619583
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788321299497
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788322409315
+      }
+    ],
+    "5.3 Implement bundled asset providers": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319619717
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788321300719
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788322408616
+      }
+    ],
+    "5.4 Implement `RoomDashboardSummaryRepository`": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319619789
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788322418187
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788322769838
+      }
+    ],
+    "5.5 Write unit tests for asset providers and summary repository": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319619871
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788322778602
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788324786817
+      }
+    ],
+    "6.1 Implement `QuickCreatePrefs` DataStore": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319619948
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788321301662
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788322407653
+      }
+    ],
+    "6.2 Implement `DataStoreDiagnosticsSink` and `DiagnosticsAggregator`": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319620032
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788322419065
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788322770971
+      }
+    ],
+    "6.3 Write property test for one origin Correlation_ID and correct event type": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319620116
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788322779751
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788324787938
+      }
+    ],
+    "6.4 Write property test for aggregated, bounded diagnostics sync": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319620194
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788322780726
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788324789092
+      }
+    ],
+    "7. Checkpoint - Ensure all data-layer tests pass": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319620300
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788324808603
+      }
+    ],
+    "8.1 Wire Dashboard to reused `CreateGoalUseCase`, `CreateDailyTodoUseCase`, `CreateHabitTrackUseCase`": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319620405
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788324812866
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788328340107
+      }
+    ],
+    "8.2 Write property test for Dashboard/dedicated-screen equivalence": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319620493
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788328346506
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788340607047
+      }
+    ],
+    "8.3 Write property test for offline local persistence and Change_Log enqueue": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319620620
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788328347895
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788340607999
+      }
+    ],
+    "8.4 Write property test for to-do completion toggle round-trip": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319620687
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788328348851
+      },
+      {
+        "executionId": "c3225ed3-5315-4bce-8ec8-f28c64601fa0",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788330279740
+      }
+    ],
+    "9.1 Implement authoring-mode resolver to exactly 30 checkpoints": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319620761
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788322781915
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788324790279
+      }
+    ],
+    "9.2 Implement LLM habit-plan and goal-suggestion flow with graceful degradation": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319620834
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788322782864
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788324791385
+      }
+    ],
+    "9.3 Write property test for habit authoring resolving to 30 valid checkpoints": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319620943
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788328350235
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788340609442
+      }
+    ],
+    "9.4 Write property test for habit-create invariants": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319621022
+      },
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788328350975
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788340610371
+      }
+    ],
+    "9.5 Write property test for LLM fallback without losing input": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319621099
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788331156322
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788331577816
+      }
+    ],
+    "9.6 Write property test for LLM context privacy boundary": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319621171
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788331156917
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788331578883
+      }
+    ],
+    "9.7 Write property test for preset-category bundled keyword suggestions": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319621241
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788331158355
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788331579892
+      }
+    ],
+    "10.1 Implement `CreateGoalWithHabitInteractor`": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319621323
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788331159027
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788331580867
+      }
+    ],
+    "10.2 Write property test for Inline_Goal_Capture atomic rollback": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319621444
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788331586846
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788332764041
+      }
+    ],
+    "10.3 Write property test for no-orphan invariant across creation paths": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319621512
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788331591263
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788332763177
+      }
+    ],
+    "10.4 Write property test for Change_Log goal-before-dependent ordering": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319621578
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788331592099
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788332764971
+      }
+    ],
+    "10.5 Write property test for default habit goal selection": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319621643
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788331592444
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788332766393
+      }
+    ],
+    "11.1 Implement `UndoCreationUseCase`": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319621710
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788331592613
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788332767138
+      }
+    ],
+    "11.2 Implement `ObserveDashboardSummaryUseCase`": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319621777
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788332772788
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788333298866
+      }
+    ],
+    "11.3 Write property test for undo emitting a Change_Log deletion event": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319621868
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788333306969
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788334204552
+      }
+    ],
+    "11.4 Write property test for backend rejection retaining input": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319621943
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788333306855
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788334204405
+      }
+    ],
+    "12. Checkpoint - Ensure all use-case and property tests pass": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319622022
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788340149949
+      }
+    ],
+    "13.1 Bind repositories and providers": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319622090
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788333307188
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788334205196
+      }
+    ],
+    "13.2 Provide use cases": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319622161
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788333308134
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788334205899
+      }
+    ],
+    "14.1 Implement `DashboardViewModel`": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319622253
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788334211557
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788334714244
+      }
+    ],
+    "14.2 Write unit tests for ViewModel routing and state transitions": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319622349
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788334720386
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788336145949
+      }
+    ],
+    "15.1 Implement persistent FAB and `QuickCreateMenu`": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319622424
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788334721521
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788336145101
+      }
+    ],
+    "15.2 Implement `GoalCreationSheet`": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319622506
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788334722256
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788336143278
+      }
+    ],
+    "15.3 Implement `HabitCreationSheet` with Inline_Goal_Capture step": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319622580
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788334723725
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788336143791
+      }
+    ],
+    "15.4 Implement `TodoCreationSheet` and `TodaysFocusQuickAdd`": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319622651
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788334724763
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788340611491
+      }
+    ],
+    "15.5 Implement `DashboardBody` Zero/Partial state rendering and onboarding resume": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319622723
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788336154519
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788337135554
+      }
+    ],
+    "16.1 Reach Inline_Goal_Capture from the Intercept_Overlay": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319622798
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788336154840
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788337136151
+      }
+    ],
+    "17.1 Add nested `habitTrack` payload to `POST /v1/goals`": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319622878
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788337145064
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788338529148
+      }
+    ],
+    "17.2 Add `GET /v1/dashboard/summary`": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319622959
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788337145278
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788338528968
+      }
+    ],
+    "17.3 Write contract tests for the backend deltas": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319623047
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788338536038
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788339836894
+      }
+    ],
+    "18.1 Write Compose UI tests for Dashboard renderings and affordances": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319623147
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788338537166
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788339832444
+      }
+    ],
+    "18.2 Write example tests for sheet content, modes, and disclosures": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319623247
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788338538352
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788339833961
+      }
+    ],
+    "18.3 Write timing and offline integration tests": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319623378
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788338539495
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788339834885
+      }
+    ],
+    "18.4 Write sync-conflict surfacing test": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319623460
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788338540276
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788339836081
+      }
+    ],
+    "19.1 Register all suites in CI and enforce the gate": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319623582
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788339844240
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788340059728
+      }
+    ],
+    "20. Final checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788319623691
+      },
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788340256363
+      }
+    ],
+    "1. Establish domain contracts for Dashboard creation": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788320467672
+      }
+    ],
+    "2. Implement domain validators (shared usability layer)": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788321266606
+      }
+    ],
+    "3. Define repository and service ports (domain)": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788321267795
+      }
+    ],
+    "5. Implement `data`-module Room and asset infrastructure": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788324786919
+      }
+    ],
+    "6. Implement DataStore prefs and diagnostics aggregation": [
+      {
+        "executionId": "f05ecafa-d75e-44f0-9190-65296ca496a4",
+        "chatSessionId": "sess_06c56c7d-9a6c-40a9-8e7f-4c9fda25b784",
+        "timestamp": 1788324789183
+      }
+    ],
+    "10. Implement `CreateGoalWithHabitUseCase` (Inline_Goal_Capture atomic transaction)": [
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788332766639
+      }
+    ],
+    "13. Wire Hilt DI in the `app` module": [
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788334206019
+      }
+    ],
+    "14. Implement `DashboardViewModel` and creation state holders (`ui`)": [
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788336146114
+      }
+    ],
+    "16. Integrate interception overlay entry point": [
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788337136273
+      }
+    ],
+    "18. Author Compose UI, example, and integration tests for non-PBT criteria": [
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788339836239
+      }
+    ],
+    "17. Implement additive backend deltas": [
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788339837018
+      }
+    ],
+    "19. Configure CI gate for the spec test suites": [
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788340059899
+      }
+    ],
+    "8. Implement single-entity creation use cases (same path as dedicated screens)": [
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788340608119
+      }
+    ],
+    "9. Implement habit authoring resolution": [
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788340610505
+      }
+    ],
+    "15. Implement Dashboard creation UI (Compose + Material 3)": [
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788340611621
+      }
+    ],
+    "11. Implement `UndoCreationUseCase` and `ObserveDashboardSummaryUseCase`": [
+      {
+        "executionId": "5d997b7c-3617-48f7-b4c7-825b0aec416c",
+        "chatSessionId": "sess_843df9d7-b0f2-486a-9dda-80b9faf8e8f4",
+        "timestamp": 1788340630390
+      }
+    ]
+  }
+}

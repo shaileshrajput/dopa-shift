@@ -311,6 +311,9 @@ class FakeHabitTrackRepository : HabitTrackRepository {
             if (track.goalId == fromGoalId) track.copy(goalId = toGoalId) else track
         }
     }
+
+    override suspend fun countActiveByUserId(userId: UUID): Int =
+        tracks.values.count { it.userId == userId && !it.isFinished }
 }
 
 /**

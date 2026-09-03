@@ -1,0 +1,1008 @@
+{
+  "pbtResults": {
+    "4.2 Write property test: sampling interval integrity": {
+      "status": "passed",
+      "lastRunTimestamp": 1788263989474
+    },
+    "4.3 Write property test: Focus_Extension duration bounds": {
+      "status": "passed",
+      "lastRunTimestamp": 1788264002196
+    },
+    "6.5 Write property test: pause-for-today suppresses then auto-resumes": {
+      "status": "passed",
+      "lastRunTimestamp": 1788265718996
+    },
+    "14.2 Write property test: aggregated sync payload contains no raw telemetry": {
+      "status": "passed",
+      "lastRunTimestamp": 1788266770709
+    }
+  },
+  "executionHistory": {
+    "1.1 Create `InterceptionRule` domain entity": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262839451
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262853737
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788263189219
+      }
+    ],
+    "1.2 Create `InterceptionRuleRepository` port": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262839679
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788263195106
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788263453797
+      }
+    ],
+    "1.3 Write unit tests for `InterceptionRule` invariants": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262839883
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788263196050
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788263454767
+      }
+    ],
+    "2.1 Add `pausedForDate` to `LocalInterceptionRule` and migrate": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262840098
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788263197518
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788263456210
+      }
+    ],
+    "2.2 Extend `InterceptionRuleDao` with pause/list-with-paused queries": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262840255
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788263465983
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788263720060
+      }
+    ],
+    "2.3 Write instrumented Room migration test": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262840415
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788263467082
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788263721271
+      }
+    ],
+    "3.1 Implement the repository over the DAO with user_id scoping": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262840510
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788263728375
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788264123560
+      }
+    ],
+    "3.2 Add Hilt binding for the repository": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262840625
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788264130224
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788264420426
+      }
+    ],
+    "3.3 Write property test: Rule persistence round-trip": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262840824
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788264131178
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788264421589
+      }
+    ],
+    "3.4 Write property test: user scoping isolation": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262840925
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788264132353
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788264422782
+      }
+    ],
+    "3.5 Write property test: local-store write failures preserve prior state": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262841029
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788264133552
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788264423928
+      }
+    ],
+    "4.1 Add `focusExtensionMinutes` and `setSamplingIntervalSeconds`": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262841128
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788263468209
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788263722259
+      }
+    ],
+    "4.2 Write property test: sampling interval integrity": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262841208
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788263729781
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788264122735
+      }
+    ],
+    "4.3 Write property test: Focus_Extension duration bounds": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262841284
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788263730943
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788264123777
+      }
+    ],
+    "5. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262841344
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788270475879
+      }
+    ],
+    "6.1 Route rule lookup through the domain port and skip paused rules": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262841395
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788264641992
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788265392228
+      }
+    ],
+    "6.2 Batch accumulation with ≥60s flush cadence and failure retry": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262841445
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788264643190
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788265395094
+      }
+    ],
+    "6.3 Write property test: accumulation is the monotonic sum of increments": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262841496
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788265404318
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788266022853
+      }
+    ],
+    "6.4 Write property test: persistence cadence and failure retention": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262841617
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788265405043
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788266023758
+      }
+    ],
+    "6.5 Write property test: pause-for-today suppresses then auto-resumes": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262841694
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788265406499
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788266025199
+      }
+    ],
+    "6.6 Write property test: deleting a Rule stops accumulation": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262841751
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788265407699
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788266026427
+      }
+    ],
+    "7.1 Implement the extension state machine": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262841817
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788263731762
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788264123140
+      }
+    ],
+    "7.2 Write property test: extension granted only on recorded engagement": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262841877
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788264435142
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788264634100
+      }
+    ],
+    "7.3 Write property test: active extension suppresses re-triggering": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262841936
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788264436126
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788264635044
+      }
+    ],
+    "7.4 Write property test: extension cap never exceeds three per day with cap signalling": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262842000
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788264437066
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788264635993
+      }
+    ],
+    "8.1 Implement suppression-context detection": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262842056
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262854635
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788263189973
+      }
+    ],
+    "8.2 Write property test: never present during a Suppression_Context": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262842106
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788263198165
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788263457315
+      }
+    ],
+    "9.1 Implement the 300s deferral state machine": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262842161
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788264134201
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788264424705
+      }
+    ],
+    "9.2 Write property test: deferral holds up to the window bound": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262842216
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788264644349
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788265395394
+      }
+    ],
+    "9.3 Write property test: deferred intercept presents only when suppression clears in time and app is foreground": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262842266
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788264645495
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788265395774
+      }
+    ],
+    "10. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262842327
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788270477179
+      }
+    ],
+    "11.1 Implement `LimitReachedNotifier` with a single open-Intercept action": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262842437
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788265408577
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788266027253
+      }
+    ],
+    "11.2 Route depletion through deferral and extension before overlay": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262842496
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788266951644
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788267268713
+      }
+    ],
+    "11.3 Write unit/wiring tests for notifier and service routing": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262842545
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788267776048
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788268371071
+      }
+    ],
+    "12.1 Surface an engagement result from the overlay": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262842601
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788267274037
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788267769273
+      }
+    ],
+    "12.2 Write property test: Intercept_Screen content completeness": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262842676
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788267777269
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788268368705
+      }
+    ],
+    "12.3 Write property test: overlay action uses the same pipeline as normal completion": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262842744
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788267779129
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788268369648
+      }
+    ],
+    "13.1 Migrate `InterceptionTodoReminderNotifier` and `PermissionRevocationDetector` strings": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262842816
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788266950435
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788267266447
+      }
+    ],
+    "14.1 Implement consent-gated aggregated-only sync": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262842872
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788264646237
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788265397025
+      }
+    ],
+    "14.2 Write property test: aggregated sync payload contains no raw telemetry": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262842924
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788266033609
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788266943123
+      }
+    ],
+    "14.3 Write property test: consent revocation cancels sync and halts further syncing": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262842976
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788266033978
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788266942211
+      }
+    ],
+    "15. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262843044
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788270478071
+      }
+    ],
+    "16.1 Implement `InstalledAppsProvider`": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262843110
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788267779789
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788268372462
+      }
+    ],
+    "16.2 Implement `RuleAuthoringUiState` and `RuleAuthoringViewModel` list/search/selection": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262843168
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788268379013
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788268522792
+      }
+    ],
+    "16.3 Write property test: installed-app list is sorted and complete, excluding critical apps": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262843228
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788268531262
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788269007552
+      }
+    ],
+    "16.4 Write property test: search filters to case-insensitive label matches": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262843287
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788268530297
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788269008481
+      }
+    ],
+    "17.1 Implement per-app time picker and daily-limit validation in the ViewModel": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262843344
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788268532375
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788269009571
+      }
+    ],
+    "17.2 Write property test: daily-limit validation (accept in range, reject-and-retain)": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262843400
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788269016924
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788269613306
+      }
+    ],
+    "17.3 Write property test: save requires at least one app with a valid limit": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262843461
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788269018404
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788269614075
+      }
+    ],
+    "18.1 Implement display, edit, pause, and delete in the ViewModel": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262843527
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788269019375
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788269612147
+      }
+    ],
+    "18.2 Implement `RuleAuthoringScreen` Compose UI with permission rationale and delete confirmation": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262843594
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788269623390
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788269961868
+      }
+    ],
+    "18.3 Write UI/instrumented tests for authoring screen behaviors": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262843667
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788269967768
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788270428322
+      }
+    ],
+    "19. Final checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788262843739
+      },
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788270478972
+      }
+    ],
+    "1. Domain layer: Rule entity and repository port [NEW]": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788263454842
+      }
+    ],
+    "8. SuppressionContextDetector [NEW]": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788263457408
+      }
+    ],
+    "2. Data layer: Room schema, DAO, and migration [MODIFY]": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788263721420
+      }
+    ],
+    "4. Interception config: reject-and-retain interval + extension duration [MODIFY]": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788264123878
+      }
+    ],
+    "3. Data layer: `InterceptionRuleRepositoryImpl` [NEW]": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788264424015
+      }
+    ],
+    "7. FocusExtensionManager [NEW]": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788264636140
+      }
+    ],
+    "9. DeferredInterceptCoordinator [NEW]": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788265395854
+      }
+    ],
+    "6. AllowanceTracker: port lookup, pause skip, batched persistence + retry [MODIFY]": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788266026535
+      }
+    ],
+    "14. AggregatedCounterSync [NEW]": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788266943317
+      }
+    ],
+    "13. Localize existing hardcoded notifier strings [MODIFY]": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788267266606
+      }
+    ],
+    "12. Overlay: return engagement result [MODIFY]": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788268369763
+      }
+    ],
+    "11. LimitReachedNotifier and InterceptionService wiring [NEW + MODIFY]": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788268371226
+      }
+    ],
+    "16. Rule Authoring UI: installed-app list and search [NEW]": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788269008592
+      }
+    ],
+    "17. Rule Authoring UI: time picker, validation, and save [NEW]": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788269614263
+      }
+    ],
+    "18. Rule Authoring UI: existing-rule management (edit/pause/delete) [NEW]": [
+      {
+        "executionId": "945c3506-fb98-4c12-9293-d1ce959863d8",
+        "chatSessionId": "sess_6fd278fc-894b-4219-8211-5a55b6b13311",
+        "timestamp": 1788270428486
+      }
+    ]
+  }
+}

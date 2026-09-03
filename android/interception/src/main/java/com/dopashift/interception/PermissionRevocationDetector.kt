@@ -7,6 +7,7 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.dopashift.ui.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -170,15 +171,17 @@ class PermissionRevocationDetector @Inject constructor(
         notificationManager.createNotificationChannel(channel)
 
         val missingPermissions = buildString {
-            if (!status.hasUsageStats) append("Usage Access")
+            if (!status.hasUsageStats) append(context.getString(R.string.permission_revocation_usage_access))
             if (!status.hasUsageStats && !status.hasOverlay) append(", ")
-            if (!status.hasOverlay) append("Display Over Other Apps")
+            if (!status.hasOverlay) append(context.getString(R.string.permission_revocation_overlay))
         }
 
         val notification = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_dialog_alert)
-            .setContentTitle("DopaShift Interception Disabled")
-            .setContentText("Missing permissions: $missingPermissions. Tap to fix.")
+            .setContentTitle(context.getString(R.string.permission_revocation_notification_title))
+            .setContentText(
+                context.getString(R.string.permission_revocation_notification_text, missingPermissions)
+            )
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
             .setCategory(NotificationCompat.CATEGORY_SYSTEM)

@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +23,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
@@ -50,6 +52,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -62,7 +65,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dopashift.domain.entity.DailyTodoItem
 import com.dopashift.domain.entity.HabitTrack
+import com.dopashift.ui.R
 import com.dopashift.ui.theme.DopaShiftTheme
+import com.dopashift.ui.theme.minTaskRowHeight
+import com.dopashift.ui.theme.politeLiveRegion
 import java.time.Duration
 import java.time.Instant
 import java.util.UUID
@@ -81,31 +87,36 @@ import java.util.UUID
  */
 @Composable
 fun DashboardScreen(
-    viewModel: DashboardViewModel = hiltViewModel()
+    viewModel: DashboardViewModel = hiltViewModel(),
+    onNavigateToInterceptionRules: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val sectionData by viewModel.sectionData.collectAsStateWithLifecycle()
 
     DashboardContent(
         uiState = uiState,
-        onTodoCheckedChange = { todoId, isCompleted ->
-            if (isCompleted) viewModel.markTodoComplete(todoId)
-            else viewModel.markTodoIncomplete(todoId)
-        },
+        sectionData = sectionData,
+        onTodoCheckedChange = { todoId, isCompleted -> viewModel.setTodoCompleted(todoId, isCompleted) },
         onHabitComplete = { trackId -> viewModel.completeHabitCheckpoint(trackId) },
         onLoadMoreActivity = { viewModel.loadMoreActivityFeed() },
-        onAddTodo = { text -> viewModel.addTodo(text) }
+        onAddTodo = { text -> viewModel.addTodo(text) },
+        onNavigateToInterceptionRules = onNavigateToInterceptionRules
     )
 }
 
 @Composable
 private fun DashboardContent(
     uiState: DashboardUiState,
+    sectionData: DashboardSectionData,
     onTodoCheckedChange: (UUID, Boolean) -> Unit,
     onHabitComplete: (UUID) -> Unit,
     onLoadMoreActivity: () -> Unit,
-    onAddTodo: (String) -> Unit
+    onAddTodo: (String) -> Unit,
+    onNavigateToInterceptionRules: () -> Unit
 ) {
-    if (uiState.isLoading) {
+    // DUX-3 AC3: skeleton-first loading (full-screen spinner is a placeholder until the
+    // SectionSkeleton composables land in task 10.2).
+    if (uiState is DashboardUiState.Loading) {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
@@ -115,8 +126,14 @@ private fun DashboardContent(
         return
     }
 
-    // Req 20.11: Empty state
-    if (uiState.isEmpty) {
+    val content = uiState as DashboardUiState.Content
+
+    val isEmpty = sectionData.goalProgressSummaries.isEmpty() &&
+        sectionData.todayTodos.isEmpty() &&
+        sectionData.overdueTodos.isEmpty() &&
+        sectionData.activeHabitTracks.isEmpty()
+
+    if (isEmpty) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -125,12 +142,12 @@ private fun DashboardContent(
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
-                    text = "Welcome to DopaShift",
+                    text = stringResource(R.string.dux_dashboard_empty_title),
                     style = MaterialTheme.typography.headlineMedium
                 )
                 Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.base))
                 Text(
-                    text = "Create a goal to get started",
+                    text = stringResource(R.string.dux_dashboard_empty_subtitle),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -151,38 +168,43 @@ private fun DashboardContent(
         item {
             Column {
                 Text(
-                    text = "Overview",
+                    text = stringResource(R.string.dux_dashboard_overview_title),
                     style = MaterialTheme.typography.displaySmall,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.base))
                 Text(
-                    text = "Welcome back. Your momentum is building.",
+                    text = stringResource(R.string.dux_dashboard_overview_subtitle),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
 
+        // === Manage App Limits entry (Requirement 2 — App Selection & Time Picker) ===
+        item {
+            ManageAppLimitsEntry(onClick = onNavigateToInterceptionRules)
+        }
+
         // === 2. Efficiency Score Card (wireframe: ring left, text right) ===
         item {
             EfficiencyScoreCard(
-                score = uiState.todayScore,
-                previousScore = uiState.previousDayScore,
-                trend = uiState.efficiencyTrend
+                score = content.efficiencyScore,
+                previousScore = sectionData.previousDayScore,
+                trend = sectionData.efficiencyTrend
             )
         }
 
         // === 3. "Active Goals" heading + full-width stacked goal cards ===
-        if (uiState.goalProgressSummaries.isNotEmpty()) {
+        if (sectionData.goalProgressSummaries.isNotEmpty()) {
             item {
                 Text(
-                    text = "Active Goals",
+                    text = stringResource(R.string.dux_dashboard_active_goals_heading),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.SemiBold
                 )
             }
-            items(uiState.goalProgressSummaries, key = { it.goal.id }) { summary ->
+            items(sectionData.goalProgressSummaries, key = { it.goal.id }) { summary ->
                 GoalCard(summary = summary)
             }
         }
@@ -190,22 +212,22 @@ private fun DashboardContent(
         // === 4. "Today's Focus" card with todos + quick-add ===
         item {
             TodaysFocusCard(
-                todos = uiState.todayTodos,
+                todos = sectionData.todayTodos,
                 onTodoCheckedChange = onTodoCheckedChange,
                 onAddTodo = onAddTodo
             )
         }
 
         // === Quick-Action Habit Completion (Req 20.4b) ===
-        if (uiState.activeHabitTracks.isNotEmpty()) {
+        if (sectionData.activeHabitTracks.isNotEmpty()) {
             item {
                 Text(
-                    text = "Active Habits",
+                    text = stringResource(R.string.dux_dashboard_active_habits_heading),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold
                 )
             }
-            items(uiState.activeHabitTracks, key = { it.id }) { track ->
+            items(sectionData.activeHabitTracks, key = { it.id }) { track ->
                 HabitQuickActionItem(
                     track = track,
                     onComplete = { onHabitComplete(track.id) }
@@ -214,24 +236,24 @@ private fun DashboardContent(
         }
 
         // === Activity Feed (Req 20.6, 20.10) ===
-        if (uiState.activityFeed.isNotEmpty()) {
+        if (sectionData.activityFeed.isNotEmpty()) {
             item {
                 Text(
-                    text = "Activity",
+                    text = stringResource(R.string.dux_dashboard_activity_heading),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold
                 )
             }
-            items(uiState.activityFeed, key = { it.id }) { entry ->
+            items(sectionData.activityFeed, key = { it.id }) { entry ->
                 ActivityFeedItem(entry = entry)
             }
-            if (uiState.activityFeedHasMore) {
+            if (sectionData.activityFeedHasMore) {
                 item {
                     TextButton(
                         onClick = onLoadMoreActivity,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Load more")
+                        Text(stringResource(R.string.dux_dashboard_load_more))
                     }
                 }
             }
@@ -239,6 +261,54 @@ private fun DashboardContent(
 
         // Bottom spacing for nav bar
         item { Spacer(modifier = Modifier.height(80.dp)) }
+    }
+}
+
+// =====================================================================================
+// Manage App Limits entry (Requirement 2 — App Selection & Time Picker)
+// Tappable card that navigates to the Rule Authoring screen.
+// =====================================================================================
+
+@Composable
+private fun ManageAppLimitsEntry(onClick: () -> Unit) {
+    val entryDescription = stringResource(R.string.rule_authoring_settings_entry)
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .semantics { contentDescription = entryDescription },
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+        ),
+        shape = RoundedCornerShape(16.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(DopaShiftTheme.spacing.gutter),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(DopaShiftTheme.spacing.stackSm)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Settings,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(24.dp)
+            )
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = stringResource(R.string.rule_authoring_settings_entry),
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Medium
+                )
+                Text(
+                    text = stringResource(R.string.rule_authoring_settings_entry_description),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
     }
 }
 
@@ -253,10 +323,18 @@ private fun EfficiencyScoreCard(
     previousScore: Int?,
     trend: EfficiencyTrend
 ) {
+    val cardDescription = stringResource(R.string.dux_efficiency_card_content_description)
+    val ringLabel = if (score != null) {
+        stringResource(R.string.dux_efficiency_percent_label, score)
+    } else {
+        stringResource(R.string.dux_efficiency_no_score_label)
+    }
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .semantics { contentDescription = "Efficiency score" },
+            // DUX-5.8: announce efficiency-value updates to screen readers as a polite live region.
+            .politeLiveRegion()
+            .semantics { contentDescription = cardDescription },
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerLow
         ),
@@ -273,7 +351,7 @@ private fun EfficiencyScoreCard(
             // Circular progress ring
             CircularProgressRing(
                 progress = (score ?: 0) / 100f,
-                label = if (score != null) "${score}%" else "—",
+                label = ringLabel,
                 size = 56.dp,
                 ringColor = DopaShiftTheme.colors.productiveBlue,
                 trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
@@ -282,25 +360,33 @@ private fun EfficiencyScoreCard(
 
             Column {
                 Text(
-                    text = "Efficiency",
+                    text = stringResource(R.string.dux_efficiency_card_title),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Medium
                 )
                 if (previousScore != null && score != null) {
                     val diff = score - previousScore
-                    val diffText = if (diff >= 0) "+$diff%" else "$diff%"
+                    val diffText = if (diff >= 0) {
+                        stringResource(R.string.dux_efficiency_diff_positive, diff)
+                    } else {
+                        stringResource(R.string.dux_efficiency_diff_negative, diff)
+                    }
                     Text(
-                        text = "$diffText from yesterday",
+                        text = diffText,
                         style = MaterialTheme.typography.bodyMedium,
                         color = DopaShiftTheme.colors.momentumTeal
                     )
                 } else {
                     Text(
                         text = when (trend) {
-                            EfficiencyTrend.NOT_ENOUGH_DATA -> "Not enough data"
-                            EfficiencyTrend.IMPROVING -> "Improving"
-                            EfficiencyTrend.DECLINING -> "Declining"
-                            EfficiencyTrend.STABLE -> "Stable"
+                            EfficiencyTrend.NOT_ENOUGH_DATA ->
+                                stringResource(R.string.dux_efficiency_trend_not_enough_data)
+                            EfficiencyTrend.IMPROVING ->
+                                stringResource(R.string.dux_efficiency_trend_improving)
+                            EfficiencyTrend.DECLINING ->
+                                stringResource(R.string.dux_efficiency_trend_declining)
+                            EfficiencyTrend.STABLE ->
+                                stringResource(R.string.dux_efficiency_trend_stable)
                         },
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -324,11 +410,16 @@ private fun GoalCard(summary: GoalProgressSummary) {
         DopaShiftTheme.colors.productiveBlue
     }
 
+    val goalDescription = stringResource(
+        R.string.dux_goal_content_description,
+        summary.goal.name,
+        summary.progressPercent
+    )
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .semantics {
-                contentDescription = "${summary.goal.name}: ${summary.progressPercent}% complete"
+                contentDescription = goalDescription
             },
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerLow
@@ -388,9 +479,9 @@ private fun GoalCard(summary: GoalProgressSummary) {
                     ) {
                         Text(
                             text = if (summary.streakDays > 0) {
-                                "${summary.streakDays} Days Streak"
+                                stringResource(R.string.dux_goal_days_streak, summary.streakDays)
                             } else {
-                                "In Progress"
+                                stringResource(R.string.dux_goal_in_progress)
                             },
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -429,7 +520,11 @@ private fun GoalCard(summary: GoalProgressSummary) {
                 ) {
                     CircularProgressRing(
                         progress = summary.progressPercent / 100f,
-                        label = "${summary.completedItems}/${summary.totalItems}",
+                        label = stringResource(
+                            R.string.dux_goal_progress_fraction,
+                            summary.completedItems,
+                            summary.totalItems
+                        ),
                         size = 48.dp,
                         ringColor = DopaShiftTheme.colors.momentumTeal,
                         trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
@@ -438,7 +533,10 @@ private fun GoalCard(summary: GoalProgressSummary) {
 
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = "${summary.progressPercent}% Complete",
+                            text = stringResource(
+                                R.string.dux_goal_percent_complete_caps,
+                                summary.progressPercent
+                            ),
                             style = MaterialTheme.typography.bodyMedium
                         )
                         Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.base))
@@ -482,11 +580,12 @@ private fun TodaysFocusCard(
 ) {
     var quickAddText by remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
+    val focusCardDescription = stringResource(R.string.dux_todays_focus_content_description)
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .semantics { contentDescription = "Today's focus tasks" },
+            .semantics { contentDescription = focusCardDescription },
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainer
         ),
@@ -501,7 +600,7 @@ private fun TodaysFocusCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Today's Focus",
+                    text = stringResource(R.string.dux_todays_focus_title),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -520,7 +619,7 @@ private fun TodaysFocusCard(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = "Add task",
+                        contentDescription = stringResource(R.string.dux_todays_focus_add_task),
                         modifier = Modifier.size(16.dp)
                     )
                 }
@@ -531,7 +630,7 @@ private fun TodaysFocusCard(
             // Task items
             if (todos.isEmpty()) {
                 Text(
-                    text = "No tasks for today. Add one below!",
+                    text = stringResource(R.string.dux_todays_focus_empty),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(vertical = DopaShiftTheme.spacing.stackSm)
@@ -558,7 +657,10 @@ private fun TodaysFocusCard(
                 value = quickAddText,
                 onValueChange = { quickAddText = it },
                 placeholder = {
-                    Text("Add new task...", style = MaterialTheme.typography.bodyMedium)
+                    Text(
+                        stringResource(R.string.dux_todays_focus_add_placeholder),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                 },
                 modifier = Modifier.fillMaxWidth(),
                 textStyle = MaterialTheme.typography.bodyMedium,
@@ -605,6 +707,8 @@ private fun TodoItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            // DUX-5.1: task-list rows are at least 56dp tall.
+            .minTaskRowHeight()
             .clip(RoundedCornerShape(12.dp))
             .background(containerColor)
             .border(
@@ -668,6 +772,8 @@ private fun HabitQuickActionItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                // DUX-5.1: habit checkpoint rows are at least 56dp tall.
+                .minTaskRowHeight()
                 .padding(DopaShiftTheme.spacing.stackSm),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(DopaShiftTheme.spacing.stackSm)
@@ -679,13 +785,14 @@ private fun HabitQuickActionItem(
             )
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = currentCheckpoint?.description ?: "Day ${track.currentDay}",
+                    text = currentCheckpoint?.description
+                        ?: stringResource(R.string.dux_habit_day_label, track.currentDay),
                     style = MaterialTheme.typography.bodyMedium,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = "Day ${track.currentDay}/30",
+                    text = stringResource(R.string.dux_habit_day_of_total, track.currentDay),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -693,7 +800,7 @@ private fun HabitQuickActionItem(
             // Circular ring for habit progress
             CircularProgressRing(
                 progress = track.currentDay / 30f,
-                label = "${track.currentDay}/30",
+                label = stringResource(R.string.dux_habit_progress_fraction, track.currentDay),
                 size = 36.dp,
                 ringColor = DopaShiftTheme.colors.momentumTeal,
                 trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
@@ -718,7 +825,7 @@ private fun ActivityFeedItem(entry: ActivityFeedEntry) {
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = entry.actionType,
+                text = activityActionLabel(entry),
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Medium
             )
@@ -731,7 +838,7 @@ private fun ActivityFeedItem(entry: ActivityFeedEntry) {
             )
         }
         Text(
-            text = formatRelativeTime(entry.timestamp),
+            text = rememberRelativeTime(entry.timestamp),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -800,15 +907,37 @@ private fun CircularProgressRing(
 // Utilities
 // =====================================================================================
 
-private fun formatRelativeTime(timestamp: Instant): String {
+/** Resolves the localized activity-feed action label for [entry] (DUX-4.11). */
+@Composable
+private fun activityActionLabel(entry: ActivityFeedEntry): String = when (entry.actionType) {
+    ActivityActionType.TASK_COMPLETED -> stringResource(R.string.dux_activity_task_completed)
+    ActivityActionType.TASK_UPDATED -> stringResource(R.string.dux_activity_task_updated)
+    ActivityActionType.TASK_DELETED -> stringResource(R.string.dux_activity_task_deleted)
+    ActivityActionType.GOAL_TASK_COMPLETED ->
+        stringResource(R.string.dux_activity_goal_task_completed)
+    ActivityActionType.GOAL_TASK_UPDATED ->
+        stringResource(R.string.dux_activity_goal_task_updated)
+    ActivityActionType.HABIT_COMPLETED -> stringResource(R.string.dux_activity_habit_completed)
+    ActivityActionType.GOAL_DELETED -> stringResource(R.string.dux_activity_goal_deleted)
+    ActivityActionType.GOAL_CREATED -> stringResource(R.string.dux_activity_goal_created)
+    ActivityActionType.GENERIC ->
+        stringResource(R.string.dux_activity_generic, entry.genericEntityType, entry.genericField)
+}
+
+@Composable
+private fun rememberRelativeTime(timestamp: Instant): String {
     val now = Instant.now()
     val duration = Duration.between(timestamp, now)
 
     return when {
-        duration.toMinutes() < 1 -> "just now"
-        duration.toMinutes() < 60 -> "${duration.toMinutes()}m ago"
-        duration.toHours() < 24 -> "${duration.toHours()}h ago"
-        duration.toDays() < 7 -> "${duration.toDays()}d ago"
-        else -> "${duration.toDays() / 7}w ago"
+        duration.toMinutes() < 1 -> stringResource(R.string.dux_time_just_now)
+        duration.toMinutes() < 60 ->
+            stringResource(R.string.dux_time_minutes_ago, duration.toMinutes().toInt())
+        duration.toHours() < 24 ->
+            stringResource(R.string.dux_time_hours_ago, duration.toHours().toInt())
+        duration.toDays() < 7 ->
+            stringResource(R.string.dux_time_days_ago, duration.toDays().toInt())
+        else ->
+            stringResource(R.string.dux_time_weeks_ago, (duration.toDays() / 7).toInt())
     }
 }

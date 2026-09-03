@@ -47,8 +47,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -66,6 +68,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -76,6 +79,12 @@ import com.dopashift.domain.entity.CheckpointStatus
 import com.dopashift.domain.entity.GoalChecklistItem
 import com.dopashift.domain.entity.GoalProfile
 import com.dopashift.domain.entity.HabitTrack
+import com.dopashift.ui.quickcreate.ActiveSheet
+import com.dopashift.ui.quickcreate.GoalCreationSheet
+import com.dopashift.ui.quickcreate.GoalSheetCallbacks
+import com.dopashift.ui.quickcreate.QuickCreateEvent
+import com.dopashift.ui.quickcreate.QuickCreateViewModel
+import com.dopashift.ui.R
 import com.dopashift.ui.theme.DopaShiftTheme
 import java.util.UUID
 
@@ -87,23 +96,62 @@ import java.util.UUID
  * - Goal detail view with keywords, checklist items, and active habit tracks
  * - Create/edit/delete goal dialogs with dependency confirmation
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GoalsScreen(
-    viewModel: GoalsViewModel = hiltViewModel()
+    viewModel: GoalsViewModel = hiltViewModel(),
+    quickCreateViewModel: QuickCreateViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    // Drive the shared "New Goal" experience (the same Creation_Sheet the Dashboard uses) so the
+    // Goals tab plus button and the Dashboard New Goal action are a single, consistent flow
+    // routing through the shared CreateGoalUseCase (DQC-1.10 — no parallel creation path).
+    val activeSheet by quickCreateViewModel.activeSheet.collectAsStateWithLifecycle()
+    val goalSheetState by quickCreateViewModel.goalSheetState.collectAsStateWithLifecycle()
+
+    val snackbarHostState = remember { SnackbarHostState() }
+    var pendingDiscard by remember { mutableStateOf(false) }
+
+    val undoLabel = stringResource(R.string.qc_undo_action)
+
+    // Post-creation Undo snackbar (DQC-1.6, DQC-1.7).
+    LaunchedEffect(Unit) {
+        quickCreateViewModel.snackbar.collect { snackbar ->
+            val result = snackbarHostState.showSnackbar(
+                message = snackbar.message,
+                actionLabel = undoLabel,
+                withDismissAction = true,
+                duration = SnackbarDuration.Long
+            )
+            if (result == SnackbarResult.ActionPerformed) {
+                quickCreateViewModel.onUndo(snackbar.undoToken)
+            }
+        }
+    }
+
+    // One-shot effects: confirm-before-discard (DQC-1.9) and non-blocking notices (DQC-2.11).
+    LaunchedEffect(Unit) {
+        quickCreateViewModel.events.collect { event ->
+            when (event) {
+                is QuickCreateEvent.ConfirmDiscard -> pendingDiscard = true
+                is QuickCreateEvent.Notice -> snackbarHostState.showSnackbar(event.message)
+                is QuickCreateEvent.FieldErrors ->
+                    snackbarHostState.showSnackbar(event.fieldErrors.values.firstOrNull() ?: "")
+            }
+        }
+    }
+
     GoalsScreenContent(
         uiState = uiState,
+        snackbarHostState = snackbarHostState,
         onGoalClick = viewModel::selectGoal,
         onBackClick = viewModel::clearSelection,
-        onCreateClick = viewModel::showCreateDialog,
+        onCreateClick = { quickCreateViewModel.openQuickCreate(ActiveSheet.Goal) },
         onEditClick = viewModel::showEditDialog,
         onDeleteClick = viewModel::showDeleteDialog,
-        onDismissCreate = viewModel::dismissCreateDialog,
         onDismissEdit = viewModel::dismissEditDialog,
         onDismissDelete = viewModel::dismissDeleteDialog,
-        onCreateGoal = viewModel::createGoal,
         onUpdateGoal = viewModel::updateGoal,
         onDeleteGoal = viewModel::deleteGoal,
         onAddChecklistItem = viewModel::addChecklistItem,
@@ -111,21 +159,54 @@ fun GoalsScreen(
         onDeleteChecklistItem = viewModel::deleteChecklistItem,
         onClearError = viewModel::clearError
     )
+
+    // The shared goal Creation_Sheet — identical to the Dashboard New Goal experience.
+    if (activeSheet is ActiveSheet.Goal) {
+        GoalCreationSheet(
+            state = goalSheetState,
+            callbacks = GoalSheetCallbacks(
+                onSave = { name, category, keywords, description ->
+                    quickCreateViewModel.saveGoal(name, category, keywords, description)
+                },
+                onDismiss = quickCreateViewModel::dismissSheet,
+                onDismissWithUnsavedInput = quickCreateViewModel::dismissSheetWithUnsavedInput,
+                onCategoryChanged = quickCreateViewModel::onCategoryChanged
+            )
+        )
+    }
+
+    if (pendingDiscard) {
+        AlertDialog(
+            onDismissRequest = { pendingDiscard = false },
+            title = { Text(stringResource(R.string.qc_discard_title)) },
+            text = { Text(stringResource(R.string.qc_discard_body)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    pendingDiscard = false
+                    quickCreateViewModel.confirmDiscard()
+                }) { Text(stringResource(R.string.qc_discard_confirm)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { pendingDiscard = false }) {
+                    Text(stringResource(R.string.qc_discard_cancel))
+                }
+            }
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun GoalsScreenContent(
     uiState: GoalsUiState,
+    snackbarHostState: SnackbarHostState,
     onGoalClick: (UUID) -> Unit,
     onBackClick: () -> Unit,
     onCreateClick: () -> Unit,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
-    onDismissCreate: () -> Unit,
     onDismissEdit: () -> Unit,
     onDismissDelete: () -> Unit,
-    onCreateGoal: (String, String, List<String>) -> Unit,
     onUpdateGoal: (String, String, List<String>) -> Unit,
     onDeleteGoal: (DeleteGoalAction) -> Unit,
     onAddChecklistItem: (String) -> Unit,
@@ -133,8 +214,6 @@ private fun GoalsScreenContent(
     onDeleteChecklistItem: (UUID) -> Unit,
     onClearError: () -> Unit
 ) {
-    val snackbarHostState = remember { SnackbarHostState() }
-
     LaunchedEffect(uiState.errorMessage) {
         uiState.errorMessage?.let {
             snackbarHostState.showSnackbar(it)
@@ -212,18 +291,7 @@ private fun GoalsScreenContent(
         }
     }
 
-    // Dialogs
-    if (uiState.showCreateDialog) {
-        GoalFormDialog(
-            title = "Create Goal",
-            initialName = "",
-            initialCategory = "",
-            initialKeywords = emptyList(),
-            onDismiss = onDismissCreate,
-            onConfirm = { name, category, keywords -> onCreateGoal(name, category, keywords) }
-        )
-    }
-
+    // Edit uses the existing form dialog; goal creation is handled by the shared GoalCreationSheet.
     if (uiState.showEditDialog && uiState.selectedGoal != null) {
         GoalFormDialog(
             title = "Edit Goal",

@@ -20,6 +20,8 @@ import dagger.hilt.processor.internal.definecomponent.codegen._dagger_hilt_compo
 import hilt_aggregated_deps._androidx_hilt_work_HiltWrapper_WorkerFactoryModule;
 import hilt_aggregated_deps._com_dopashift_app_DopaShiftApplication_GeneratedInjector;
 import hilt_aggregated_deps._com_dopashift_app_MainActivity_GeneratedInjector;
+import hilt_aggregated_deps._com_dopashift_app_di_QuickCreateRepositoryModule;
+import hilt_aggregated_deps._com_dopashift_app_di_QuickCreateUseCaseModule;
 import hilt_aggregated_deps._com_dopashift_data_di_DataModule;
 import hilt_aggregated_deps._com_dopashift_data_di_NetworkModule;
 import hilt_aggregated_deps._com_dopashift_data_di_RepositoryModule;
@@ -31,6 +33,7 @@ import hilt_aggregated_deps._com_dopashift_interception_overlay_OverlayViewModel
 import hilt_aggregated_deps._com_dopashift_interception_reminder_ReminderEvaluationWorker_HiltModule;
 import hilt_aggregated_deps._com_dopashift_interception_reminder_di_ReminderModule;
 import hilt_aggregated_deps._com_dopashift_sync_SyncWorker_HiltModule;
+import hilt_aggregated_deps._com_dopashift_sync_di_SyncBindingModule;
 import hilt_aggregated_deps._com_dopashift_sync_di_SyncModule;
 import hilt_aggregated_deps._com_dopashift_ui_analytics_AnalyticsViewModel_HiltModules_BindsModule;
 import hilt_aggregated_deps._com_dopashift_ui_analytics_AnalyticsViewModel_HiltModules_KeyModule;
@@ -40,18 +43,26 @@ import hilt_aggregated_deps._com_dopashift_ui_goals_GoalsViewModel_HiltModules_B
 import hilt_aggregated_deps._com_dopashift_ui_goals_GoalsViewModel_HiltModules_KeyModule;
 import hilt_aggregated_deps._com_dopashift_ui_habits_HabitRoadmapViewModel_HiltModules_BindsModule;
 import hilt_aggregated_deps._com_dopashift_ui_habits_HabitRoadmapViewModel_HiltModules_KeyModule;
+import hilt_aggregated_deps._com_dopashift_ui_interception_RuleAuthoringViewModel_HiltModules_BindsModule;
+import hilt_aggregated_deps._com_dopashift_ui_interception_RuleAuthoringViewModel_HiltModules_KeyModule;
 import hilt_aggregated_deps._com_dopashift_ui_navigation_DopaShiftAppViewModel_HiltModules_BindsModule;
 import hilt_aggregated_deps._com_dopashift_ui_navigation_DopaShiftAppViewModel_HiltModules_KeyModule;
 import hilt_aggregated_deps._com_dopashift_ui_onboarding_OnboardingViewModel_HiltModules_BindsModule;
 import hilt_aggregated_deps._com_dopashift_ui_onboarding_OnboardingViewModel_HiltModules_KeyModule;
 import hilt_aggregated_deps._com_dopashift_ui_onboarding_PermissionSetupViewModel_HiltModules_BindsModule;
 import hilt_aggregated_deps._com_dopashift_ui_onboarding_PermissionSetupViewModel_HiltModules_KeyModule;
+import hilt_aggregated_deps._com_dopashift_ui_quickcreate_QuickCreateViewModel_HiltModules_BindsModule;
+import hilt_aggregated_deps._com_dopashift_ui_quickcreate_QuickCreateViewModel_HiltModules_KeyModule;
 import hilt_aggregated_deps._com_dopashift_ui_reminders_RemindersViewModel_HiltModules_BindsModule;
 import hilt_aggregated_deps._com_dopashift_ui_reminders_RemindersViewModel_HiltModules_KeyModule;
+import hilt_aggregated_deps._com_dopashift_ui_settings_AccentPickerViewModel_HiltModules_BindsModule;
+import hilt_aggregated_deps._com_dopashift_ui_settings_AccentPickerViewModel_HiltModules_KeyModule;
 import hilt_aggregated_deps._com_dopashift_ui_settings_SettingsViewModel_HiltModules_BindsModule;
 import hilt_aggregated_deps._com_dopashift_ui_settings_SettingsViewModel_HiltModules_KeyModule;
 import hilt_aggregated_deps._com_dopashift_ui_tasks_DailyTasksViewModel_HiltModules_BindsModule;
 import hilt_aggregated_deps._com_dopashift_ui_tasks_DailyTasksViewModel_HiltModules_KeyModule;
+import hilt_aggregated_deps._com_dopashift_ui_theme_ThemeStateViewModel_HiltModules_BindsModule;
+import hilt_aggregated_deps._com_dopashift_ui_theme_ThemeStateViewModel_HiltModules_KeyModule;
 import hilt_aggregated_deps._dagger_hilt_android_flags_FragmentGetContextFix_FragmentGetContextFixEntryPoint;
 import hilt_aggregated_deps._dagger_hilt_android_flags_HiltWrapper_FragmentGetContextFix_FragmentGetContextFixModule;
 import hilt_aggregated_deps._dagger_hilt_android_internal_lifecycle_DefaultViewModelFactories_ActivityEntryPoint;
@@ -95,6 +106,8 @@ import hilt_aggregated_deps._dagger_hilt_android_internal_modules_HiltWrapper_Ac
         _androidx_hilt_work_HiltWrapper_WorkerFactoryModule.class,
         _com_dopashift_app_DopaShiftApplication_GeneratedInjector.class,
         _com_dopashift_app_MainActivity_GeneratedInjector.class,
+        _com_dopashift_app_di_QuickCreateRepositoryModule.class,
+        _com_dopashift_app_di_QuickCreateUseCaseModule.class,
         _com_dopashift_data_di_DataModule.class,
         _com_dopashift_data_di_NetworkModule.class,
         _com_dopashift_data_di_RepositoryModule.class,
@@ -106,6 +119,7 @@ import hilt_aggregated_deps._dagger_hilt_android_internal_modules_HiltWrapper_Ac
         _com_dopashift_interception_reminder_ReminderEvaluationWorker_HiltModule.class,
         _com_dopashift_interception_reminder_di_ReminderModule.class,
         _com_dopashift_sync_SyncWorker_HiltModule.class,
+        _com_dopashift_sync_di_SyncBindingModule.class,
         _com_dopashift_sync_di_SyncModule.class,
         _com_dopashift_ui_analytics_AnalyticsViewModel_HiltModules_BindsModule.class,
         _com_dopashift_ui_analytics_AnalyticsViewModel_HiltModules_KeyModule.class,
@@ -115,18 +129,26 @@ import hilt_aggregated_deps._dagger_hilt_android_internal_modules_HiltWrapper_Ac
         _com_dopashift_ui_goals_GoalsViewModel_HiltModules_KeyModule.class,
         _com_dopashift_ui_habits_HabitRoadmapViewModel_HiltModules_BindsModule.class,
         _com_dopashift_ui_habits_HabitRoadmapViewModel_HiltModules_KeyModule.class,
+        _com_dopashift_ui_interception_RuleAuthoringViewModel_HiltModules_BindsModule.class,
+        _com_dopashift_ui_interception_RuleAuthoringViewModel_HiltModules_KeyModule.class,
         _com_dopashift_ui_navigation_DopaShiftAppViewModel_HiltModules_BindsModule.class,
         _com_dopashift_ui_navigation_DopaShiftAppViewModel_HiltModules_KeyModule.class,
         _com_dopashift_ui_onboarding_OnboardingViewModel_HiltModules_BindsModule.class,
         _com_dopashift_ui_onboarding_OnboardingViewModel_HiltModules_KeyModule.class,
         _com_dopashift_ui_onboarding_PermissionSetupViewModel_HiltModules_BindsModule.class,
         _com_dopashift_ui_onboarding_PermissionSetupViewModel_HiltModules_KeyModule.class,
+        _com_dopashift_ui_quickcreate_QuickCreateViewModel_HiltModules_BindsModule.class,
+        _com_dopashift_ui_quickcreate_QuickCreateViewModel_HiltModules_KeyModule.class,
         _com_dopashift_ui_reminders_RemindersViewModel_HiltModules_BindsModule.class,
         _com_dopashift_ui_reminders_RemindersViewModel_HiltModules_KeyModule.class,
+        _com_dopashift_ui_settings_AccentPickerViewModel_HiltModules_BindsModule.class,
+        _com_dopashift_ui_settings_AccentPickerViewModel_HiltModules_KeyModule.class,
         _com_dopashift_ui_settings_SettingsViewModel_HiltModules_BindsModule.class,
         _com_dopashift_ui_settings_SettingsViewModel_HiltModules_KeyModule.class,
         _com_dopashift_ui_tasks_DailyTasksViewModel_HiltModules_BindsModule.class,
         _com_dopashift_ui_tasks_DailyTasksViewModel_HiltModules_KeyModule.class,
+        _com_dopashift_ui_theme_ThemeStateViewModel_HiltModules_BindsModule.class,
+        _com_dopashift_ui_theme_ThemeStateViewModel_HiltModules_KeyModule.class,
         _dagger_hilt_android_flags_FragmentGetContextFix_FragmentGetContextFixEntryPoint.class,
         _dagger_hilt_android_flags_HiltWrapper_FragmentGetContextFix_FragmentGetContextFixModule.class,
         _dagger_hilt_android_internal_lifecycle_DefaultViewModelFactories_ActivityEntryPoint.class,

@@ -1,7 +1,7 @@
 package com.dopashift.interception
 
-import com.dopashift.data.local.entity.LocalInterceptionRule
 import com.dopashift.data.repository.LocalTelemetryRepository
+import com.dopashift.domain.entity.InterceptionRule
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -13,6 +13,7 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
+import java.util.UUID
 import kotlin.random.Random
 
 /**
@@ -32,6 +33,8 @@ import kotlin.random.Random
  * 4. Pre-midnight accumulation does NOT carry over to the new day.
  */
 class MidnightAllowanceResetPropertyTest {
+
+    private val testUserId = testUuid("user-1")
 
     /**
      * Property: For any timezone and any allowance, after crossing midnight the
@@ -65,27 +68,17 @@ class MidnightAllowanceResetPropertyTest {
 
                 val day1Clock = Clock.fixed(baseInstant, ZoneOffset.UTC)
 
-                val fakeRuleDao = FakeInterceptionRuleDao()
+                val fakeRuleRepository = FakeInterceptionRuleRepository()
                 val fakeTelemetryDao = FakeTelemetryDao()
                 val telemetryRepo = LocalTelemetryRepository(fakeTelemetryDao)
-                val tracker = AllowanceTracker(fakeRuleDao, telemetryRepo, day1Clock)
+                val tracker = AllowanceTracker(fakeRuleRepository, telemetryRepo, day1Clock)
                 tracker.userTimeZone = zone
+                tracker.userId = testUserId
 
                 val allowanceMinutes = random.nextInt(1, 120)
                 val packageName = "com.reset.app.$zoneName.$iteration"
 
-                fakeRuleDao.addRule(
-                    LocalInterceptionRule(
-                        id = "rule-$zoneName-$iteration",
-                        userId = "user-1",
-                        goalId = null,
-                        appPackageName = packageName,
-                        siteDomain = null,
-                        dailyAllowanceMinutes = allowanceMinutes,
-                        isActive = true,
-                        createdAt = System.currentTimeMillis()
-                    )
-                )
+                fakeRuleRepository.addRule(domainRule(testUserId, packageName, allowanceMinutes))
 
                 // Deplete on day 1
                 tracker.onForegroundDetected(packageName, allowanceMinutes.toLong() * 60L)
@@ -99,8 +92,9 @@ class MidnightAllowanceResetPropertyTest {
                 val day2Clock = Clock.fixed(day2Instant, ZoneOffset.UTC)
 
                 // Create a new tracker with the new clock (simulating time advancement)
-                val day2Tracker = AllowanceTracker(fakeRuleDao, telemetryRepo, day2Clock)
+                val day2Tracker = AllowanceTracker(fakeRuleRepository, telemetryRepo, day2Clock)
                 day2Tracker.userTimeZone = zone
+                day2Tracker.userId = testUserId
 
                 // The new day should show the app as NOT depleted (fresh accumulation in repo for new date)
                 val status = day2Tracker.onForegroundDetected(packageName, 1L)
@@ -125,27 +119,17 @@ class MidnightAllowanceResetPropertyTest {
             val baseInstant = Instant.parse("2024-06-15T18:00:00Z")
             val day1Clock = Clock.fixed(baseInstant, ZoneOffset.UTC)
 
-            val fakeRuleDao = FakeInterceptionRuleDao()
+            val fakeRuleRepository = FakeInterceptionRuleRepository()
             val fakeTelemetryDao = FakeTelemetryDao()
             val telemetryRepo = LocalTelemetryRepository(fakeTelemetryDao)
-            val tracker = AllowanceTracker(fakeRuleDao, telemetryRepo, day1Clock)
+            val tracker = AllowanceTracker(fakeRuleRepository, telemetryRepo, day1Clock)
             tracker.userTimeZone = zone
+            tracker.userId = testUserId
 
             val allowanceMinutes = random.nextInt(1, 60)
             val packageName = "com.callback.reset.$iteration"
 
-            fakeRuleDao.addRule(
-                LocalInterceptionRule(
-                    id = "rule-cbr-$iteration",
-                    userId = "user-1",
-                    goalId = null,
-                    appPackageName = packageName,
-                    siteDomain = null,
-                    dailyAllowanceMinutes = allowanceMinutes,
-                    isActive = true,
-                    createdAt = System.currentTimeMillis()
-                )
-            )
+            fakeRuleRepository.addRule(domainRule(testUserId, packageName, allowanceMinutes))
 
             var callbackCount = 0
             tracker.setOnAllowanceDepletedListener { _, _ -> callbackCount++ }
@@ -157,8 +141,9 @@ class MidnightAllowanceResetPropertyTest {
             // Day 2 — new clock past midnight
             val day2Instant = baseInstant.plus(24, ChronoUnit.HOURS)
             val day2Clock = Clock.fixed(day2Instant, ZoneOffset.UTC)
-            val day2Tracker = AllowanceTracker(fakeRuleDao, telemetryRepo, day2Clock)
+            val day2Tracker = AllowanceTracker(fakeRuleRepository, telemetryRepo, day2Clock)
             day2Tracker.userTimeZone = zone
+            day2Tracker.userId = testUserId
 
             var day2CallbackCount = 0
             day2Tracker.setOnAllowanceDepletedListener { _, _ -> day2CallbackCount++ }
@@ -193,22 +178,28 @@ class MidnightAllowanceResetPropertyTest {
         val allowanceMinutes = 5
 
         // Setup for UTC user
-        val utcRuleDao = FakeInterceptionRuleDao()
+        val utcRuleRepository = FakeInterceptionRuleRepository()
         val utcTelemetryDao = FakeTelemetryDao()
         val utcTelemetryRepo = LocalTelemetryRepository(utcTelemetryDao)
-        utcRuleDao.addRule(createRule(packageName, allowanceMinutes, "rule-utc"))
+        utcRuleRepository.addRule(
+            domainRule(testUserId, packageName, allowanceMinutes, id = testUuid("rule-utc"))
+        )
 
-        val utcTracker = AllowanceTracker(utcRuleDao, utcTelemetryRepo, clock)
+        val utcTracker = AllowanceTracker(utcRuleRepository, utcTelemetryRepo, clock)
         utcTracker.userTimeZone = utcZone
+        utcTracker.userId = testUserId
 
         // Setup for IST user
-        val istRuleDao = FakeInterceptionRuleDao()
+        val istRuleRepository = FakeInterceptionRuleRepository()
         val istTelemetryDao = FakeTelemetryDao()
         val istTelemetryRepo = LocalTelemetryRepository(istTelemetryDao)
-        istRuleDao.addRule(createRule(packageName, allowanceMinutes, "rule-ist"))
+        istRuleRepository.addRule(
+            domainRule(testUserId, packageName, allowanceMinutes, id = testUuid("rule-ist"))
+        )
 
-        val istTracker = AllowanceTracker(istRuleDao, istTelemetryRepo, clock)
+        val istTracker = AllowanceTracker(istRuleRepository, istTelemetryRepo, clock)
         istTracker.userTimeZone = istZone
+        istTracker.userId = testUserId
 
         // Both deplete
         utcTracker.onForegroundDetected(packageName, allowanceMinutes.toLong() * 60L)
@@ -223,11 +214,13 @@ class MidnightAllowanceResetPropertyTest {
         val nextHourInstant = utcInstant.plus(1, ChronoUnit.HOURS)
         val nextHourClock = Clock.fixed(nextHourInstant, ZoneOffset.UTC)
 
-        val utcDay2Tracker = AllowanceTracker(utcRuleDao, utcTelemetryRepo, nextHourClock)
+        val utcDay2Tracker = AllowanceTracker(utcRuleRepository, utcTelemetryRepo, nextHourClock)
         utcDay2Tracker.userTimeZone = utcZone
+        utcDay2Tracker.userId = testUserId
 
-        val istSameDayTracker = AllowanceTracker(istRuleDao, istTelemetryRepo, nextHourClock)
+        val istSameDayTracker = AllowanceTracker(istRuleRepository, istTelemetryRepo, nextHourClock)
         istSameDayTracker.userTimeZone = istZone
+        istSameDayTracker.userId = testUserId
 
         // UTC user: crossed midnight, fresh day — should be WITHIN_ALLOWANCE
         val utcStatus = utcDay2Tracker.onForegroundDetected(packageName, 1L)
@@ -257,17 +250,18 @@ class MidnightAllowanceResetPropertyTest {
             val baseInstant = Instant.parse("2024-06-15T20:00:00Z")
             val day1Clock = Clock.fixed(baseInstant, ZoneOffset.UTC)
 
-            val fakeRuleDao = FakeInterceptionRuleDao()
+            val fakeRuleRepository = FakeInterceptionRuleRepository()
             val fakeTelemetryDao = FakeTelemetryDao()
             val telemetryRepo = LocalTelemetryRepository(fakeTelemetryDao)
-            val tracker = AllowanceTracker(fakeRuleDao, telemetryRepo, day1Clock)
+            val tracker = AllowanceTracker(fakeRuleRepository, telemetryRepo, day1Clock)
             tracker.userTimeZone = zone
+            tracker.userId = testUserId
 
             val allowanceMinutes = random.nextInt(5, 120)
             val allowanceSeconds = allowanceMinutes.toLong() * 60L
             val packageName = "com.nocarry.app.$iteration"
 
-            fakeRuleDao.addRule(createRule(packageName, allowanceMinutes, "rule-nc-$iteration"))
+            fakeRuleRepository.addRule(domainRule(testUserId, packageName, allowanceMinutes))
 
             // Accumulate most of the allowance on day 1 (but don't deplete)
             val day1Usage = random.nextLong(1, allowanceSeconds)
@@ -276,8 +270,9 @@ class MidnightAllowanceResetPropertyTest {
             // Advance to day 2
             val day2Instant = baseInstant.plus(24, ChronoUnit.HOURS)
             val day2Clock = Clock.fixed(day2Instant, ZoneOffset.UTC)
-            val day2Tracker = AllowanceTracker(fakeRuleDao, telemetryRepo, day2Clock)
+            val day2Tracker = AllowanceTracker(fakeRuleRepository, telemetryRepo, day2Clock)
             day2Tracker.userTimeZone = zone
+            day2Tracker.userId = testUserId
 
             // On day 2, remaining should be full allowance (day 1 usage NOT carried over)
             val remaining = day2Tracker.getRemainingSeconds(packageName)
@@ -289,18 +284,4 @@ class MidnightAllowanceResetPropertyTest {
         }
     }
 
-    private fun createRule(
-        packageName: String,
-        allowanceMinutes: Int,
-        id: String
-    ): LocalInterceptionRule = LocalInterceptionRule(
-        id = id,
-        userId = "user-1",
-        goalId = null,
-        appPackageName = packageName,
-        siteDomain = null,
-        dailyAllowanceMinutes = allowanceMinutes,
-        isActive = true,
-        createdAt = System.currentTimeMillis()
-    )
 }

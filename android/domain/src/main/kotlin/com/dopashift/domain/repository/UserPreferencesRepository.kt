@@ -16,6 +16,20 @@ interface UserPreferencesRepository {
      */
     suspend fun setOnboardingCompleted(completed: Boolean)
 
+    // === Theme Mode (DUX-4.5) ===
+
+    /**
+     * Observes the user's selected theme mode as a token name: "DARK", "LIGHT", or "SYSTEM".
+     * Defaults to "DARK" (dark is the default per DUX-4.5), so recolor happens without a restart
+     * when the value changes.
+     */
+    fun observeThemeMode(): Flow<String>
+
+    /**
+     * Persists the user's theme mode choice. [mode] is one of "DARK", "LIGHT", "SYSTEM".
+     */
+    suspend fun setThemeMode(mode: String)
+
     // === Accent Color ===
 
     /**
@@ -27,6 +41,20 @@ interface UserPreferencesRepository {
      * Persists the user's accent color choice.
      */
     suspend fun setAccentColor(hexColor: String?)
+
+    // === Accent Seed (DUX-4.6) ===
+
+    /**
+     * Observes the user's accent seed color as an ARGB color long, or null for the design-system
+     * default. This is the Material 3 [androidx.compose.material3.ColorScheme] seed the theme uses
+     * (DUX-4.6); changing it recolors the visible screen without a restart.
+     */
+    fun observeAccentSeed(): Flow<Long?>
+
+    /**
+     * Persists the user's accent seed (ARGB color long), or null to fall back to the default seed.
+     */
+    suspend fun setAccentSeed(seed: Long?)
 
     // === Locale ===
 

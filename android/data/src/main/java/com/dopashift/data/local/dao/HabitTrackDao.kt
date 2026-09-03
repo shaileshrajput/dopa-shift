@@ -22,6 +22,9 @@ interface HabitTrackDao {
     @Query("SELECT * FROM habit_tracks WHERE userId = :userId AND isFinished = 0")
     fun observeActiveByUserId(userId: String): Flow<List<LocalHabitTrack>>
 
+    @Query("SELECT COUNT(*) FROM habit_tracks WHERE userId = :userId AND isFinished = 0")
+    fun observeActiveCountByUserId(userId: String): Flow<Int>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(track: LocalHabitTrack)
 
@@ -33,4 +36,10 @@ interface HabitTrackDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertCheckpoint(checkpoint: LocalHabitCheckpoint)
+
+    @Query("DELETE FROM habit_checkpoints WHERE habitTrackId = :trackId")
+    suspend fun deleteCheckpointsForTrack(trackId: String)
+
+    @Query("DELETE FROM habit_tracks WHERE id = :id")
+    suspend fun deleteTrack(id: String)
 }

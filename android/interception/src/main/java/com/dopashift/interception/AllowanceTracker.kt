@@ -1,30 +1,41 @@
 package com.dopashift.interception
 
-import com.dopashift.data.local.dao.InterceptionRuleDao
-import com.dopashift.data.local.entity.LocalInterceptionRule
+import com.dopashift.domain.entity.InterceptionRule
+import com.dopashift.domain.repository.InterceptionRuleRepository
 import com.dopashift.data.repository.LocalTelemetryRepository
 import timber.log.Timber
 import java.time.Clock
+import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
  * Tracks daily foreground seconds per monitored app and detects allowance depletion.
  *
- * Responsibilities (Requirements 2.3, 2.4, 2.12):
- * - Accumulates foreground seconds per tracked app per day via [LocalTelemetryRepository].
- * - Compares accumulated time against the rule's dailyAllowanceMinutes * 60.
- * - Triggers [OnAllowanceDepleted] callback within 2 seconds of depletion detection.
+ * Responsibilities (Requirements 1.4, 1.5, 1.6, 3.5, 3.7):
+ * - Accumulates foreground seconds per tracked app per day. Increments are buffered
+ *   in memory and flushed to [LocalTelemetryRepository] at least once every 60 seconds
+ *   (Requirement 1.5) rather than on every poll. On a flush failure the buffered value
+ *   is retained and retried on the next cycle — no data loss, no double-count
+ *   (Requirement 1.6).
+ * - Looks up the Rule through the domain [InterceptionRuleRepository] port
+ *   (Requirement 3.7 — a deleted Rule reports [AllowanceStatus.NOT_TRACKED]).
+ * - Skips accumulation and depletion detection for a Rule that is paused-for-today
+ *   ([InterceptionRule.isPausedOn], Requirement 3.5).
+ * - Compares accumulated time (persisted + buffered) against the rule's
+ *   dailyLimitMinutes * 60 and triggers [OnAllowanceDepleted] on depletion.
  * - Resets at midnight in the user's configured timezone (new day = fresh accumulation).
  *
  * The tracker is polled by [InterceptionService] on each poll cycle.
- * An injectable [Clock] enables deterministic unit testing.
+ * An injectable [Clock] enables deterministic unit testing of both the midnight
+ * reset and the 60-second persistence cadence.
  */
 @Singleton
 class AllowanceTracker @Inject constructor(
-    private val interceptionRuleDao: InterceptionRuleDao,
+    private val ruleRepository: InterceptionRuleRepository,
     private val telemetryRepository: LocalTelemetryRepository,
     private val clock: Clock
 ) {
@@ -37,10 +48,13 @@ class AllowanceTracker @Inject constructor(
          * Called when the accumulated foreground time meets or exceeds the daily allowance.
          *
          * @param packageName The tracked app whose allowance was depleted.
-         * @param rule The interception rule that was violated.
+         * @param rule The interception rule that was violated (domain entity).
          */
-        fun onDepleted(packageName: String, rule: LocalInterceptionRule)
+        fun onDepleted(packageName: String, rule: InterceptionRule)
     }
+
+    /** Minimum time between telemetry flushes (Requirement 1.5). */
+    private val flushIntervalSeconds: Long = 60L
 
     private var depletionListener: OnAllowanceDepleted? = null
 
@@ -58,6 +72,26 @@ class AllowanceTracker @Inject constructor(
     var userTimeZone: ZoneId = ZoneId.systemDefault()
 
     /**
+     * The authenticated user whose Rules are consulted. Set by [InterceptionService]
+     * from the started intent; every Rule lookup is scoped to this id (Requirement 3.8).
+     */
+    @Volatile
+    var userId: UUID = UUID.fromString("00000000-0000-0000-0000-000000000000")
+
+    /**
+     * Per-app foreground seconds accumulated in memory but not yet flushed to the
+     * Local_Store. Retained across a failed flush so no time is lost and none is
+     * double-counted (Requirements 1.5, 1.6).
+     */
+    private val pendingSeconds: MutableMap<String, Long> = mutableMapOf()
+
+    /**
+     * Instant of the last successful flush per app. A flush is forced once the
+     * gap since this instant reaches [flushIntervalSeconds].
+     */
+    private val lastFlush: MutableMap<String, Instant> = mutableMapOf()
+
+    /**
      * Set of package names that have already triggered depletion today.
      * Prevents repeated triggers for the same app within a single day.
      */
@@ -72,11 +106,11 @@ class AllowanceTracker @Inject constructor(
 
     /**
      * Called on each poll cycle by the interception service when a tracked app is detected
-     * in the foreground. Accumulates time and checks for depletion.
+     * in the foreground. Buffers time, flushes on cadence, and checks for depletion.
      *
      * @param packageName The foreground app's package name.
      * @param elapsedSeconds Seconds elapsed since last poll (i.e., the poll interval in seconds).
-     * @return [AllowanceStatus] indicating whether the app's allowance is still valid or depleted.
+     * @return [AllowanceStatus] indicating whether the app is tracked, within allowance, or depleted.
      */
     suspend fun onForegroundDetected(
         packageName: String,
@@ -85,16 +119,31 @@ class AllowanceTracker @Inject constructor(
         val today = resolveToday()
         resetIfNewDay(today)
 
-        // Look up the interception rule for this package
-        val rule = interceptionRuleDao.findActiveByPackageName(packageName)
-            ?: return AllowanceStatus.NOT_TRACKED
+        // Look up the interception rule for this package via the domain port.
+        // A missing/deleted rule reports NOT_TRACKED (Requirement 3.7).
+        val rule = ruleRepository.findActiveByPackage(userId, packageName)
+            ?: run {
+                // Drop any stale buffered time for a package that is no longer tracked.
+                pendingSeconds.remove(packageName)
+                lastFlush.remove(packageName)
+                return AllowanceStatus.NOT_TRACKED
+            }
 
-        // Persist the accumulated time
-        telemetryRepository.recordEvent(packageName, elapsedSeconds, today)
+        // A Rule paused for today attributes no accumulation and never intercepts
+        // (Requirement 3.5). It auto-resumes once the local date advances past the
+        // paused day because isPausedOn(today) is then false.
+        if (rule.isPausedOn(today)) {
+            Timber.v("AllowanceTracker: %s is paused for %s — skipping", packageName, today)
+            return AllowanceStatus.WITHIN_ALLOWANCE
+        }
 
-        // Get total accumulated seconds for today
-        val totalSeconds = telemetryRepository.getAccumulatedSeconds(packageName, today)
-        val allowanceSeconds = rule.dailyAllowanceMinutes.toLong() * 60L
+        // Buffer the elapsed time in memory and flush on cadence (Requirements 1.5, 1.6).
+        bufferSeconds(packageName, elapsedSeconds)
+        flushIfDue(packageName, today)
+
+        // Total for depletion comparison = persisted + still-buffered.
+        val totalSeconds = totalAccumulated(packageName, today)
+        val allowanceSeconds = rule.dailyLimitMinutes.toLong() * 60L
 
         Timber.d(
             "AllowanceTracker: %s accumulated %ds / %ds allowance",
@@ -112,16 +161,19 @@ class AllowanceTracker @Inject constructor(
     /**
      * Checks if a specific app has already depleted its allowance today
      * without incrementing accumulated time. Useful for re-checking on overlay dismissal.
+     * A paused-for-today Rule is never considered depleted (Requirement 3.5).
      */
     suspend fun isAllowanceDepleted(packageName: String): Boolean {
         val today = resolveToday()
         resetIfNewDay(today)
 
-        val rule = interceptionRuleDao.findActiveByPackageName(packageName)
+        val rule = ruleRepository.findActiveByPackage(userId, packageName)
             ?: return false
 
-        val totalSeconds = telemetryRepository.getAccumulatedSeconds(packageName, today)
-        val allowanceSeconds = rule.dailyAllowanceMinutes.toLong() * 60L
+        if (rule.isPausedOn(today)) return false
+
+        val totalSeconds = totalAccumulated(packageName, today)
+        val allowanceSeconds = rule.dailyLimitMinutes.toLong() * 60L
         return totalSeconds >= allowanceSeconds
     }
 
@@ -131,12 +183,77 @@ class AllowanceTracker @Inject constructor(
      */
     suspend fun getRemainingSeconds(packageName: String): Long? {
         val today = resolveToday()
-        val rule = interceptionRuleDao.findActiveByPackageName(packageName)
+        val rule = ruleRepository.findActiveByPackage(userId, packageName)
             ?: return null
 
-        val totalSeconds = telemetryRepository.getAccumulatedSeconds(packageName, today)
-        val allowanceSeconds = rule.dailyAllowanceMinutes.toLong() * 60L
+        val totalSeconds = totalAccumulated(packageName, today)
+        val allowanceSeconds = rule.dailyLimitMinutes.toLong() * 60L
         return (allowanceSeconds - totalSeconds).coerceAtLeast(0L)
+    }
+
+    /**
+     * Adds elapsed foreground seconds to the in-memory buffer for [packageName].
+     */
+    private fun bufferSeconds(packageName: String, elapsedSeconds: Long) {
+        if (elapsedSeconds <= 0L) {
+            // Still ensure a flush baseline exists so cadence tracking starts.
+            lastFlush.putIfAbsent(packageName, clock.instant())
+            return
+        }
+        pendingSeconds[packageName] = (pendingSeconds[packageName] ?: 0L) + elapsedSeconds
+    }
+
+    /**
+     * Flushes buffered seconds for [packageName] to the Local_Store when at least
+     * [flushIntervalSeconds] have elapsed since the last successful flush, or on the
+     * first observation for the app. On a flush failure the buffered value is retained
+     * and retried on the next cycle (Requirement 1.6).
+     */
+    private suspend fun flushIfDue(packageName: String, today: LocalDate) {
+        val now = clock.instant()
+        val last = lastFlush[packageName]
+        if (last == null) {
+            // First observation: establish the flush baseline. Persist immediately so
+            // that even sub-60s sessions are durable, matching prior per-poll behavior
+            // for the very first sample.
+            attemptFlush(packageName, today, now)
+            return
+        }
+        val elapsedSinceFlush = now.epochSecond - last.epochSecond
+        if (elapsedSinceFlush >= flushIntervalSeconds) {
+            attemptFlush(packageName, today, now)
+        }
+    }
+
+    /**
+     * Persists the buffered seconds for [packageName] and, only on success, clears the
+     * buffer and advances the flush baseline. A failure leaves both untouched so the
+     * value is retried next cycle without double-counting (Requirement 1.6).
+     */
+    private suspend fun attemptFlush(packageName: String, today: LocalDate, now: Instant) {
+        val pending = pendingSeconds[packageName] ?: 0L
+        if (pending <= 0L) {
+            lastFlush[packageName] = now
+            return
+        }
+        try {
+            telemetryRepository.recordEvent(packageName, pending, today)
+            pendingSeconds[packageName] = 0L
+            lastFlush[packageName] = now
+        } catch (e: Exception) {
+            // Retain the pending value and the previous flush baseline; retry next cycle.
+            Timber.w(e, "AllowanceTracker: flush failed for %s — retaining %ds", packageName, pending)
+        }
+    }
+
+    /**
+     * Total accumulated seconds for depletion comparison: persisted value in the
+     * Local_Store plus any seconds still buffered in memory.
+     */
+    private suspend fun totalAccumulated(packageName: String, today: LocalDate): Long {
+        val persisted = telemetryRepository.getAccumulatedSeconds(packageName, today)
+        val pending = pendingSeconds[packageName] ?: 0L
+        return persisted + pending
     }
 
     /**
@@ -148,13 +265,15 @@ class AllowanceTracker @Inject constructor(
 
     /**
      * Detects a midnight crossing and resets internal state for the new day.
-     * Accumulated telemetry is stored per-date in the repository, so only
-     * the in-memory depletion set needs resetting.
+     * Accumulated telemetry is stored per-date in the repository, so the in-memory
+     * depletion set, pending buffers, and flush baselines are reset for the new day.
      */
     private fun resetIfNewDay(today: LocalDate) {
         if (currentTrackingDate != today) {
             Timber.d("AllowanceTracker: midnight reset — new day %s (was %s)", today, currentTrackingDate)
             depletedToday.clear()
+            pendingSeconds.clear()
+            lastFlush.clear()
             currentTrackingDate = today
         }
     }
@@ -162,7 +281,7 @@ class AllowanceTracker @Inject constructor(
     /**
      * Fires the depletion callback if this app hasn't already triggered today.
      */
-    private fun triggerDepletion(packageName: String, rule: LocalInterceptionRule) {
+    private fun triggerDepletion(packageName: String, rule: InterceptionRule) {
         if (depletedToday.add(packageName)) {
             Timber.i("AllowanceTracker: allowance DEPLETED for %s", packageName)
             depletionListener?.onDepleted(packageName, rule)

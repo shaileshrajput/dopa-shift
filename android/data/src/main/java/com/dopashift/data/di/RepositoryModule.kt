@@ -1,13 +1,17 @@
 package com.dopashift.data.di
 
 import com.dopashift.data.remote.LlmProviderServiceImpl
+import com.dopashift.data.repository.AggregatedCounterUploader
 import com.dopashift.data.repository.ChangeLogRepositoryImpl
 import com.dopashift.data.repository.DailyTodoRepositoryImpl
 import com.dopashift.data.repository.EfficiencyScoreRepositoryImpl
 import com.dopashift.data.repository.GoalChecklistItemRepositoryImpl
 import com.dopashift.data.repository.GoalRepositoryImpl
 import com.dopashift.data.repository.HabitTrackRepositoryImpl
+import com.dopashift.data.repository.InterceptActionAuditRepositoryImpl
+import com.dopashift.data.repository.InterceptionRuleRepositoryImpl
 import com.dopashift.data.repository.LlmConfigRepositoryImpl
+import com.dopashift.data.repository.NoOpAggregatedCounterUploader
 import com.dopashift.data.repository.ReminderRepositoryImpl
 import com.dopashift.data.repository.UserPreferencesRepositoryImpl
 import com.dopashift.domain.repository.ChangeLogRepository
@@ -16,6 +20,8 @@ import com.dopashift.domain.repository.EfficiencyScoreRepository
 import com.dopashift.domain.repository.GoalChecklistItemRepository
 import com.dopashift.domain.repository.GoalRepository
 import com.dopashift.domain.repository.HabitTrackRepository
+import com.dopashift.domain.repository.InterceptActionAuditRepository
+import com.dopashift.domain.repository.InterceptionRuleRepository
 import com.dopashift.domain.repository.LlmConfigRepository
 import com.dopashift.domain.repository.ReminderRepository
 import com.dopashift.domain.repository.UserPreferencesRepository
@@ -68,5 +74,20 @@ abstract class RepositoryModule {
     abstract fun bindLlmConfigRepository(impl: LlmConfigRepositoryImpl): LlmConfigRepository
 
     @Binds
+    abstract fun bindInterceptionRuleRepository(
+        impl: InterceptionRuleRepositoryImpl
+    ): InterceptionRuleRepository
+
+    @Binds
+    abstract fun bindInterceptActionAuditRepository(
+        impl: InterceptActionAuditRepositoryImpl
+    ): InterceptActionAuditRepository
+
+    @Binds
     abstract fun bindLlmProviderService(impl: LlmProviderServiceImpl): LlmProviderService
+
+    @Binds
+    abstract fun bindAggregatedCounterUploader(
+        impl: NoOpAggregatedCounterUploader
+    ): AggregatedCounterUploader
 }

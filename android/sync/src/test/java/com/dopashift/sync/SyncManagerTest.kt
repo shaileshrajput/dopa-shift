@@ -6,6 +6,7 @@ import com.dopashift.data.local.entity.LocalChangeLogEntry
 import com.dopashift.data.local.entity.LocalSyncState
 import com.dopashift.data.remote.DopaShiftApi
 import com.dopashift.data.remote.ResolvedConflict
+import com.dopashift.data.remote.dto.ConflictResponse
 import com.dopashift.data.remote.SyncEvent
 import com.dopashift.data.remote.SyncPullResponse
 import com.dopashift.data.remote.SyncPushRequest
@@ -171,6 +172,74 @@ class SyncManagerTest {
         assertEquals("LWW", result.conflicts[0].resolution)
     }
 
+    /**
+     * DQC-6.7 (parent Requirement 4.7): when an entity created from the Dashboard is superseded
+     * or rejected by conflict resolution on sync, the outcome is surfaced to the user
+     * NON-BLOCKINGLY and the losing edit is retained in conflict history.
+     *
+     * This drives the SAME Sync_Engine (`SyncManager`) the dedicated screens use — no parallel
+     * path (DQC-6.1). "Non-blocking" is verified by asserting the push still completes as
+     * `PushSuccess` (never `Failure`), the sync status settles back to `SYNCED` rather than
+     * `ERROR`, and the local entry is still marked synced — the conflict does not halt the user.
+     * The conflict outcome is nonetheless SURFACED via `PushSuccess.conflicts`. "Retained in
+     * conflict history" is verified by reading it back through the conflict-history endpoint,
+     * whose `ConflictResponse.supersededValue` carries the losing edit.
+     */
+    @Test
+    fun `dashboard-created entity superseded on sync is surfaced non-blockingly and losing edit retained`() = runTest {
+        // A goal created from the Dashboard is pushed through the standard change-log pipeline.
+        val dashboardEdit = createTestEntry("user-1", id = "dashboard-goal-1").copy(
+            entityId = "goal-42",
+            entityType = "GoalProfile",
+            field = "name",
+            value = "\"Run a marathon\""
+        )
+        fakeChangeLogDao.entries.add(dashboardEdit)
+
+        // Backend resolves the concurrent edit against another device's write (LWW) — the
+        // Dashboard edit loses. The push itself succeeds and reports the resolved conflict.
+        fakeApi.pushResponse = SyncPushResponse(
+            serverTimestamps = listOf(ServerTimestamp(dashboardEdit.id, 5000L)),
+            conflicts = listOf(ResolvedConflict(eventId = dashboardEdit.id, resolution = "LWW"))
+        )
+        // The losing (superseded) edit is retained server-side in conflict history.
+        fakeApi.conflictHistory = listOf(
+            ConflictResponse(
+                id = "conflict-1",
+                changeLogId = dashboardEdit.id,
+                supersededValue = dashboardEdit.value,   // the losing edit is preserved verbatim
+                supersededDeviceId = dashboardEdit.deviceId,
+                supersededTimestamp = dashboardEdit.timestamp,
+                resolutionReason = "LWW",
+                createdAt = "2026-09-01T10:00:00Z"
+            )
+        )
+
+        val result = syncManager.pushPendingChanges("user-1")
+
+        // Non-blocking: sync completed successfully rather than failing/erroring the user out.
+        assertTrue("push should succeed, not block the user", result is SyncResult.PushSuccess)
+        val pushSuccess = result as SyncResult.PushSuccess
+        assertEquals(SyncStatus.SYNCED, syncManager.syncStatus.value)
+        assertTrue(
+            "the losing entry is still consumed by the pipeline (not stuck/retried)",
+            fakeChangeLogDao.syncedIds.contains(dashboardEdit.id)
+        )
+
+        // The conflict outcome is surfaced (available for a non-blocking notice), not swallowed.
+        assertEquals(1, pushSuccess.conflicts.size)
+        assertEquals(dashboardEdit.id, pushSuccess.conflicts[0].eventId)
+        assertEquals("LWW", pushSuccess.conflicts[0].resolution)
+
+        // The losing edit is retained in conflict history and remains retrievable.
+        val history = fakeApi.getConflicts(since = 0L)
+        assertEquals(1, history.size)
+        val retained = history.single()
+        assertEquals(dashboardEdit.id, retained.changeLogId)
+        assertEquals(dashboardEdit.value, retained.supersededValue)
+        assertEquals("LWW", retained.resolutionReason)
+    }
+
     // --- Test helpers ---
 
     private fun createTestEntry(userId: String, id: String = "test-entry-1") = LocalChangeLogEntry(
@@ -252,6 +321,10 @@ class SyncManagerTest {
         var pushResponse = SyncPushResponse(emptyList(), emptyList())
         var pullResponse = SyncPullResponse(emptyList(), 0L)
 
+        /** Conflict history the backend has recorded (losing/superseded edits retained). */
+        var conflictHistory: List<ConflictResponse> = emptyList()
+        var getConflictsCallCount = 0
+
         override suspend fun pushSync(events: SyncPushRequest): SyncPushResponse {
             pushCallCount++
             if (shouldFail) throw RuntimeException("Network error")
@@ -295,7 +368,10 @@ class SyncManagerTest {
         override suspend fun getInterceptionRules() = throw NotImplementedError()
         override suspend fun updateInterceptionRule(id: String, request: com.dopashift.data.remote.dto.UpdateInterceptionRuleRequest) = throw NotImplementedError()
         override suspend fun deleteInterceptionRule(id: String) = throw NotImplementedError()
-        override suspend fun getConflicts(since: Long) = throw NotImplementedError()
+        override suspend fun getConflicts(since: Long): List<ConflictResponse> {
+            getConflictsCallCount++
+            return conflictHistory.filter { (it.supersededTimestamp ?: 0L) >= since }
+        }
         override suspend fun getEfficiencyScores(from: String, to: String) = throw NotImplementedError()
         override suspend fun submitEfficiencyScore(request: com.dopashift.data.remote.dto.SubmitEfficiencyScoreRequest) = throw NotImplementedError()
         override suspend fun getDashboardSummary() = throw NotImplementedError()

@@ -2,6 +2,7 @@ package com.dopashift.ui.onboarding
 
 import android.content.Intent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -45,24 +46,42 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.dopashift.domain.presentation.MotionPolicy
+import com.dopashift.ui.R
 import com.dopashift.ui.theme.DopaShiftTheme
+import com.dopashift.ui.theme.MotionTokens
+import com.dopashift.ui.theme.minTouchTarget
+import com.dopashift.ui.theme.politeLiveRegion
+import com.dopashift.ui.theme.rememberReducedMotion
 
 /**
- * Onboarding screen implementing Requirement 17.4.
+ * Onboarding screen implementing Requirement 17.4 / DUX-4.12.
  *
- * A guided, 5-screen flow completable in under 2 minutes:
+ * A guided, minimal-friction flow of no more than 5 screens, completable in under 2 minutes:
  * 1. Welcome — app introduction
- * 2. Create Goal — first goal setup
+ * 2. Create Goal — first goal / keyword setup
  * 3. Setup Habit — first habit track
- * 4. Permissions — usage stats and overlay explanation
+ * 4. Permissions — usage-stats and overlay handoff (reuses [PermissionSetupPage])
  * 5. Done — get started
  *
- * Supports skipping and forward/back navigation via HorizontalPager.
+ * The flow never lands the user on a blank dashboard on first launch (Requirement 17.4).
+ * It applies the shared design system: [DopaShiftTheme] tokens for color/spacing/shape,
+ * [MotionTokens] + [rememberReducedMotion] for step transitions (DUX-2.9), and the
+ * accessibility helpers ([minTouchTarget], [politeLiveRegion]) plus content descriptions
+ * for non-decorative icons (DUX-5.1, DUX-5.2, DUX-5.8).
+ *
+ * On completion or skip the [OnboardingViewModel] persists
+ * `UserPreferencesRepository.setOnboardingCompleted(true)` and fires [onOnboardingComplete],
+ * which the nav graph uses to route into the dashboard.
  */
 @Composable
 fun OnboardingScreen(
@@ -121,10 +140,22 @@ private fun OnboardingScreenContent(
         pageCount = { OnboardingSteps.TOTAL },
     )
 
-    // Sync pager with ViewModel state
+    // Step transitions honor the OS reduced-motion setting (DUX-2.9): decorative scroll motion is
+    // collapsed to `motion-instant` (<= 100ms) while the step change still occurs.
+    val reducedMotion = rememberReducedMotion()
+    val stepMotion = MotionPolicy.effective(MotionTokens.Standard, reducedMotion)
+    val stepAnimation = tween<Float>(
+        durationMillis = stepMotion.durationMillis,
+        easing = MotionTokens.easingFor(stepMotion.easingName),
+    )
+
+    // Sync pager with ViewModel state, animating with the motion-token-derived spec.
     LaunchedEffect(uiState.currentStep) {
         if (pagerState.currentPage != uiState.currentStep) {
-            pagerState.animateScrollToPage(uiState.currentStep)
+            pagerState.animateScrollToPage(
+                page = uiState.currentStep,
+                animationSpec = stepAnimation,
+            )
         }
     }
 
@@ -134,15 +165,21 @@ private fun OnboardingScreenContent(
                 .fillMaxSize()
                 .padding(innerPadding),
         ) {
-            // Skip button at the top
+            // Skip button at the top — meets the 48dp minimum touch target (DUX-5.1).
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = DopaShiftTheme.spacing.gutter, vertical = DopaShiftTheme.spacing.base),
+                    .padding(
+                        horizontal = DopaShiftTheme.spacing.gutter,
+                        vertical = DopaShiftTheme.spacing.base,
+                    ),
                 horizontalArrangement = Arrangement.End,
             ) {
-                TextButton(onClick = onSkipOnboarding) {
-                    Text("Skip")
+                TextButton(
+                    onClick = onSkipOnboarding,
+                    modifier = Modifier.minTouchTarget(),
+                ) {
+                    Text(stringResource(R.string.onboarding_skip))
                 }
             }
 
@@ -204,8 +241,11 @@ private fun OnboardingScreenContent(
                 ) {
                     // Back button
                     if (uiState.currentStep > OnboardingSteps.WELCOME) {
-                        OutlinedButton(onClick = onPreviousStep) {
-                            Text("Back")
+                        OutlinedButton(
+                            onClick = onPreviousStep,
+                            modifier = Modifier.minTouchTarget(),
+                        ) {
+                            Text(stringResource(R.string.onboarding_back))
                         }
                     } else {
                         Spacer(modifier = Modifier.width(1.dp))
@@ -215,8 +255,11 @@ private fun OnboardingScreenContent(
                     if (uiState.currentStep == OnboardingSteps.CREATE_GOAL ||
                         uiState.currentStep == OnboardingSteps.SETUP_HABIT
                     ) {
-                        TextButton(onClick = onSkipStep) {
-                            Text("Skip this step")
+                        TextButton(
+                            onClick = onSkipStep,
+                            modifier = Modifier.minTouchTarget(),
+                        ) {
+                            Text(stringResource(R.string.onboarding_skip_step))
                         }
                     }
 
@@ -227,6 +270,7 @@ private fun OnboardingScreenContent(
                     Button(
                         onClick = onNextStep,
                         enabled = !isLoading,
+                        modifier = Modifier.minTouchTarget(),
                     ) {
                         if (isLoading) {
                             CircularProgressIndicator(
@@ -235,7 +279,13 @@ private fun OnboardingScreenContent(
                                 color = MaterialTheme.colorScheme.onPrimary,
                             )
                         } else {
-                            Text(if (isLastStep) "Get Started" else "Next")
+                            Text(
+                                if (isLastStep) {
+                                    stringResource(R.string.onboarding_get_started)
+                                } else {
+                                    stringResource(R.string.onboarding_next)
+                                }
+                            )
                             Spacer(modifier = Modifier.width(DopaShiftTheme.spacing.compact))
                             Icon(
                                 imageVector = if (isLastStep) Icons.Default.Check
@@ -259,10 +309,9 @@ private fun OnboardingScreenContent(
 private fun WelcomePage() {
     OnboardingPageLayout(
         icon = Icons.Default.Rocket,
-        title = "Welcome to DopaShift",
-        description = "Take control of your screen time and build positive habits. " +
-            "DopaShift helps you define life goals, intercept distracting apps, " +
-            "and track your progress with daily micro-habits.",
+        iconContentDescription = stringResource(R.string.onboarding_welcome_icon_content_description),
+        title = stringResource(R.string.onboarding_welcome_title),
+        description = stringResource(R.string.onboarding_welcome_description),
     )
 }
 
@@ -286,7 +335,7 @@ private fun CreateGoalPage(
     ) {
         Icon(
             imageVector = Icons.Default.Flag,
-            contentDescription = null,
+            contentDescription = stringResource(R.string.onboarding_goal_icon_content_description),
             modifier = Modifier.size(48.dp),
             tint = DopaShiftTheme.colors.productiveBlue,
         )
@@ -294,7 +343,7 @@ private fun CreateGoalPage(
         Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.margin))
 
         Text(
-            text = "Create Your First Goal",
+            text = stringResource(R.string.onboarding_goal_title),
             style = MaterialTheme.typography.headlineSmall,
             textAlign = TextAlign.Center,
         )
@@ -302,7 +351,7 @@ private fun CreateGoalPage(
         Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.base))
 
         Text(
-            text = "What do you want to achieve? Set a goal to get started.",
+            text = stringResource(R.string.onboarding_goal_description),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
@@ -313,8 +362,8 @@ private fun CreateGoalPage(
         OutlinedTextField(
             value = goalName,
             onValueChange = onGoalNameChanged,
-            label = { Text("Goal name") },
-            placeholder = { Text("e.g., Career Growth") },
+            label = { Text(stringResource(R.string.onboarding_goal_name_label)) },
+            placeholder = { Text(stringResource(R.string.onboarding_goal_name_placeholder)) },
             singleLine = true,
             enabled = !isLoading,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
@@ -326,8 +375,8 @@ private fun CreateGoalPage(
         OutlinedTextField(
             value = goalCategory,
             onValueChange = onGoalCategoryChanged,
-            label = { Text("Category") },
-            placeholder = { Text("e.g., Professional") },
+            label = { Text(stringResource(R.string.onboarding_goal_category_label)) },
+            placeholder = { Text(stringResource(R.string.onboarding_goal_category_placeholder)) },
             singleLine = true,
             enabled = !isLoading,
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
@@ -339,18 +388,18 @@ private fun CreateGoalPage(
         OutlinedTextField(
             value = goalKeyword,
             onValueChange = onGoalKeywordChanged,
-            label = { Text("Keyword") },
-            placeholder = { Text("e.g., programming") },
+            label = { Text(stringResource(R.string.onboarding_goal_keyword_label)) },
+            placeholder = { Text(stringResource(R.string.onboarding_goal_keyword_placeholder)) },
             singleLine = true,
             enabled = !isLoading,
             supportingText = {
-                Text("Used for content recommendations")
+                Text(stringResource(R.string.onboarding_goal_keyword_hint))
             },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             modifier = Modifier.fillMaxWidth(),
         )
 
-        // Error message
+        // Error message — announced to screen readers as a polite live region (DUX-5.8).
         AnimatedVisibility(
             visible = error != null,
             enter = fadeIn(),
@@ -362,6 +411,7 @@ private fun CreateGoalPage(
                     text = it,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.politeLiveRegion(),
                 )
             }
         }
@@ -384,7 +434,7 @@ private fun SetupHabitPage(
     ) {
         Icon(
             imageVector = Icons.Default.FitnessCenter,
-            contentDescription = null,
+            contentDescription = stringResource(R.string.onboarding_habit_icon_content_description),
             modifier = Modifier.size(48.dp),
             tint = DopaShiftTheme.colors.momentumTeal,
         )
@@ -392,7 +442,7 @@ private fun SetupHabitPage(
         Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.margin))
 
         Text(
-            text = "Set Up Your First Habit",
+            text = stringResource(R.string.onboarding_habit_title),
             style = MaterialTheme.typography.headlineSmall,
             textAlign = TextAlign.Center,
         )
@@ -400,8 +450,7 @@ private fun SetupHabitPage(
         Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.base))
 
         Text(
-            text = "Define a daily micro-habit to build over 30 days. " +
-                "It will appear in the intercept overlay when distracting apps are blocked.",
+            text = stringResource(R.string.onboarding_habit_description),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
@@ -412,18 +461,18 @@ private fun SetupHabitPage(
         OutlinedTextField(
             value = habitDescription,
             onValueChange = onHabitDescriptionChanged,
-            label = { Text("Daily habit") },
-            placeholder = { Text("e.g., Read for 10 minutes") },
+            label = { Text(stringResource(R.string.onboarding_habit_label)) },
+            placeholder = { Text(stringResource(R.string.onboarding_habit_placeholder)) },
             singleLine = true,
             enabled = !isLoading,
             supportingText = {
-                Text("${habitDescription.length}/200")
+                Text(stringResource(R.string.onboarding_habit_char_count, habitDescription.length))
             },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             modifier = Modifier.fillMaxWidth(),
         )
 
-        // Error message
+        // Error message — announced to screen readers as a polite live region (DUX-5.8).
         AnimatedVisibility(
             visible = error != null,
             enter = fadeIn(),
@@ -435,6 +484,7 @@ private fun SetupHabitPage(
                     text = it,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.politeLiveRegion(),
                 )
             }
         }
@@ -445,21 +495,24 @@ private fun SetupHabitPage(
 private fun DonePage() {
     OnboardingPageLayout(
         icon = Icons.Default.TrackChanges,
-        title = "You're All Set!",
-        description = "Your goals and habits are ready. DopaShift will track your screen time, " +
-            "intercept distracting apps, and help you build better habits every day.\n\n" +
-            "Tap \"Get Started\" to begin your journey.",
+        iconContentDescription = stringResource(R.string.onboarding_done_icon_content_description),
+        title = stringResource(R.string.onboarding_done_title),
+        description = stringResource(R.string.onboarding_done_description),
     )
 }
 
 // === Reusable Components ===
 
 /**
- * Standard layout for informational onboarding pages (welcome, permissions, done).
+ * Standard layout for informational onboarding pages (welcome, done).
+ *
+ * @param iconContentDescription a localized description of the leading icon; the icon is
+ * informational (not purely decorative) so it carries a description per DUX-5.2.
  */
 @Composable
 private fun OnboardingPageLayout(
     icon: ImageVector,
+    iconContentDescription: String,
     title: String,
     description: String,
 ) {
@@ -472,7 +525,7 @@ private fun OnboardingPageLayout(
     ) {
         Icon(
             imageVector = icon,
-            contentDescription = null,
+            contentDescription = iconContentDescription,
             modifier = Modifier.size(64.dp),
             tint = DopaShiftTheme.colors.productiveBlue,
         )
@@ -497,16 +550,24 @@ private fun OnboardingPageLayout(
 }
 
 /**
- * Horizontal dot indicator showing progress through onboarding steps.
+ * Horizontal dot indicator showing progress through onboarding steps. The whole row exposes a
+ * single "Step X of Y" content description for screen readers (DUX-5.2) while the individual dots
+ * remain a decorative, non-color-only visual (active dot is larger).
  */
 @Composable
 private fun StepIndicator(
     totalSteps: Int,
     currentStep: Int,
 ) {
+    val progressDescription = stringResource(
+        R.string.onboarding_step_progress_content_description,
+        currentStep + 1,
+        totalSteps,
+    )
     Row(
         horizontalArrangement = Arrangement.spacedBy(DopaShiftTheme.spacing.base),
         verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.clearAndSetSemantics { contentDescription = progressDescription },
     ) {
         repeat(totalSteps) { index ->
             val isActive = index == currentStep

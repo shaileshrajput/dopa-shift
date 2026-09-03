@@ -3,18 +3,20 @@ package com.dopashift.interception.overlay
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,13 +36,16 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -48,7 +53,9 @@ import com.dopashift.domain.entity.CheckpointStatus
 import com.dopashift.domain.entity.DailyTodoItem
 import com.dopashift.domain.entity.HabitCheckpoint
 import com.dopashift.domain.entity.HabitTrack
+import com.dopashift.ui.R
 import com.dopashift.ui.theme.DopaShiftTheme
+import com.dopashift.ui.theme.OverlayBackground
 import java.util.UUID
 
 /**
@@ -78,10 +85,20 @@ fun InterceptOverlayScreen(
             state = uiState,
             onTodoChecked = { todoId -> viewModel.completeTodo(todoId) },
             onHabitChecked = { viewModel.completeHabitCheckpoint() },
-            onDismiss = {
+            onContinueToApp = {
+                // Requirement 3.1/3.3: "Continue to app" is a primary control. Only actionable once
+                // the minimum engagement requirement is satisfied, matching the existing overlay
+                // dismissal contract (Requirement 2.5).
                 if (uiState.canDismiss) {
+                    viewModel.onContinueToApp()
                     onDismiss()
                 }
+            },
+            onSwitchToDopaShift = {
+                // Requirement 3.1/3.2: "Switch to DopaShift" is the second primary control. Emit the
+                // action for the service to launch DopaShift and dismiss the overlay.
+                viewModel.onSwitchToDopaShift()
+                onDismiss()
             }
         )
     }
@@ -95,25 +112,31 @@ internal fun InterceptOverlayContent(
     state: OverlayUiState,
     onTodoChecked: (UUID) -> Unit,
     onHabitChecked: () -> Unit,
-    onDismiss: () -> Unit
+    onContinueToApp: () -> Unit,
+    onSwitchToDopaShift: () -> Unit
 ) {
-    val colors = DopaShiftTheme.colors
     val spacing = DopaShiftTheme.spacing
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                // Glassmorphism-inspired gradient: deep navy overlay at ~95% opacity
-                Brush.verticalGradient(
-                    colors = listOf(
-                        colors.interceptOverlay,
-                        colors.interceptOverlay.copy(alpha = 0.98f)
-                    )
-                )
-            )
-            .padding(spacing.margin)
-    ) {
+    // DUX-2.11: the Intercept_Overlay appearance is one of the four permitted haptic classes.
+    // Fire a light long-press-style haptic once when the overlay first composes.
+    val haptics = LocalHapticFeedback.current
+    LaunchedEffect(Unit) {
+        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        // DUX-4.8: blurred backdrop (API 31+) / solid scrim fallback (API < 31), drawn behind
+        // the content so foreground text and controls are never blurred.
+        OverlayBackground()
+
+        // DUX-4.9: edge-to-edge — keep interactive content clear of the system bars via
+        // safe-drawing insets, layered on top of the full-bleed background above.
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .windowInsetsPadding(WindowInsets.safeDrawing)
+                .padding(spacing.margin)
+        ) {
         if (state.isLoading) {
             CircularProgressIndicator(
                 modifier = Modifier.align(Alignment.Center),
@@ -173,15 +196,17 @@ internal fun InterceptOverlayContent(
 
                 Spacer(modifier = Modifier.height(spacing.gutter))
 
-                // Footer: Dismiss button (only enabled after 30s or action)
-                DismissButton(
-                    canDismiss = state.canDismiss,
+                // Footer: the two primary Intercept_Screen action controls (Requirement 3.1).
+                InterceptActionControls(
+                    canContinue = state.canDismiss,
                     elapsedSeconds = state.elapsedSeconds,
-                    onDismiss = onDismiss
+                    onContinueToApp = onContinueToApp,
+                    onSwitchToDopaShift = onSwitchToDopaShift
                 )
             }
         }
-    }
+        } // end insets/padding content Box
+    } // end root Box
 }
 
 @Composable
@@ -414,45 +439,78 @@ private fun VideoSuggestionSection(
     }
 }
 
+/**
+ * The two primary Intercept_Screen action controls (Requirement 3.1): "Continue to app" and
+ * "Switch to DopaShift". Both labels are read from string resources so they are localized in
+ * English, Hindi, and Marathi with English fallback (Requirement 3.6).
+ *
+ * "Switch to DopaShift" is always available. "Continue to app" is gated on the existing minimum
+ * engagement requirement (Requirement 2.5); while it is not yet available a disabled placeholder
+ * communicates the remaining wait, matching the overlay's prior dismissal contract.
+ *
+ * @param canContinue whether the minimum engagement requirement has been met.
+ * @param elapsedSeconds seconds since the overlay appeared, used for the remaining-wait hint.
+ * @param onContinueToApp invoked when the user taps "Continue to app".
+ * @param onSwitchToDopaShift invoked when the user taps "Switch to DopaShift".
+ */
 @Composable
-private fun DismissButton(
-    canDismiss: Boolean,
+private fun InterceptActionControls(
+    canContinue: Boolean,
     elapsedSeconds: Int,
-    onDismiss: () -> Unit
+    onContinueToApp: () -> Unit,
+    onSwitchToDopaShift: () -> Unit
 ) {
-    val colors = DopaShiftTheme.colors
+    val spacing = DopaShiftTheme.spacing
 
-    AnimatedVisibility(
-        visible = canDismiss,
-        enter = fadeIn(),
-        exit = fadeOut()
-    ) {
-        OutlinedButton(
-            onClick = onDismiss,
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.outlinedButtonColors(
-                contentColor = MaterialTheme.colorScheme.onSurface
-            )
-        ) {
-            Text(
-                text = "Continue to app",
-                style = MaterialTheme.typography.labelLarge
-            )
-        }
-    }
-
-    if (!canDismiss) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        // Primary control 1: Switch to DopaShift (always available).
         Button(
-            onClick = { /* Disabled — no-op */ },
+            onClick = onSwitchToDopaShift,
             modifier = Modifier.fillMaxWidth(),
-            enabled = false,
             shape = RoundedCornerShape(12.dp)
         ) {
             Text(
-                text = "Wait ${OverlayUiState.MIN_ENGAGEMENT_SECONDS - elapsedSeconds}s or complete a task",
+                text = stringResource(R.string.intercept_action_switch),
                 style = MaterialTheme.typography.labelLarge
             )
+        }
+
+        Spacer(modifier = Modifier.height(spacing.base))
+
+        // Primary control 2: Continue to app (gated on the engagement requirement, Req 2.5).
+        AnimatedVisibility(
+            visible = canContinue,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            OutlinedButton(
+                onClick = onContinueToApp,
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = MaterialTheme.colorScheme.onSurface
+                )
+            ) {
+                Text(
+                    text = stringResource(R.string.intercept_action_continue),
+                    style = MaterialTheme.typography.labelLarge
+                )
+            }
+        }
+
+        if (!canContinue) {
+            OutlinedButton(
+                onClick = { /* Disabled — engagement requirement not yet met */ },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = false,
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Text(
+                    text = "${stringResource(R.string.intercept_action_continue)} " +
+                            "(${OverlayUiState.MIN_ENGAGEMENT_SECONDS - elapsedSeconds}s)",
+                    style = MaterialTheme.typography.labelLarge
+                )
+            }
         }
     }
 }

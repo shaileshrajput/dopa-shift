@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.dopashift.domain.usecase.ComputeEfficiencyScoreUseCaseTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-08-23T11:01:59" hostname="SHAILESH" time="0.02">
+<testsuite name="com.dopashift.domain.usecase.ComputeEfficiencyScoreUseCaseTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-09-02T08:40:56" hostname="SHAILESH" time="0.021">
   <properties/>
   <testcase name="throws on negative totalTrackedSeconds()" classname="com.dopashift.domain.usecase.ComputeEfficiencyScoreUseCaseTest" time="0.002"/>
-  <testcase name="computation is deterministic - same inputs produce same scorePercent()" classname="com.dopashift.domain.usecase.ComputeEfficiencyScoreUseCaseTest" time="0.0"/>
-  <testcase name="returns null scorePercent when total tracked seconds is below threshold()" classname="com.dopashift.domain.usecase.ComputeEfficiencyScoreUseCaseTest" time="0.002"/>
+  <testcase name="computation is deterministic - same inputs produce same scorePercent()" classname="com.dopashift.domain.usecase.ComputeEfficiencyScoreUseCaseTest" time="0.001"/>
+  <testcase name="returns null scorePercent when total tracked seconds is below threshold()" classname="com.dopashift.domain.usecase.ComputeEfficiencyScoreUseCaseTest" time="0.001"/>
   <testcase name="computes 0 percent when no time is productive()" classname="com.dopashift.domain.usecase.ComputeEfficiencyScoreUseCaseTest" time="0.001"/>
   <testcase name="computes 100 percent when all time is productive()" classname="com.dopashift.domain.usecase.ComputeEfficiencyScoreUseCaseTest" time="0.001"/>
-  <testcase name="returns null scorePercent when total tracked seconds is zero()" classname="com.dopashift.domain.usecase.ComputeEfficiencyScoreUseCaseTest" time="0.0"/>
+  <testcase name="returns null scorePercent when total tracked seconds is zero()" classname="com.dopashift.domain.usecase.ComputeEfficiencyScoreUseCaseTest" time="0.001"/>
   <testcase name="preserves userId and date in returned entity()" classname="com.dopashift.domain.usecase.ComputeEfficiencyScoreUseCaseTest" time="0.001"/>
   <testcase name="throws on negative productiveSeconds()" classname="com.dopashift.domain.usecase.ComputeEfficiencyScoreUseCaseTest" time="0.001"/>
   <testcase name="clamps score to 100 when productive exceeds total()" classname="com.dopashift.domain.usecase.ComputeEfficiencyScoreUseCaseTest" time="0.001"/>
-  <testcase name="rounds to nearest integer()" classname="com.dopashift.domain.usecase.ComputeEfficiencyScoreUseCaseTest" time="0.001"/>
-  <testcase name="computes score at exactly 60 seconds threshold()" classname="com.dopashift.domain.usecase.ComputeEfficiencyScoreUseCaseTest" time="0.0"/>
+  <testcase name="rounds to nearest integer()" classname="com.dopashift.domain.usecase.ComputeEfficiencyScoreUseCaseTest" time="0.0"/>
+  <testcase name="computes score at exactly 60 seconds threshold()" classname="com.dopashift.domain.usecase.ComputeEfficiencyScoreUseCaseTest" time="0.001"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

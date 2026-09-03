@@ -34,6 +34,14 @@ android {
     buildFeatures {
         compose = true
     }
+
+    testOptions {
+        unitTests {
+            // Required for Robolectric-based unit tests (e.g. Context-backed
+            // NotificationManager inspection in LimitReachedNotifierTest).
+            isIncludeAndroidResources = true
+        }
+    }
 }
 
 kotlin {
@@ -80,4 +88,9 @@ dependencies {
     // Testing
     testImplementation(libs.junit)
     testImplementation(libs.coroutines.test)
+    // Robolectric enables JVM unit tests that need an Android Context
+    // (e.g. Context-backed NotificationManager inspection in LimitReachedNotifierTest).
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.test.core)
+    testImplementation(libs.junit.ext)
 }

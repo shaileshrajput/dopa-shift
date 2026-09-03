@@ -6,9 +6,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.dopashift.ui.analytics.AnalyticsScreen
-import com.dopashift.ui.dashboard.DashboardScreen
 import com.dopashift.ui.goals.GoalsScreen
+import com.dopashift.ui.interception.RuleAuthoringScreen
 import com.dopashift.ui.onboarding.OnboardingScreen
+import com.dopashift.ui.quickcreate.QuickCreateDashboardScreen
 import com.dopashift.ui.settings.SettingsScreen
 
 /**
@@ -21,6 +22,7 @@ object DopaShiftRoutes {
     const val GOALS = "goals"
     const val ANALYTICS = "analytics"
     const val SETTINGS = "settings"
+    const val RULE_AUTHORING = "rule_authoring"
 }
 
 @Composable
@@ -44,7 +46,11 @@ fun DopaShiftNavGraph(
             )
         }
         composable(DopaShiftRoutes.DASHBOARD) {
-            DashboardScreen()
+            QuickCreateDashboardScreen(
+                onNavigateToInterceptionRules = {
+                    navController.navigate(DopaShiftRoutes.RULE_AUTHORING)
+                }
+            )
         }
         composable(DopaShiftRoutes.GOALS) {
             GoalsScreen()
@@ -53,7 +59,14 @@ fun DopaShiftNavGraph(
             AnalyticsScreen()
         }
         composable(DopaShiftRoutes.SETTINGS) {
-            SettingsScreen()
+            SettingsScreen(
+                onNavigateToInterceptionRules = {
+                    navController.navigate(DopaShiftRoutes.RULE_AUTHORING)
+                }
+            )
+        }
+        composable(DopaShiftRoutes.RULE_AUTHORING) {
+            RuleAuthoringScreen()
         }
     }
 }

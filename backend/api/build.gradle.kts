@@ -50,8 +50,25 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
     testRuntimeOnly("com.h2database:h2")
     testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
 }
 
 tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
     mainClass.set("com.dopashift.api.DopaShiftApplicationKt")
+}
+
+// API contract tests (invoked by the `contract-tests` CI job via `./gradlew contractTest`).
+// Runs the OpenAPI + dashboard-quick-create contract suites in `com.dopashift.api.contract`
+// (e.g. OpenApiContractTest, DashboardQuickCreateContractTest) against the same test source set
+// and classpath as `test`. This is a blocking gate — a failing contract test fails the build.
+val contractTest by tasks.registering(Test::class) {
+    description = "Runs the API contract tests (com.dopashift.api.contract)."
+    group = "verification"
+    useJUnitPlatform()
+    testClassesDirs = sourceSets["test"].output.classesDirs
+    classpath = sourceSets["test"].runtimeClasspath
+    filter {
+        includeTestsMatching("com.dopashift.api.contract.*")
+    }
+    shouldRunAfter(tasks.named("test"))
 }

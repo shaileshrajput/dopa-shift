@@ -1,45 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" tests="39" skipped="0" failures="0" errors="0" timestamp="2026-08-23T11:01:59" hostname="SHAILESH" time="0.372">
+<testsuite name="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" tests="39" skipped="0" failures="0" errors="0" timestamp="2026-09-02T08:40:56" hostname="SHAILESH" time="0.298">
   <properties/>
-  <testcase name="reminder suppressed during same-day quiet hours()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.141"/>
-  <testcase name="recurrence + condition combined - fires when both match()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.008"/>
-  <testcase name="escalation fires after interval elapsed()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.015"/>
+  <testcase name="reminder suppressed during same-day quiet hours()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.097"/>
+  <testcase name="recurrence + condition combined - fires when both match()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.007"/>
+  <testcase name="escalation fires after interval elapsed()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.009"/>
   <testcase name="QuietHoursWindow same-day - does not contain time outside range()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.002"/>
-  <testcase name="QuietHoursWindow overnight - contains time after start()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.002"/>
-  <testcase name="daily recurrence fires every day()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.006"/>
-  <testcase name="custom interval suppressed before anchor date()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.009"/>
-  <testcase name="specific weekdays recurrence suppressed on non-matching day()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.004"/>
+  <testcase name="QuietHoursWindow overnight - contains time after start()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.001"/>
+  <testcase name="daily recurrence fires every day()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.004"/>
+  <testcase name="custom interval suppressed before anchor date()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.008"/>
+  <testcase name="specific weekdays recurrence suppressed on non-matching day()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.005"/>
   <testcase name="conditional reminder suppressed when entity is complete()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.008"/>
   <testcase name="QuietHoursWindow overnight - does not contain time outside window()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.001"/>
   <testcase name="specific weekdays recurrence fires on matching day()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.005"/>
-  <testcase name="reminder fires outside quiet hours()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.005"/>
+  <testcase name="reminder fires outside quiet hours()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.004"/>
   <testcase name="inactive reminder is suppressed()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.006"/>
-  <testcase name="custom interval suppressed when intervalDays is null()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.006"/>
-  <testcase name="weekly recurrence suppressed on different day of week()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.005"/>
-  <testcase name="custom interval suppressed on non-interval day()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.006"/>
+  <testcase name="custom interval suppressed when intervalDays is null()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.004"/>
+  <testcase name="weekly recurrence suppressed on different day of week()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.004"/>
+  <testcase name="custom interval suppressed on non-interval day()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.007"/>
   <testcase name="matchesRecurrence MONTHLY returns false when scheduledDate is null()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.0"/>
-  <testcase name="conditional reminder fires when entity is incomplete()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.004"/>
-  <testcase name="custom interval fires on anchor day itself()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.005"/>
-  <testcase name="one-off reminder suppressed on wrong date()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.005"/>
+  <testcase name="conditional reminder fires when entity is incomplete()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.003"/>
+  <testcase name="custom interval fires on anchor day itself()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.004"/>
+  <testcase name="one-off reminder suppressed on wrong date()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.006"/>
   <testcase name="matchesRecurrence CUSTOM_INTERVAL returns false when scheduledDate is null()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.001"/>
   <testcase name="matchesRecurrence WEEKLY returns false when scheduledDate is null()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.001"/>
-  <testcase name="escalation suppressed when max escalations reached()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.005"/>
-  <testcase name="custom interval fires on exact interval day()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.004"/>
+  <testcase name="escalation suppressed when max escalations reached()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.004"/>
+  <testcase name="custom interval fires on exact interval day()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.006"/>
   <testcase name="QuietHoursWindow same-day - contains time within range()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.001"/>
-  <testcase name="reminder fires when no quiet hours configured()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.006"/>
-  <testcase name="escalation suppressed when entity becomes complete()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.005"/>
+  <testcase name="reminder fires when no quiet hours configured()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.004"/>
+  <testcase name="escalation suppressed when entity becomes complete()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.004"/>
   <testcase name="reminder suppressed during quiet hours with delivery at window end()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.006"/>
-  <testcase name="specific weekdays recurrence suppressed when weekdays is null()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.007"/>
+  <testcase name="specific weekdays recurrence suppressed when weekdays is null()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.006"/>
   <testcase name="escalation delayed during quiet hours()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.005"/>
-  <testcase name="weekly recurrence fires on same day of week as anchor()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.005"/>
+  <testcase name="weekly recurrence fires on same day of week as anchor()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.004"/>
   <testcase name="monthly recurrence suppressed on different day of month()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.004"/>
-  <testcase name="recurrence matches but condition fails - suppressed()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.005"/>
+  <testcase name="recurrence matches but condition fails - suppressed()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.004"/>
   <testcase name="escalation suppressed before interval elapsed()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.005"/>
-  <testcase name="successive escalations increment count()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.005"/>
-  <testcase name="all conditions met but in quiet hours - delayed()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.004"/>
+  <testcase name="successive escalations increment count()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.004"/>
+  <testcase name="all conditions met but in quiet hours - delayed()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.005"/>
   <testcase name="reminder without condition fires regardless of entity state()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.005"/>
   <testcase name="monthly recurrence fires on same day of month()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.004"/>
-  <testcase name="one-off reminder fires on scheduled date()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.005"/>
+  <testcase name="one-off reminder fires on scheduled date()" classname="com.dopashift.domain.usecase.reminder.ReminderEvaluationServiceTest" time="0.006"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

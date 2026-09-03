@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.dopashift.domain.repository.UserPreferencesRepository
@@ -30,10 +31,15 @@ class UserPreferencesRepositoryImpl @Inject constructor(
 
     private companion object {
         val ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")
+        val THEME_MODE = stringPreferencesKey("theme_mode")
         val ACCENT_COLOR = stringPreferencesKey("accent_color")
+        val ACCENT_SEED = longPreferencesKey("accent_seed")
         val LOCALE = stringPreferencesKey("locale")
         val DISPLAY_NAME = stringPreferencesKey("display_name")
         val EMAIL = stringPreferencesKey("email")
+
+        // Dark is the default theme mode per DUX-4.5.
+        const val DEFAULT_THEME_MODE = "DARK"
     }
 
     // === Onboarding ===
@@ -47,6 +53,20 @@ class UserPreferencesRepositoryImpl @Inject constructor(
     override suspend fun setOnboardingCompleted(completed: Boolean) {
         context.userPrefsDataStore.edit { prefs ->
             prefs[ONBOARDING_COMPLETED] = completed
+        }
+    }
+
+    // === Theme Mode (DUX-4.5) ===
+
+    override fun observeThemeMode(): Flow<String> {
+        return context.userPrefsDataStore.data.map { prefs ->
+            prefs[THEME_MODE] ?: DEFAULT_THEME_MODE
+        }
+    }
+
+    override suspend fun setThemeMode(mode: String) {
+        context.userPrefsDataStore.edit { prefs ->
+            prefs[THEME_MODE] = mode
         }
     }
 
@@ -64,6 +84,24 @@ class UserPreferencesRepositoryImpl @Inject constructor(
                 prefs[ACCENT_COLOR] = hexColor
             } else {
                 prefs.remove(ACCENT_COLOR)
+            }
+        }
+    }
+
+    // === Accent Seed (DUX-4.6) ===
+
+    override fun observeAccentSeed(): Flow<Long?> {
+        return context.userPrefsDataStore.data.map { prefs ->
+            prefs[ACCENT_SEED]
+        }
+    }
+
+    override suspend fun setAccentSeed(seed: Long?) {
+        context.userPrefsDataStore.edit { prefs ->
+            if (seed != null) {
+                prefs[ACCENT_SEED] = seed
+            } else {
+                prefs.remove(ACCENT_SEED)
             }
         }
     }

@@ -1,7 +1,7 @@
 package com.dopashift.interception
 
-import com.dopashift.data.local.entity.LocalInterceptionRule
 import com.dopashift.data.repository.LocalTelemetryRepository
+import com.dopashift.domain.entity.InterceptionRule
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -12,6 +12,7 @@ import java.time.Clock
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZoneOffset
+import java.util.UUID
 
 /**
  * Integration test suite: Screen-Time Interception Engine
@@ -28,13 +29,14 @@ import java.time.ZoneOffset
  */
 class InterceptionIntegrationTest {
 
-    private lateinit var fakeRuleDao: FakeInterceptionRuleDao
+    private lateinit var fakeRuleRepository: FakeInterceptionRuleRepository
     private lateinit var fakeTelemetryDao: FakeTelemetryDao
     private lateinit var telemetryRepository: LocalTelemetryRepository
     private lateinit var tracker: AllowanceTracker
     private lateinit var fixedClock: Clock
 
     private val testZone = ZoneId.of("America/New_York")
+    private val testUserId = testUuid("user-1")
 
     @Before
     fun setup() {
@@ -42,11 +44,12 @@ class InterceptionIntegrationTest {
             Instant.parse("2024-06-15T14:00:00Z"),
             ZoneOffset.UTC
         )
-        fakeRuleDao = FakeInterceptionRuleDao()
+        fakeRuleRepository = FakeInterceptionRuleRepository()
         fakeTelemetryDao = FakeTelemetryDao()
         telemetryRepository = LocalTelemetryRepository(fakeTelemetryDao)
-        tracker = AllowanceTracker(fakeRuleDao, telemetryRepository, fixedClock)
+        tracker = AllowanceTracker(fakeRuleRepository, telemetryRepository, fixedClock)
         tracker.userTimeZone = testZone
+        tracker.userId = testUserId
     }
 
     // === Permission Revocation Scenarios ===
@@ -109,7 +112,7 @@ class InterceptionIntegrationTest {
         val allowanceSeconds = 600L
         val packageName = "com.test.exact"
 
-        fakeRuleDao.addRule(createRule(packageName, allowanceMinutes))
+        fakeRuleRepository.addRule(createRule(packageName, allowanceMinutes))
 
         // Simulate various poll chunk sizes
         val chunks = listOf(50L, 100L, 75L, 125L, 80L, 90L, 80L) // Total = 600
@@ -139,7 +142,7 @@ class InterceptionIntegrationTest {
     @Test
     fun `rapid sequential polls accumulate correctly`() = runTest {
         val packageName = "com.test.rapid"
-        fakeRuleDao.addRule(createRule(packageName, 5)) // 5 minutes = 300 seconds
+        fakeRuleRepository.addRule(createRule(packageName, 5)) // 5 minutes = 300 seconds
 
         // Simulate 60 rapid 5-second polls (total: 300 seconds = exactly at threshold)
         var lastStatus = AllowanceStatus.WITHIN_ALLOWANCE
@@ -155,8 +158,8 @@ class InterceptionIntegrationTest {
         val app1 = "com.social.one"
         val app2 = "com.social.two"
 
-        fakeRuleDao.addRule(createRule(app1, 5))   // 300 seconds
-        fakeRuleDao.addRule(createRule(app2, 10))  // 600 seconds
+        fakeRuleRepository.addRule(createRule(app1, 5))   // 300 seconds
+        fakeRuleRepository.addRule(createRule(app2, 10))  // 600 seconds
 
         // Deplete app1
         tracker.onForegroundDetected(app1, 300L)
@@ -171,7 +174,7 @@ class InterceptionIntegrationTest {
     @Test
     fun `zero-second poll does not change state`() = runTest {
         val packageName = "com.test.zero"
-        fakeRuleDao.addRule(createRule(packageName, 5))
+        fakeRuleRepository.addRule(createRule(packageName, 5))
 
         tracker.onForegroundDetected(packageName, 100L)
         val remaining1 = tracker.getRemainingSeconds(packageName)
@@ -188,7 +191,7 @@ class InterceptionIntegrationTest {
     @Test
     fun `very large single poll exceeding allowance triggers DEPLETED`() = runTest {
         val packageName = "com.test.large"
-        fakeRuleDao.addRule(createRule(packageName, 1)) // 60 seconds
+        fakeRuleRepository.addRule(createRule(packageName, 1)) // 60 seconds
 
         // Single poll of 3600 seconds (way over 60s allowance)
         val status = tracker.onForegroundDetected(packageName, 3600L)
@@ -198,16 +201,13 @@ class InterceptionIntegrationTest {
     @Test
     fun `deactivated rule is not tracked`() = runTest {
         val packageName = "com.test.inactive"
-        fakeRuleDao.addRule(
-            LocalInterceptionRule(
-                id = "rule-inactive",
-                userId = "user-1",
-                goalId = null,
-                appPackageName = packageName,
-                siteDomain = null,
-                dailyAllowanceMinutes = 5,
-                isActive = false, // Inactive!
-                createdAt = System.currentTimeMillis()
+        fakeRuleRepository.addRule(
+            domainRule(
+                userId = testUserId,
+                packageName = packageName,
+                dailyLimitMinutes = 5,
+                id = testUuid("rule-inactive"),
+                enabled = false // Inactive!
             )
         )
 
@@ -217,16 +217,12 @@ class InterceptionIntegrationTest {
 
     // === Helpers ===
 
-    private fun createRule(packageName: String, allowanceMinutes: Int): LocalInterceptionRule {
-        return LocalInterceptionRule(
-            id = "rule-$packageName",
-            userId = "user-1",
-            goalId = null,
-            appPackageName = packageName,
-            siteDomain = null,
-            dailyAllowanceMinutes = allowanceMinutes,
-            isActive = true,
-            createdAt = System.currentTimeMillis()
+    private fun createRule(packageName: String, allowanceMinutes: Int): InterceptionRule {
+        return domainRule(
+            userId = testUserId,
+            packageName = packageName,
+            dailyLimitMinutes = allowanceMinutes,
+            id = testUuid("rule-$packageName")
         )
     }
 }

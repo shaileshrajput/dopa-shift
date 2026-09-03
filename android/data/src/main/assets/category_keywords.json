@@ -1,0 +1,28 @@
+{
+  "categories": [
+    {
+      "name": "Career Growth",
+      "keywords": ["promotion", "networking", "skills", "leadership", "portfolio", "certification", "interview", "mentorship"]
+    },
+    {
+      "name": "Fitness",
+      "keywords": ["workout", "running", "strength", "nutrition", "steps", "hydration", "flexibility", "recovery"]
+    },
+    {
+      "name": "Build Business",
+      "keywords": ["startup", "marketing", "customers", "revenue", "product", "sales", "branding", "cashflow"]
+    },
+    {
+      "name": "Clear Exam",
+      "keywords": ["study", "revision", "mock test", "syllabus", "notes", "practice", "time management", "concepts"]
+    },
+    {
+      "name": "Learning",
+      "keywords": ["reading", "courses", "practice", "notes", "tutorials", "projects", "review", "curiosity"]
+    },
+    {
+      "name": "Wellbeing",
+      "keywords": ["meditation", "sleep", "journaling", "gratitude", "mindfulness", "breathing", "screen time", "connection"]
+    }
+  ]
+}

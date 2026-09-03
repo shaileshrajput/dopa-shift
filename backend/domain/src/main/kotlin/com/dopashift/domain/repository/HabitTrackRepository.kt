@@ -14,4 +14,11 @@ interface HabitTrackRepository {
     suspend fun save(track: HabitTrack): HabitTrack
     suspend fun deleteByGoalId(goalId: UUID)
     suspend fun reassignToGoal(fromGoalId: UUID, toGoalId: UUID)
+
+    /**
+     * Counts active (not finished) habit tracks for the given user.
+     * Scoped by user_id; used by the Dashboard summary to distinguish
+     * Zero_State from Partial_State without loading full track rows.
+     */
+    suspend fun countActiveByUserId(userId: UUID): Int
 }

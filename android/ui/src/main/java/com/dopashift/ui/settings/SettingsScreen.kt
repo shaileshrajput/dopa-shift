@@ -55,6 +55,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -65,6 +66,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dopashift.domain.service.LlmProviderType
+import com.dopashift.ui.R
 import com.dopashift.ui.theme.DopaShiftTheme
 
 /**
@@ -81,12 +83,14 @@ import com.dopashift.ui.theme.DopaShiftTheme
  */
 @Composable
 fun SettingsScreen(
-    viewModel: SettingsViewModel = hiltViewModel()
+    viewModel: SettingsViewModel = hiltViewModel(),
+    onNavigateToInterceptionRules: () -> Unit = {},
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     SettingsContent(
         uiState = uiState,
+        onNavigateToInterceptionRules = onNavigateToInterceptionRules,
         onDisplayNameChange = viewModel::updateDisplayName,
         onSaveDisplayName = viewModel::saveDisplayName,
         onCurrentPasswordChange = viewModel::updateCurrentPassword,
@@ -110,6 +114,7 @@ fun SettingsScreen(
 @Composable
 private fun SettingsContent(
     uiState: SettingsUiState,
+    onNavigateToInterceptionRules: () -> Unit,
     onDisplayNameChange: (String) -> Unit,
     onSaveDisplayName: () -> Unit,
     onCurrentPasswordChange: (String) -> Unit,
@@ -160,6 +165,13 @@ private fun SettingsContent(
             onDisplayNameChange = onDisplayNameChange,
             onSaveDisplayName = onSaveDisplayName
         )
+
+        Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.margin))
+        HorizontalDivider()
+        Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.margin))
+
+        // === Manage App limit (Requirement 2 — App Selection & Time Picker) ===
+        InterceptionRulesEntry(onClick = onNavigateToInterceptionRules)
 
         Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.margin))
         HorizontalDivider()
@@ -222,13 +234,6 @@ private fun SettingsContent(
             onValidate = onValidateLlm,
             onRemove = onRemoveLlm
         )
-
-        Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.margin))
-        HorizontalDivider()
-        Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.margin))
-
-        // === Interception Bypass Notice (Requirement 2.8) ===
-        InterceptionBypassNotice()
 
         Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.margin))
         HorizontalDivider()
@@ -838,45 +843,41 @@ private fun LlmConfigSection(
 }
 
 // =====================================================================================
-// Interception Bypass Notice (Requirement 2.8)
+// Interception Rules Entry (Requirement 2 — App Selection & Time Picker)
 // =====================================================================================
 
 @Composable
-private fun InterceptionBypassNotice() {
-    SectionHeader(title = "Interception Info")
-    Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.stackSm))
-
+private fun InterceptionRulesEntry(onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .semantics { contentDescription = "Interception bypass information" },
+            .clickable(onClick = onClick)
+            .semantics { contentDescription = "Manage App Limits" },
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
         )
     ) {
         Row(
-            modifier = Modifier.padding(DopaShiftTheme.spacing.gutter),
-            verticalAlignment = Alignment.Top
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(DopaShiftTheme.spacing.gutter),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 Icons.Default.Warning,
                 contentDescription = null,
-                tint = DopaShiftTheme.colors.warningAmber,
-                modifier = Modifier.size(20.dp)
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(24.dp)
             )
             Spacer(modifier = Modifier.width(DopaShiftTheme.spacing.stackSm))
-            Column {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "About Screen-Time Interception",
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.SemiBold
+                    text = stringResource(R.string.rule_authoring_settings_entry),
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Medium
                 )
-                Spacer(modifier = Modifier.height(DopaShiftTheme.spacing.base))
                 Text(
-                    text = "Interception is \"non-bypassable\" through in-app UI. However, it can " +
-                        "be bypassed via OS-level permission revocation, force-stop, or OEM " +
-                        "battery-management app killers. This is a platform limitation, not a " +
-                        "guarantee of absolute enforcement.",
+                    text = stringResource(R.string.rule_authoring_settings_entry_description),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
