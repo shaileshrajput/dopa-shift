@@ -119,3 +119,4 @@ yarn-error.log*
 *.orig
 .cache/
 .gradle/
+android/.gradle/buildOutputCleanup/buildOutputCleanup.lock
